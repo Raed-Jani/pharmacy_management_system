@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.DashboardController">
+
+    <!-- Barre supérieure -->
+    <top>
+        <VBox style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <children>
+                <!-- Titre et utilisateur -->
+                <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 15 20;">
+                    <children>
+                        <Label text="🏥 PHARMACIE" style="-fx-text-fill: #2196F3; -fx-font-size: 24px; -fx-font-weight: bold;" />
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <Label fx:id="lblBienvenue" text="Bienvenue" style="-fx-font-size: 14px;" />
+                        <Label fx:id="lblRole" text="Rôle" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 12;" />
+                        <Button text="Déconnexion" onAction="#handleDeconnexion" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 8 15;" />
+                    </children>
+                </HBox>
+
+                <!-- Barre de statistiques -->
+                <HBox spacing="15.0" style="-fx-background-color: #f5f5f5; -fx-padding: 12 20;" alignment="CENTER_LEFT">
+                    <children>
+                        <Label fx:id="lblAlertes" text="0 produit(s) en alerte" style="-fx-font-size: 13px; -fx-text-fill: #616161;" />
+                        <Separator orientation="VERTICAL" />
+                        <Label fx:id="lblStatsVentes" text="CA: 0.00 TND" style="-fx-font-size: 13px; -fx-text-fill: #616161;" />
+                        <Separator orientation="VERTICAL" />
+                        <Label fx:id="lblStatsProduits" text="0 produits" style="-fx-font-size: 13px; -fx-text-fill: #616161;" />
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <Button text="🔄 Rafraîchir" onAction="#handleRafraichir" style="-fx-background-color: transparent; -fx-cursor: hand;" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+
+    <!-- Menu latéral gauche -->
+    <left>
+        <VBox spacing="8.0" prefWidth="220.0" style="-fx-background-color: #263238; -fx-padding: 15;">
+            <children>
+                <Label text="MENU" style="-fx-text-fill: #b0bec5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 0 10 0;" />
+
+                <Button fx:id="btnProduits" text="📦 Produits" onAction="#handleProduits" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+
+                <Button fx:id="btnVentes" text="💰 Ventes" onAction="#handleVentes" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+
+                <Button fx:id="btnClients" text="👥 Clients" onAction="#handleClients" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+
+                <Button fx:id="btnCommandes" text="📋 Commandes" onAction="#handleCommandes" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+
+                <Separator style="-fx-background-color: #37474f; -fx-padding: 10 0;" />
+
+                <Label text="ADMINISTRATION" style="-fx-text-fill: #b0bec5; -fx-font-size: 11px; -fx-padding: 10 0 5 0;" />
+
+                <Button fx:id="btnRapports" text="📊 Rapports" onAction="#handleRapports" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+
+                <Button fx:id="btnUtilisateurs" text="👤 Utilisateurs" onAction="#handleUtilisateurs" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+
+                <Button fx:id="btnLogs" text="📝 Logs" onAction="#handleLogs" maxWidth="Infinity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #eceff1; -fx-alignment: CENTER_LEFT; -fx-padding: 12 15; -fx-cursor: hand; -fx-font-size: 14px;" />
+            </children>
+        </VBox>
+    </left>
+
+    <!-- Zone de contenu centrale -->
+    <center>
+        <BorderPane fx:id="contentArea" style="-fx-background-color: white;">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </BorderPane>
+    </center>
+
+</BorderPane>

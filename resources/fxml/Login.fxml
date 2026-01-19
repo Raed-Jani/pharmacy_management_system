@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="450.0" prefWidth="550.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.LoginController">
+    <children>
+        <VBox alignment="CENTER" spacing="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <!-- Titre principal -->
+                <Label text="🏥 Système de Gestion de Pharmacie" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+
+                <!-- Sous-titre -->
+                <Label text="Connexion" style="-fx-text-fill: #424242;">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+
+                <!-- Formulaire de connexion -->
+                <VBox spacing="15.0" prefWidth="320.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                    <children>
+                        <VBox spacing="8.0">
+                            <children>
+                                <Label text="Login:" style="-fx-font-weight: bold;" />
+                                <TextField fx:id="txtLogin" promptText="Entrez votre login" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="8.0">
+                            <children>
+                                <Label text="Mot de passe:" style="-fx-font-weight: bold;" />
+                                <PasswordField fx:id="txtPassword" promptText="Entrez votre mot de passe" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                            </children>
+                        </VBox>
+
+                        <!-- Message d'erreur -->
+                        <Label fx:id="lblError" visible="false" wrapText="true" style="-fx-text-fill: #f44336; -fx-font-weight: bold;" />
+
+                        <!-- Indicateur de progression -->
+                        <ProgressIndicator fx:id="progressIndicator" visible="false" maxHeight="40.0" maxWidth="40.0" />
+
+                        <!-- Boutons -->
+                        <HBox spacing="15.0" alignment="CENTER">
+                            <children>
+                                <Button fx:id="btnLogin" text="Se connecter" onAction="#handleLogin" prefWidth="150.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 4; -fx-font-weight: bold;">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Button>
+                                <Button text="Quitter" onAction="#handleQuitter" prefWidth="120.0" style="-fx-background-color: #e0e0e0; -fx-text-fill: #212121; -fx-padding: 10 20; -fx-cursor: hand; -fx-background-radius: 4;">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                    </padding>
+                </VBox>
+
+                <!-- Aide -->
+                <VBox alignment="CENTER" spacing="5.0">
+                    <children>
+                        <Label text="Identifiants par défaut:" style="-fx-text-fill: #757575; -fx-font-size: 12px;" />
+                        <Label text="Login: admin | Mot de passe: password123" style="-fx-text-fill: #757575; -fx-font-size: 12px; -fx-font-weight: bold;" />
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

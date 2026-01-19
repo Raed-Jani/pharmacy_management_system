@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.GestionVentesController">
+    <children>
+        <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <!-- Titre et statut -->
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <Label text="Nouvelle Vente" styleClass="page-title" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblStatut" text="Nouvelle vente" styleClass="success" />
+                    </children>
+                </HBox>
+
+                <Separator />
+
+                <!-- Sélection du client -->
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <children>
+                        <Label text="Client:" minWidth="80.0" />
+                        <ComboBox fx:id="cmbClient" prefWidth="300.0" promptText="Vente sans client enregistré" />
+                    </children>
+                </HBox>
+
+                <Separator />
+
+                <!-- Contenu principal: Produits + Panier -->
+                <SplitPane dividerPositions="0.55" VBox.vgrow="ALWAYS">
+                    <items>
+                        <!-- Colonne gauche: Sélection des produits -->
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label text="Sélectionner les produits" styleClass="section-title" />
+
+                                <!-- Recherche -->
+                                <HBox spacing="10.0">
+                                    <children>
+                                        <TextField fx:id="txtRechercheProduit" promptText="Rechercher un produit..." HBox.hgrow="ALWAYS" />
+                                        <Button text="🔍" onAction="#handleRechercherProduit" />
+                                    </children>
+                                </HBox>
+
+                                <!-- Liste des produits -->
+                                <TableView fx:id="tableProduits" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colProduitId" text="ID" prefWidth="50.0" />
+                                        <TableColumn fx:id="colProduitNom" text="Produit" prefWidth="200.0" />
+                                        <TableColumn fx:id="colProduitPrix" text="Prix (TND)" prefWidth="80.0" />
+                                        <TableColumn fx:id="colProduitStock" text="Stock" prefWidth="70.0" />
+                                    </columns>
+                                </TableView>
+
+                                <!-- Ajout au panier -->
+                                <HBox spacing="10.0" alignment="CENTER">
+                                    <children>
+                                        <Label text="Quantité:" />
+                                        <TextField fx:id="txtQuantite" text="1" prefWidth="80.0" />
+                                        <Button fx:id="btnAjouterPanier" text="➕ Ajouter au panier" onAction="#handleAjouterPanier" styleClass="btn-success" disabled="true" />
+                                    </children>
+                                </HBox>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </VBox>
+
+                        <!-- Colonne droite: Panier -->
+                        <VBox spacing="10.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Label text="🛒 Panier" styleClass="section-title" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Button text="❌ Retirer" onAction="#handleRetirerPanier" />
+                                    </children>
+                                </HBox>
+
+                                <!-- Table du panier -->
+                                <TableView fx:id="tablePanier" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colPanierProduit" text="Produit" prefWidth="150.0" />
+                                        <TableColumn fx:id="colPanierQuantite" text="Qté" prefWidth="60.0" />
+                                        <TableColumn fx:id="colPanierPrix" text="Prix Unit." prefWidth="80.0" />
+                                        <TableColumn fx:id="colPanierTotal" text="Total" prefWidth="80.0" />
+                                    </columns>
+                                </TableView>
+
+                                <Separator />
+
+                                <!-- Total -->
+                                <HBox alignment="CENTER_RIGHT" spacing="20.0">
+                                    <children>
+                                        <Label text="TOTAL:" styleClass="section-title">
+                                            <font>
+                                                <Font name="System Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="lblTotal" text="0.00 TND" styleClass="title">
+                                            <font>
+                                                <Font name="System Bold" size="22.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+
+                                <!-- Boutons d'action -->
+                                <HBox spacing="10.0" alignment="CENTER">
+                                    <children>
+                                        <Button fx:id="btnValiderVente" text="✓ Valider la vente" onAction="#handleValiderVente" prefWidth="150.0" styleClass="btn-success" disabled="true">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Button fx:id="btnAnnuler" text="✗ Annuler" onAction="#handleAnnuler" prefWidth="100.0" styleClass="btn-danger" />
+                                    </children>
+                                </HBox>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </padding>
+                        </VBox>
+                    </items>
+                </SplitPane>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

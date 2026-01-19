@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.Separator?>
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox alignment="CENTER" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <!-- Titre de bienvenue -->
+                <Label text="🏥 Bienvenue dans le Système de Gestion de Pharmacie" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;" textAlignment="CENTER" wrapText="true">
+                    <font>
+                        <Font size="26.0" />
+                    </font>
+                </Label>
+
+                <Label text="Utilisez le menu de gauche pour naviguer" style="-fx-text-fill: #616161; -fx-font-size: 16px;" />
+
+                <Separator prefWidth="500.0" />
+
+                <!-- Grille de fonctionnalités -->
+                <GridPane hgap="25.0" vgap="25.0" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="230.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="230.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" minHeight="120.0" />
+                        <RowConstraints vgrow="SOMETIMES" minHeight="120.0" />
+                    </rowConstraints>
+
+                    <!-- Carte Produits -->
+                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <children>
+                            <Label text="📦" style="-fx-font-size: 36px;" />
+                            <Label text="Gestion des Produits" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
+                            <Label text="Gérer le catalogue de médicaments" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
+                        </children>
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+
+                    <!-- Carte Ventes -->
+                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <children>
+                            <Label text="💰" style="-fx-font-size: 36px;" />
+                            <Label text="Gestion des Ventes" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
+                            <Label text="Enregistrer et suivre les ventes" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
+                        </children>
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+
+                    <!-- Carte Clients -->
+                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <children>
+                            <Label text="👥" style="-fx-font-size: 36px;" />
+                            <Label text="Gestion des Clients" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
+                            <Label text="Gérer les informations clients" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
+                        </children>
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+
+                    <!-- Carte Commandes -->
+                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <children>
+                            <Label text="📋" style="-fx-font-size: 36px;" />
+                            <Label text="Commandes Fournisseurs" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
+                            <Label text="Gérer les approvisionnements" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
+                        </children>
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </GridPane>
+
+                <Separator prefWidth="500.0" />
+
+                <!-- Conseils -->
+                <VBox alignment="CENTER" spacing="8.0">
+                    <children>
+                        <Label text="💡 Les produits en alerte sont affichés en rouge" style="-fx-text-fill: #757575; -fx-font-size: 13px;" />
+                        <Label text="📊 Consultez les rapports pour analyser les performances" style="-fx-text-fill: #757575; -fx-font-size: 13px;" />
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>
