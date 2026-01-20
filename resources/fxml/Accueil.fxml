@@ -1,99 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.shape.*?>
 
-<?import javafx.scene.control.Separator?>
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <VBox alignment="CENTER" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <!-- Titre de bienvenue -->
-                <Label text="🏥 Bienvenue dans le Système de Gestion de Pharmacie" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;" textAlignment="CENTER" wrapText="true">
-                    <font>
-                        <Font size="26.0" />
-                    </font>
-                </Label>
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.pharmacie.ui.controller.AccueilController"
+            fx:id="scrollPane"
+            fitToWidth="true"
+            styleClass="scroll-pane"
+            stylesheets="@../css/pharmacy-blue-theme.css">
+    
+    <VBox spacing="35" style="-fx-padding: 40; -fx-background-color: transparent;">
+        
+        <!-- HEADER ENHANCED -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <Label text="Tableau de Bord" styleClass="label-title"/>
+                <Label text="Analyse en temps réel de votre officine" styleClass="label-muted"/>
+            </VBox>
+            <Button text="🔄 Actualiser" onAction="#refreshData" styleClass="quick-action-btn" 
+                    style="-fx-background-color: transparent; -fx-text-fill: -fx-primary-dark; -fx-border-color: -fx-primary-dark; -fx-border-radius: 10; -fx-effect: none;"/>
+        </HBox>
 
-                <Label text="Utilisez le menu de gauche pour naviguer" style="-fx-text-fill: #616161; -fx-font-size: 16px;" />
-
-                <Separator prefWidth="500.0" />
-
-                <!-- Grille de fonctionnalités -->
-                <GridPane hgap="25.0" vgap="25.0" alignment="CENTER">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="230.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="230.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints vgrow="SOMETIMES" minHeight="120.0" />
-                        <RowConstraints vgrow="SOMETIMES" minHeight="120.0" />
-                    </rowConstraints>
-
-                    <!-- Carte Produits -->
-                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <children>
-                            <Label text="📦" style="-fx-font-size: 36px;" />
-                            <Label text="Gestion des Produits" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
-                            <Label text="Gérer le catalogue de médicaments" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
-                        </children>
-                        <padding>
-                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                        </padding>
-                    </VBox>
-
-                    <!-- Carte Ventes -->
-                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <children>
-                            <Label text="💰" style="-fx-font-size: 36px;" />
-                            <Label text="Gestion des Ventes" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
-                            <Label text="Enregistrer et suivre les ventes" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
-                        </children>
-                        <padding>
-                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                        </padding>
-                    </VBox>
-
-                    <!-- Carte Clients -->
-                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                        <children>
-                            <Label text="👥" style="-fx-font-size: 36px;" />
-                            <Label text="Gestion des Clients" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
-                            <Label text="Gérer les informations clients" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
-                        </children>
-                        <padding>
-                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                        </padding>
-                    </VBox>
-
-                    <!-- Carte Commandes -->
-                    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                        <children>
-                            <Label text="📋" style="-fx-font-size: 36px;" />
-                            <Label text="Commandes Fournisseurs" style="-fx-font-weight: bold; -fx-font-size: 15px;" />
-                            <Label text="Gérer les approvisionnements" style="-fx-text-fill: #757575; -fx-font-size: 12px;" textAlignment="CENTER" wrapText="true" />
-                        </children>
-                        <padding>
-                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                        </padding>
-                    </VBox>
-                </GridPane>
-
-                <Separator prefWidth="500.0" />
-
-                <!-- Conseils -->
-                <VBox alignment="CENTER" spacing="8.0">
-                    <children>
-                        <Label text="💡 Les produits en alerte sont affichés en rouge" style="-fx-text-fill: #757575; -fx-font-size: 13px;" />
-                        <Label text="📊 Consultez les rapports pour analyser les performances" style="-fx-text-fill: #757575; -fx-font-size: 13px;" />
-                    </children>
-                </VBox>
-            </children>
-            <padding>
-                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-            </padding>
+        <!-- DYNAMIC ALERTS (TOP-SHELF GLASS SECTION) -->
+        <VBox spacing="15">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="⚠ Alertes Critiques" styleClass="label-heading" style="-fx-text-fill: -fx-danger;"/>
+            </HBox>
+            <VBox fx:id="vboxStockAlerts" spacing="12" styleClass="stock-alert-container">
+                <Label text="Aucune alerte critique pour le moment." styleClass="label-muted" style="-fx-padding: 10;"/>
+            </VBox>
         </VBox>
-    </children>
-</AnchorPane>
+
+        <!-- QUICK ACTION BAR (MODERN BUTTONS) -->
+        <VBox spacing="15">
+            <Label text="Raccourcis" styleClass="label-heading"/>
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Button fx:id="btnQuickSale" text="💰 Nouvelle Vente" onAction="#handleNewSale" styleClass="quick-action-btn" prefWidth="240"/>
+                <Button fx:id="btnQuickOrder" text="📦 Commandes" onAction="#handleNewOrder" styleClass="quick-action-btn" prefWidth="240"/>
+                <Button fx:id="btnQuickRapports" text="📈 Rapports" onAction="#handleGoToRapports" styleClass="quick-action-btn" prefWidth="240"/>
+                <Button fx:id="btnQuickUtilisateurs" text="⚙ Gestion" onAction="#handleGoToUtilisateurs" styleClass="quick-action-btn" prefWidth="240"/>
+            </HBox>
+        </VBox>
+        
+        <!-- DASHBOARD STATS (ELEVATED CARDS) -->
+        <GridPane hgap="25" vgap="25">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+            </columnConstraints>
+            
+            <VBox styleClass="info-card" spacing="15" GridPane.columnIndex="0">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region styleClass="info-card-icon-box,info-card-icon-blue" minWidth="45" minHeight="45"/>
+                    <Label text="Produits" styleClass="info-card-title"/>
+                </HBox>
+                <Label fx:id="lblTotalProducts" text="--" styleClass="info-card-value"/>
+            </VBox>
+            
+            <VBox styleClass="info-card" spacing="15" GridPane.columnIndex="1">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region styleClass="info-card-icon-box,info-card-icon-orange" minWidth="45" minHeight="45"/>
+                    <Label text="Alertes Stock" styleClass="info-card-title"/>
+                </HBox>
+                <Label fx:id="lblLowStockItems" text="--" styleClass="info-card-value"/>
+            </VBox>
+            
+            <VBox styleClass="info-card" spacing="15" GridPane.columnIndex="2">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region styleClass="info-card-icon-box,info-card-icon-green" minWidth="45" minHeight="45"/>
+                    <Label text="Ventes (Aujourd'hui)" styleClass="info-card-title"/>
+                </HBox>
+                <Label fx:id="lblTodaysSales" text="--" styleClass="info-card-value"/>
+            </VBox>
+            
+            <VBox styleClass="info-card" spacing="15" GridPane.columnIndex="3">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Region styleClass="info-card-icon-box,info-card-icon-purple" minWidth="45" minHeight="45"/>
+                    <Label text="Commandes" styleClass="info-card-title"/>
+                </HBox>
+                <Label fx:id="lblPendingOrders" text="--" styleClass="info-card-value"/>
+            </VBox>
+        </GridPane>
+        
+        <!-- RECENT ACTIVITY (CLEAN LIST) -->
+        <VBox spacing="20" styleClass="glass-card" style="-fx-padding: 30;">
+            <Label text="Dernières Activités" styleClass="label-heading"/>
+            <VBox fx:id="vboxActivites" spacing="5">
+                <!-- Dynamically populated -->
+                <Label text="Chargement de l'activité..." styleClass="label-muted"/>
+            </VBox>
+        </VBox>
+        
+    </VBox>
+</ScrollPane>

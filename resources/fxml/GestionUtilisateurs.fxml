@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.pharmacie.ui.controller.GestionUtilisateursController"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #F5F6FA;">
+
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- En-tête -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Label text="👤 Gestion des Utilisateurs" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+        </HBox>
+
+        <!-- Contenu Principal -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+            
+            <!-- Liste des utilisateurs -->
+            <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                <TableView fx:id="tableUtilisateurs" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="50" style="-fx-alignment: CENTER;"/>
+                        <TableColumn fx:id="colLogin" text="Login" prefWidth="120"/>
+                        <TableColumn fx:id="colNom" text="Nom" prefWidth="120"/>
+                        <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="120"/>
+                        <TableColumn fx:id="colRole" text="Rôle" prefWidth="100" style="-fx-alignment: CENTER;"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Formulaire -->
+            <VBox prefWidth="320" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" spacing="15">
+                <Label text="Détails de l'Utilisateur" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;"/>
+                
+                <GridPane vgap="12" hgap="10">
+                    <Label text="Login:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="txtLogin" promptText="Identifiant unique" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Mot de passe:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                    <PasswordField fx:id="txtPassword" promptText="Mot de passe" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Nom:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtNom" promptText="Nom de famille" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Prénom:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtPrenom" promptText="Prénom" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <Label text="Rôle:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbRole" prefWidth="200" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <VBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button fx:id="btnAjouter" text="Créer Compte" onAction="#handleAjouter" style="-fx-background-color: #2ECC71; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" prefWidth="140"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button fx:id="btnModifier" text="Modifier" onAction="#handleModifier" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-cursor: hand;" disable="true" prefWidth="140"/>
+                        <Button fx:id="btnSupprimer" text="Supprimer" onAction="#handleSupprimer" style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-cursor: hand;" disable="true" prefWidth="140"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button text="Réinitialiser Formulaire" onAction="#handleVider" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-cursor: hand;" prefWidth="290"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>

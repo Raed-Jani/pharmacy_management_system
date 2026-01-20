@@ -1,69 +1,46 @@
 package com.pharmacie.utils;
 
 import com.pharmacie.exception.ConnexionEchoueeException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
- * Classe singleton pour gérer la connexion à la base de données MySQL.
- * VERSION SIMPLIFIÉE - Utilise l'utilisateur root pour faciliter le développement.
- *
- * IMPORTANT: Modifiez DB_PASSWORD avec votre mot de passe MySQL root !
+ * Classe pour gérer la connexion à la base de données MySQL.
+ * ⚠️ MODIFIER LES IDENTIFIANTS SI NÉCESSAIRE ⚠️
  */
 public class DBConnection {
 
-    // ========== CONFIGURATION - À MODIFIER SELON VOTRE INSTALLATION ==========
+    // ========== CONFIGURATION - À MODIFIER SELON VOS PARAMÈTRES ==========
 
-    // URL de la base de données
+    // URL de connexion MySQL (format: jdbc:mysql://adresse: port/base_de_donnees)
     private static final String DB_URL = "jdbc:mysql://localhost:3306/pharmacie_db";
 
-    // Paramètres de connexion
-    private static final String DB_PARAMS = "?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
-
-    // MODIFIEZ CE MOT DE PASSE avec votre mot de passe MySQL root !
+    // Utilisateur MySQL
+    // Options:
+    // - "root" (si vous utilisez l'utilisateur root)
+    // - "admin_pharmacie" (si vous avez exécuté le script SQL)
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "95551440"; // ← METTEZ VOTRE MOT DE PASSE ICI
 
-    // ========== SINGLETON ==========
+    // Mot de passe MySQL
+    // ⚠️ À CHANGER SELON VOTRE CONFIGURATION ⚠️
+    private static final String DB_PASSWORD = "95551440";
+
+    // Port MySQL (par défaut: 3306)
+    private static final int DB_PORT = 3306;
+
+    // ========================================================================
+
     private static DBConnection instance;
     private Connection adminConnection;
-    private Connection employeConnection;
 
     /**
-     * Constructeur privé (pattern Singleton).
+     * Constructeur privé (Singleton)
      */
     private DBConnection() throws ConnexionEchoueeException {
-        System.out.println("\n========== INITIALISATION DBConnection ==========");
-        try {
-            // Charger le driver MySQL
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("✓ Driver MySQL chargé: com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("✗ ERREUR CRITIQUE: Driver MySQL introuvable !");
-            System.err.println("\n┌─────────────────────────────────────────────────────┐");
-            System.err.println("│  SOLUTION:                                          │");
-            System.err.println("│  1. Téléchargez mysql-connector-java-8.0.33.jar    │");
-            System.err.println("│     depuis: https://dev.mysql.com/downloads/        │");
-            System.err.println("│                                                     │");
-            System.err.println("│  2. Dans IntelliJ:                                  │");
-            System.err.println("│     File → Project Structure → Libraries            │");
-            System.err.println("│     → + → Java → Sélectionnez le JAR               │");
-            System.err.println("│                                                     │");
-            System.err.println("│  3. Dans Eclipse:                                   │");
-            System.err.println("│     Build Path → Add External JARs                  │");
-            System.err.println("│     → Sélectionnez le JAR                          │");
-            System.err.println("└─────────────────────────────────────────────────────┘\n");
-
-            throw new ConnexionEchoueeException(
-                    "Driver MySQL non trouvé",
-                    "Ajoutez mysql-connector-java.jar au classpath du projet"
-            );
-        }
+        initializeDriver();
     }
 
     /**
-     * Récupère l'instance unique de DBConnection.
+     * Retourne l'instance unique de DBConnection (Singleton)
      */
     public static synchronized DBConnection getInstance() throws ConnexionEchoueeException {
         if (instance == null) {
@@ -73,189 +50,181 @@ public class DBConnection {
     }
 
     /**
-     * Récupère la connexion administrateur.
+     * Helper statique pour obtenir une connexion directement.
      */
-    public synchronized Connection getAdminConnection() throws ConnexionEchoueeException {
-        return getConnection("ADMIN");
+    public static Connection getConnection() throws ConnexionEchoueeException {
+        return getInstance().getAdminConnection();
     }
 
     /**
-     * Récupère la connexion employé (même que admin dans cette version simplifiée).
+     * Initialise le driver MySQL
      */
-    public synchronized Connection getEmployeConnection() throws ConnexionEchoueeException {
-        return getConnection("EMPLOYE");
-    }
-
-    /**
-     * Méthode privée pour créer/récupérer une connexion.
-     */
-    private Connection getConnection(String type) throws ConnexionEchoueeException {
+    private void initializeDriver() throws ConnexionEchoueeException {
+        System.out.println("\n========== INITIALISATION DBConnection ==========");
         try {
-            Connection conn = (type.equals("ADMIN")) ? adminConnection : employeConnection;
-
-            if (conn == null || conn.isClosed()) {
-                String fullUrl = DB_URL + DB_PARAMS;
-
-                System.out.println("\n┌─────────────────────────────────────────────────────┐");
-                System.out.println("│  Connexion " + type + " à MySQL                        ");
-                System.out.println("├─────────────────────────────────────────────────────┤");
-                System.out.println("│  URL: " + DB_URL);
-                System.out.println("│  User: " + DB_USER);
-                System.out.println("└─────────────────────────────────────────────────────┘");
-
-                conn = DriverManager.getConnection(fullUrl, DB_USER, DB_PASSWORD);
-
-                if (type.equals("ADMIN")) {
-                    adminConnection = conn;
-                } else {
-                    employeConnection = conn;
-                }
-
-                System.out.println("✓ Connexion " + type + " établie avec succès\n");
-            }
-
-            return conn;
-
-        } catch (SQLException e) {
-            System.err.println("\n✗ ERREUR DE CONNEXION À MYSQL !");
-            System.err.println("Code erreur: " + e.getErrorCode());
-            System.err.println("Message: " + e.getMessage());
-
-            String messageAide = diagnostiquerErreur(e);
-
-            System.err.println("\n" + messageAide);
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("✓ Driver MySQL chargé:  com.mysql.cj.jdbc. Driver");
+        } catch (ClassNotFoundException e) {
+            System.err.println("✗ ERREUR: Driver MySQL introuvable!");
+            System.err.println("\n┌─────────────────────────────────────────────────────┐");
+            System.err.println("│  SOLUTION:                                            │");
+            System.err.println("│  1. Téléchargez mysql-connector-java-8.0.33.jar    │");
+            System.err.println("│     depuis:  https://dev.mysql.com/downloads/        │");
+            System.err.println("│                                                     │");
+            System.err.println("│  2. Dans IntelliJ:                                    │");
+            System.err.println("│     File → Project Structure → Libraries            │");
+            System.err.println("│     → + → Java → Sélectionnez le JAR               │");
+            System.err.println("│                                                     │");
+            System.err.println("│  3. Redémarrez l'application                        │");
+            System.err.println("└─────────────────────────────────────────────────────┘\n");
 
             throw new ConnexionEchoueeException(
-                    "Impossible de se connecter à MySQL",
-                    messageAide
-            );
+                    "Driver MySQL non trouvé",
+                    "Ajoutez mysql-connector-java. jar au classpath du projet");
         }
     }
 
     /**
-     * Diagnostique le type d'erreur et fournit une aide ciblée.
+     * Retourne une connexion administrateur
      */
-    private String diagnostiquerErreur(SQLException e) {
-        int errorCode = e.getErrorCode();
-        String message = e.getMessage().toLowerCase();
+    public Connection getAdminConnection() throws ConnexionEchoueeException {
+        try {
+            if (adminConnection == null || adminConnection.isClosed()) {
+                System.out.println("\n→ Tentative de connexion à MySQL.. .");
+                System.out.println("  URL: " + DB_URL);
+                System.out.println("  Utilisateur: " + DB_USER);
+                System.out.println("  Port: " + DB_PORT);
 
-        // Erreur 1045: Access denied
-        if (errorCode == 1045 || message.contains("access denied")) {
-            return "┌─────────────────────────────────────────────────────┐\n" +
-                    "│  ERREUR D'AUTHENTIFICATION                          │\n" +
-                    "├─────────────────────────────────────────────────────┤\n" +
-                    "│  Le mot de passe root est incorrect !              │\n" +
-                    "│                                                     │\n" +
-                    "│  SOLUTION:                                          │\n" +
-                    "│  1. Ouvrez DBConnection.java                        │\n" +
-                    "│  2. Modifiez la ligne 21:                           │\n" +
-                    "│     private static final String DB_PASSWORD = \"\"; │\n" +
-                    "│     Mettez votre mot de passe MySQL root           │\n" +
-                    "│                                                     │\n" +
-                    "│  3. Si vous ne connaissez pas votre mot de passe:  │\n" +
-                    "│     - Réinitialisez-le via MySQL Workbench         │\n" +
-                    "│     - Ou via la ligne de commande                  │\n" +
-                    "└─────────────────────────────────────────────────────┘";
+                adminConnection = DriverManager.getConnection(
+                        DB_URL,
+                        DB_USER,
+                        DB_PASSWORD);
+
+                System.out.println("✓ Connexion établie avec succès!");
+                System.out.println("✓ Base de données: pharmacie_db");
+                System.out.println("✓ Utilisateur: " + DB_USER);
+
+                // Auto-patch schema
+                verifyAndPatchSchema(adminConnection);
+            }
+            return adminConnection;
+        } catch (SQLException e) {
+            String message = e.getMessage();
+            String aide = "";
+
+            // Identifier le type d'erreur
+            if (message.contains("Access denied")) {
+                aide = "❌ Identifiants MySQL incorrects!\n\n" +
+                        "Solutions:\n" +
+                        "1. Vérifiez DB_USER:  " + DB_USER + "\n" +
+                        "2. Vérifiez DB_PASSWORD (ligne 25)\n" +
+                        "3. Essayez avec 'root':  DB_USER = \"root\"\n" +
+                        "4. Exécutez: mysql -u root -p < database/pharmacie_db.sql";
+            } else if (message.contains("Unknown database")) {
+                aide = "❌ Base de données 'pharmacie_db' n'existe pas!\n\n" +
+                        "Solutions:\n" +
+                        "1. Exécutez le script SQL:\n" +
+                        "   mysql -u root -p < database/pharmacie_db.sql\n" +
+                        "2. Vérifiez le nom de la base: pharmacie_db";
+            } else if (message.contains("Communications link failure") ||
+                    message.contains("Connection refused")) {
+                aide = "❌ MySQL n'est pas démarré ou n'est pas accessible!\n\n" +
+                        "Solutions:\n" +
+                        "1. Démarrez MySQL:\n" +
+                        "   • Windows: net start MySQL80\n" +
+                        "   • Linux:  sudo systemctl start mysql\n" +
+                        "   • macOS: sudo /usr/local/mysql/support-files/mysql.server start\n" +
+                        "2. Vérifiez le port:  " + DB_PORT + "\n" +
+                        "3. Vérifiez l'adresse:  localhost";
+            } else {
+                aide = "Erreur MySQL: " + message;
+            }
+
+            System.err.println("\n✗ ERREUR DE CONNEXION");
+            System.err.println("   " + message);
+            System.err.println("   Aide: " + aide);
+
+            throw new ConnexionEchoueeException(message, aide);
         }
+    }
 
-        // Erreur 1049: Unknown database
-        if (errorCode == 1049 || message.contains("unknown database")) {
-            return "┌─────────────────────────────────────────────────────┐\n" +
-                    "│  BASE DE DONNÉES INTROUVABLE                        │\n" +
-                    "├─────────────────────────────────────────────────────┤\n" +
-                    "│  La base 'pharmacie_db' n'existe pas !             │\n" +
-                    "│                                                     │\n" +
-                    "│  SOLUTION:                                          │\n" +
-                    "│  1. Ouvrez MySQL:                                   │\n" +
-                    "│     mysql -u root -p                                │\n" +
-                    "│                                                     │\n" +
-                    "│  2. Exécutez le script SQL:                         │\n" +
-                    "│     SOURCE /chemin/vers/pharmacie_db.sql;           │\n" +
-                    "│                                                     │\n" +
-                    "│  3. Ou via MySQL Workbench:                         │\n" +
-                    "│     File → Run SQL Script → pharmacie_db.sql       │\n" +
-                    "└─────────────────────────────────────────────────────┘";
+    private void verifyAndPatchSchema(Connection conn) {
+        try {
+            DatabaseMetaData meta = conn.getMetaData();
+
+            // Check 'nom'
+            ResultSet rs = meta.getColumns(null, null, "utilisateur", "nom");
+            if (!rs.next()) {
+                System.out.println("⚠️ Colonne 'nom' manquante dans Utilisateur. Tentative de correction...");
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("ALTER TABLE Utilisateur ADD COLUMN nom VARCHAR(100)");
+                    System.out.println("✓ Colonne 'nom' ajoutée.");
+                } catch (SQLException ex) {
+                    System.err.println("Echec ajout nom: " + ex.getMessage());
+                }
+            }
+            rs.close();
+
+            // Check 'prenom'
+            rs = meta.getColumns(null, null, "utilisateur", "prenom");
+            if (!rs.next()) {
+                System.out.println("⚠️ Colonne 'prenom' manquante dans Utilisateur. Tentative de correction...");
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("ALTER TABLE Utilisateur ADD COLUMN prenom VARCHAR(100)");
+                    System.out.println("✓ Colonne 'prenom' ajoutée.");
+                } catch (SQLException ex) {
+                    System.err.println("Echec ajout prenom: " + ex.getMessage());
+                }
+            }
+            rs.close();
+
+            // --- NOUVELLES COLONNES POUR PRODUIT ---
+
+            // Check 'date_expiration'
+            rs = meta.getColumns(null, null, "Produit", "date_expiration");
+            if (!rs.next()) {
+                System.out.println("⚠️ Colonne 'date_expiration' manquante dans Produit. Tentative de correction...");
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("ALTER TABLE Produit ADD COLUMN date_expiration DATE");
+                    System.out.println("✓ Colonne 'date_expiration' ajoutée.");
+                } catch (SQLException ex) {
+                    System.err.println("Echec ajout date_expiration: " + ex.getMessage());
+                }
+            }
+            rs.close();
+
+            // Check 'id_fournisseur'
+            rs = meta.getColumns(null, null, "Produit", "id_fournisseur");
+            if (!rs.next()) {
+                System.out.println("⚠️ Colonne 'id_fournisseur' manquante dans Produit. Tentative de correction...");
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("ALTER TABLE Produit ADD COLUMN id_fournisseur INT");
+                    stmt.execute(
+                            "ALTER TABLE Produit ADD CONSTRAINT fk_produit_fournisseur FOREIGN KEY (id_fournisseur) REFERENCES Fournisseur(id_fournisseur)");
+                    System.out.println("✓ Colonne 'id_fournisseur' et contrainte FK ajoutées.");
+                } catch (SQLException ex) {
+                    System.err.println("Echec ajout id_fournisseur: " + ex.getMessage());
+                }
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.err.println("Erreur vérification schéma: " + e.getMessage());
         }
-
-        // Erreur 0 ou 2003: Connection refused
-        if (errorCode == 0 || errorCode == 2003 || message.contains("connection refused")) {
-            return "┌─────────────────────────────────────────────────────┐\n" +
-                    "│  MYSQL N'EST PAS DÉMARRÉ                            │\n" +
-                    "├─────────────────────────────────────────────────────┤\n" +
-                    "│  Le serveur MySQL ne répond pas !                  │\n" +
-                    "│                                                     │\n" +
-                    "│  SOLUTION:                                          │\n" +
-                    "│  Windows:                                           │\n" +
-                    "│    1. Tapez 'services.msc' dans le menu Démarrer   │\n" +
-                    "│    2. Cherchez 'MySQL'                              │\n" +
-                    "│    3. Cliquez 'Démarrer'                            │\n" +
-                    "│                                                     │\n" +
-                    "│  Linux:                                             │\n" +
-                    "│    sudo service mysql start                         │\n" +
-                    "│                                                     │\n" +
-                    "│  Mac:                                               │\n" +
-                    "│    mysql.server start                               │\n" +
-                    "└─────────────────────────────────────────────────────┘";
-        }
-
-        // Erreur générique
-        return "┌─────────────────────────────────────────────────────┐\n" +
-                "│  VÉRIFIEZ:                                          │\n" +
-                "│  1. MySQL est démarré                               │\n" +
-                "│  2. Le mot de passe root est correct                │\n" +
-                "│  3. La base 'pharmacie_db' existe                   │\n" +
-                "│  4. MySQL écoute sur le port 3306                   │\n" +
-                "└─────────────────────────────────────────────────────┘";
     }
 
     /**
-     * Ferme toutes les connexions.
+     * Ferme toutes les connexions
      */
-    public synchronized void closeAllConnections() {
+    public void closeAllConnections() throws ConnexionEchoueeException {
         try {
             if (adminConnection != null && !adminConnection.isClosed()) {
                 adminConnection.close();
-                System.out.println("✓ Connexion admin fermée");
-            }
-            if (employeConnection != null && !employeConnection.isClosed()) {
-                employeConnection.close();
-                System.out.println("✓ Connexion employé fermée");
+                System.out.println("✓ Connexion fermée");
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la fermeture: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Teste la connexion à la base de données.
-     */
-    public static boolean testerConnexion() {
-        try {
-            System.out.println("\n╔════════════════════════════════════════════════════════╗");
-            System.out.println("║          TEST DE CONNEXION À LA BASE DE DONNÉES       ║");
-            System.out.println("╚════════════════════════════════════════════════════════╝");
-
-            DBConnection db = getInstance();
-            Connection conn = db.getAdminConnection();
-            boolean isValid = conn != null && !conn.isClosed();
-
-            if (isValid) {
-                System.out.println("\n╔════════════════════════════════════════════════════════╗");
-                System.out.println("║                  ✓ CONNEXION RÉUSSIE                  ║");
-                System.out.println("╚════════════════════════════════════════════════════════╝\n");
-            }
-
-            return isValid;
-
-        } catch (ConnexionEchoueeException e) {
-            System.err.println("\n╔════════════════════════════════════════════════════════╗");
-            System.err.println("║                  ✗ CONNEXION ÉCHOUÉE                  ║");
-            System.err.println("╚════════════════════════════════════════════════════════╝");
-            return false;
-
-        } catch (SQLException e) {
-            System.err.println("\n✗ Erreur SQL: " + e.getMessage());
-            return false;
+            throw new ConnexionEchoueeException(
+                    "Erreur lors de la fermeture",
+                    e.getMessage());
         }
     }
 }

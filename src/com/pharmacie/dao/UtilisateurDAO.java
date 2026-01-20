@@ -13,39 +13,51 @@ import java.util.List;
  */
 public class UtilisateurDAO {
 
-    private Connection connection;
+    private DBConnection dbConnection;
+    private Connection manualConnection;
 
     /**
-     * Constructeur avec connexion spécifique.
+     * Constructeur avec connexion spécifique (pour compatibilité).
      */
     public UtilisateurDAO(Connection connection) {
-        this.connection = connection;
+        this.manualConnection = connection;
     }
 
     /**
-     * Constructeur utilisant la connexion admin par défaut.
+     * Constructeur utilisant le singleton DBConnection.
      */
     public UtilisateurDAO() throws ConnexionEchoueeException {
-        this.connection = DBConnection.getInstance().getAdminConnection();
+        this.dbConnection = DBConnection.getInstance();
+    }
+
+    private Connection getConnection() throws SQLException {
+        if (manualConnection != null) {
+            return manualConnection;
+        }
+        try {
+            return dbConnection.getAdminConnection();
+        } catch (ConnexionEchoueeException e) {
+            throw new SQLException("Erreur de connexion à la base de données", e);
+        }
     }
 
     /**
      * Ajoute un nouvel utilisateur.
      */
     public boolean ajouter(Utilisateur utilisateur) throws SQLException {
-        String sql = "INSERT INTO Utilisateur (login, mot_de_passe, role) VALUES (?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO Utilisateur (login, mot_de_passe, nom, prenom, role) VALUES (?, ?, ?, ?, ?)";
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, utilisateur.getLogin());
             stmt.setString(2, utilisateur.getMotDePasse());
-            stmt.setString(3, utilisateur.getRole());
+            stmt.setString(3, utilisateur.getNom());
+            stmt.setString(4, utilisateur.getPrenom());
+            stmt.setString(5, utilisateur.getRole());
 
-            int rowsAffected = stmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    utilisateur.setIdUtilisateur(rs.getInt(1));
+            if (stmt.executeUpdate() > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next())
+                        utilisateur.setIdUtilisateur(rs.getInt(1));
                 }
                 return true;
             }
@@ -57,13 +69,16 @@ public class UtilisateurDAO {
      * Modifie un utilisateur existant.
      */
     public boolean modifier(Utilisateur utilisateur) throws SQLException {
-        String sql = "UPDATE Utilisateur SET login = ?, mot_de_passe = ?, role = ? WHERE id_utilisateur = ?";
+        String sql = "UPDATE Utilisateur SET login = ?, mot_de_passe = ?, nom = ?, prenom = ?, role = ? WHERE id_utilisateur = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, utilisateur.getLogin());
             stmt.setString(2, utilisateur.getMotDePasse());
-            stmt.setString(3, utilisateur.getRole());
-            stmt.setInt(4, utilisateur.getIdUtilisateur());
+            stmt.setString(3, utilisateur.getNom());
+            stmt.setString(4, utilisateur.getPrenom());
+            stmt.setString(5, utilisateur.getRole());
+            stmt.setInt(6, utilisateur.getIdUtilisateur());
 
             return stmt.executeUpdate() > 0;
         }
@@ -75,7 +90,8 @@ public class UtilisateurDAO {
     public boolean supprimer(int idUtilisateur) throws SQLException {
         String sql = "DELETE FROM Utilisateur WHERE id_utilisateur = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUtilisateur);
             return stmt.executeUpdate() > 0;
         }
@@ -86,15 +102,12 @@ public class UtilisateurDAO {
      */
     public Utilisateur rechercherParId(int idUtilisateur) throws SQLException {
         String sql = "SELECT * FROM Utilisateur WHERE id_utilisateur = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUtilisateur);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return mapResultSetToUtilisateur(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() ? mapResultSetToUtilisateur(rs) : null;
             }
-            return null;
         }
     }
 
@@ -104,33 +117,34 @@ public class UtilisateurDAO {
     public Utilisateur rechercherParLogin(String login) throws SQLException {
         String sql = "SELECT * FROM Utilisateur WHERE login = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, login);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return mapResultSetToUtilisateur(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUtilisateur(rs);
+                }
+                return null;
             }
-            return null;
         }
     }
 
     /**
      * Authentifie un utilisateur (vérifie login + mot de passe).
-     * IMPORTANT: En production, les mots de passe doivent être hashés (BCrypt).
      */
     public Utilisateur authentifier(String login, String motDePasse) throws SQLException {
         String sql = "SELECT * FROM Utilisateur WHERE login = ? AND mot_de_passe = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, login);
             stmt.setString(2, motDePasse);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return mapResultSetToUtilisateur(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUtilisateur(rs);
+                }
+                return null;
             }
-            return null;
         }
     }
 
@@ -141,8 +155,9 @@ public class UtilisateurDAO {
         String sql = "SELECT * FROM Utilisateur ORDER BY login";
         List<Utilisateur> utilisateurs = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 utilisateurs.add(mapResultSetToUtilisateur(rs));
@@ -158,8 +173,9 @@ public class UtilisateurDAO {
         String sql = "SELECT * FROM Utilisateur WHERE role = 'ADMIN' ORDER BY login";
         List<Utilisateur> utilisateurs = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 utilisateurs.add(mapResultSetToUtilisateur(rs));
@@ -175,8 +191,9 @@ public class UtilisateurDAO {
         String sql = "SELECT * FROM Utilisateur WHERE role = 'EMPLOYE' ORDER BY login";
         List<Utilisateur> utilisateurs = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 utilisateurs.add(mapResultSetToUtilisateur(rs));
@@ -190,15 +207,12 @@ public class UtilisateurDAO {
      */
     public boolean loginExiste(String login) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Utilisateur WHERE login = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, login);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
             }
-            return false;
         }
     }
 
@@ -208,7 +222,8 @@ public class UtilisateurDAO {
     public boolean changerMotDePasse(int idUtilisateur, String nouveauMotDePasse) throws SQLException {
         String sql = "UPDATE Utilisateur SET mot_de_passe = ? WHERE id_utilisateur = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nouveauMotDePasse);
             stmt.setInt(2, idUtilisateur);
             return stmt.executeUpdate() > 0;
@@ -220,14 +235,10 @@ public class UtilisateurDAO {
      */
     public int compterUtilisateurs() throws SQLException {
         String sql = "SELECT COUNT(*) FROM Utilisateur";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-            return 0;
+        Connection conn = getConnection();
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
         }
     }
 
@@ -239,7 +250,8 @@ public class UtilisateurDAO {
                 rs.getInt("id_utilisateur"),
                 rs.getString("login"),
                 rs.getString("mot_de_passe"),
-                rs.getString("role")
-        );
+                rs.getString("nom"),
+                rs.getString("prenom"),
+                rs.getString("role"));
     }
 }

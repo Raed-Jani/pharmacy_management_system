@@ -1,6 +1,7 @@
 package com.pharmacie.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * Classe représentant un produit pharmaceutique.
@@ -15,6 +16,9 @@ public class Produit {
     private BigDecimal prixUnitaire;
     private int quantiteStock;
     private int seuilAlerte;
+    private LocalDate dateExpiration;
+    private Integer idFournisseur;
+    private String nomFournisseur; // Champ pratique pour l'affichage
 
     /**
      * Constructeur par défaut.
@@ -23,10 +27,11 @@ public class Produit {
     }
 
     /**
-     * Constructeur avec tous les paramètres.
+     * Constructeur avec tous les paramètres (incluant nouveaux champs).
      */
     public Produit(int idProduit, String nom, String description, String codeBarre,
-                   BigDecimal prixUnitaire, int quantiteStock, int seuilAlerte) {
+            BigDecimal prixUnitaire, int quantiteStock, int seuilAlerte,
+            LocalDate dateExpiration, Integer idFournisseur) {
         this.idProduit = idProduit;
         this.nom = nom;
         this.description = description;
@@ -34,22 +39,27 @@ public class Produit {
         this.prixUnitaire = prixUnitaire;
         this.quantiteStock = quantiteStock;
         this.seuilAlerte = seuilAlerte;
+        this.dateExpiration = dateExpiration;
+        this.idFournisseur = idFournisseur;
     }
 
     /**
      * Constructeur sans ID (pour création).
      */
     public Produit(String nom, String description, String codeBarre,
-                   BigDecimal prixUnitaire, int quantiteStock, int seuilAlerte) {
+            BigDecimal prixUnitaire, int quantiteStock, int seuilAlerte,
+            LocalDate dateExpiration, Integer idFournisseur) {
         this.nom = nom;
         this.description = description;
         this.codeBarre = codeBarre;
         this.prixUnitaire = prixUnitaire;
         this.quantiteStock = quantiteStock;
         this.seuilAlerte = seuilAlerte;
+        this.dateExpiration = dateExpiration;
+        this.idFournisseur = idFournisseur;
     }
 
-    //Getters
+    // Getters
 
     public int getIdProduit() {
         return idProduit;
@@ -79,7 +89,19 @@ public class Produit {
         return seuilAlerte;
     }
 
-    //Setters
+    public LocalDate getDateExpiration() {
+        return dateExpiration;
+    }
+
+    public Integer getIdFournisseur() {
+        return idFournisseur;
+    }
+
+    public String getNomFournisseur() {
+        return nomFournisseur;
+    }
+
+    // Setters
 
     public void setIdProduit(int idProduit) {
         this.idProduit = idProduit;
@@ -109,11 +131,33 @@ public class Produit {
         this.seuilAlerte = seuilAlerte;
     }
 
+    public void setDateExpiration(LocalDate dateExpiration) {
+        this.dateExpiration = dateExpiration;
+    }
+
+    public void setIdFournisseur(Integer idFournisseur) {
+        this.idFournisseur = idFournisseur;
+    }
+
+    public void setNomFournisseur(String nomFournisseur) {
+        this.nomFournisseur = nomFournisseur;
+    }
+
     /**
      * Vérifie si le produit est en alerte de stock.
      */
     public boolean estEnAlerte() {
         return quantiteStock <= seuilAlerte;
+    }
+
+    /**
+     * Vérifie si le produit est expiré ou proche de l'expiration (moins de 30
+     * jours).
+     */
+    public boolean estProcheExpiration() {
+        if (dateExpiration == null)
+            return false;
+        return dateExpiration.isBefore(LocalDate.now().plusDays(30));
     }
 
     /**
@@ -146,13 +190,17 @@ public class Produit {
                 ", prixUnitaire=" + prixUnitaire +
                 ", quantiteStock=" + quantiteStock +
                 ", seuilAlerte=" + seuilAlerte +
+                ", dateExpiration=" + dateExpiration +
+                ", idFournisseur=" + idFournisseur +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Produit produit = (Produit) o;
         return idProduit == produit.idProduit;
     }

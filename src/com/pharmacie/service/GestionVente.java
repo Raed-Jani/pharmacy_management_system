@@ -69,8 +69,7 @@ public class GestionVente {
         LogActivite log = LogActivite.creerLogVente(
                 vente.getIdVente(),
                 total.doubleValue(),
-                idUtilisateur
-        );
+                idUtilisateur);
         logDAO.ajouter(log);
 
         return vente;
@@ -93,8 +92,7 @@ public class GestionVente {
                 idVente,
                 idProduit,
                 quantite,
-                produit.getPrixUnitaire()
-        );
+                produit.getPrixUnitaire());
 
         ligneVenteDAO.ajouter(ligne);
 
@@ -181,5 +179,48 @@ public class GestionVente {
         }
 
         return rapport.toString();
+    }
+
+    /**
+     * Récupère le top des produits.
+     */
+    public List<String> getTopProduits(int limit) throws SQLException {
+        return venteDAO.getTopProduits(limit);
+    }
+
+    /**
+     * Récupère le CA journalier.
+     */
+    public List<String> getCAJournalier(int jours) throws SQLException {
+        return venteDAO.getCAJournalier(jours);
+    }
+
+    /**
+     * Supprime une vente et restaure les stocks.
+     */
+    public void supprimerVente(int idVente, int idUtilisateur) throws SQLException {
+        try {
+            List<LigneVente> lignes = ligneVenteDAO.listerParVente(idVente);
+
+            // 1. Restaurer les stocks
+            for (LigneVente ligne : lignes) {
+                gestionStock.augmenterStock(ligne.getIdProduit(), ligne.getQuantiteVendue(), idUtilisateur);
+            }
+
+            // 2. Supprimer les lignes de vente
+            for (LigneVente ligne : lignes) {
+                ligneVenteDAO.supprimer(ligne.getIdLigneVente());
+            }
+
+            // 3. Supprimer la vente
+            venteDAO.supprimer(idVente);
+
+            // 4. Logger l'action
+            LogActivite log = new LogActivite("SUPPRESSION_VENTE", "Vente #" + idVente + " supprimée.", idUtilisateur);
+            logDAO.ajouter(log);
+
+        } catch (ProduitIntrouvableException e) {
+            throw new SQLException("Erreur lors de la restauration du stock: " + e.getMessage());
+        }
     }
 }

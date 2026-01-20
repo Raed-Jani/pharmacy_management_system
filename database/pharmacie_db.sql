@@ -25,6 +25,18 @@ CREATE TABLE Utilisateur (
     INDEX idx_login (login)
 ) ENGINE=InnoDB;
 
+-- Table Employe
+-- Extension des informations utilisateur pour le personnel
+CREATE TABLE Employe (
+    id_employe INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL UNIQUE,
+    poste VARCHAR(50),
+    date_embauche DATE,
+    salaire DECIMAL(10,2),
+    departement VARCHAR(50),
+    FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Table LogActivite
 -- Traçabilité de toutes les actions importantes du système
 CREATE TABLE LogActivite (
@@ -304,6 +316,8 @@ CREATE TABLE Utilisateur (
     id_utilisateur INT AUTO_INCREMENT PRIMARY KEY,
     login VARCHAR(50) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
+    nom VARCHAR(100),
+    prenom VARCHAR(100),
     role VARCHAR(20) NOT NULL CHECK (role IN ('ADMIN', 'EMPLOYE'))
 ) ENGINE=InnoDB;
 

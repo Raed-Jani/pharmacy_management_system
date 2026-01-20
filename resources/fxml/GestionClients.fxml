@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.pharmacie.ui.controller.GestionClientsController"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #F5F6FA;">
+
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- En-tête -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Label text="👥 Gestion des Clients" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="txtRecherche" promptText="Rechercher par nom..." prefWidth="250"/>
+            <Button text="🔍" onAction="#handleRechercher"/>
+        </HBox>
+
+        <!-- Contenu Principal -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+            
+            <!-- Liste des clients -->
+            <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                <TableView fx:id="tableClients" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="colNom" text="Nom" prefWidth="100"/>
+                        <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="100"/>
+                        <TableColumn fx:id="colTel" text="Téléphone" prefWidth="100"/>
+                        <TableColumn fx:id="colEmail" text="Email" prefWidth="150"/>
+                        <TableColumn fx:id="colHistorique" text="Historique Médical" prefWidth="200"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Formulaire -->
+            <VBox prefWidth="300" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" spacing="15">
+                <Label text="Détails du Client" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;"/>
+                
+                <GridPane vgap="10" hgap="10">
+                    <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Prénom:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Tél:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtTelephone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="txtEmail" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <Label text="Historique:" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+                    <TextArea fx:id="txtHistorique" prefRowCount="4" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="btnAjouter" text="Ajouter" onAction="#handleAjouter" style="-fx-background-color: #2ECC71; -fx-text-fill: white;" prefWidth="90"/>
+                    <Button fx:id="btnModifier" text="Modifier" onAction="#handleModifier" style="-fx-background-color: #F39C12; -fx-text-fill: white;" disable="true" prefWidth="90"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="btnSupprimer" text="Supprimer" onAction="#handleSupprimer" style="-fx-background-color: #E74C3C; -fx-text-fill: white;" disable="true" prefWidth="90"/>
+                    <Button text="Nouveau" onAction="#handleVider" style="-fx-background-color: #95A5A6; -fx-text-fill: white;" prefWidth="90"/>
+                </HBox>
+            </VBox>
+
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>

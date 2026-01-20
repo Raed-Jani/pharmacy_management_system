@@ -12,6 +12,8 @@ public class Utilisateur {
     private int idUtilisateur;
     private String login;
     private String motDePasse;
+    private String nom;
+    private String prenom;
     private String role;
 
     /**
@@ -23,10 +25,12 @@ public class Utilisateur {
     /**
      * Constructeur avec tous les paramètres.
      */
-    public Utilisateur(int idUtilisateur, String login, String motDePasse, String role) {
+    public Utilisateur(int idUtilisateur, String login, String motDePasse, String nom, String prenom, String role) {
         this.idUtilisateur = idUtilisateur;
         this.login = login;
         this.motDePasse = motDePasse;
+        this.nom = nom;
+        this.prenom = prenom;
         this.role = role;
     }
 
@@ -53,6 +57,14 @@ public class Utilisateur {
         return motDePasse;
     }
 
+    public String getNom() {
+        return nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
     public String getRole() {
         return role;
     }
@@ -69,6 +81,14 @@ public class Utilisateur {
 
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
     public void setRole(String role) {
@@ -109,8 +129,10 @@ public class Utilisateur {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Utilisateur that = (Utilisateur) o;
         return idUtilisateur == that.idUtilisateur;
     }

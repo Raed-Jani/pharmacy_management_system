@@ -14,43 +14,58 @@ import java.util.List;
  */
 public class ProduitDAO {
 
-    private Connection connection;
+    private DBConnection dbConnection;
+    private Connection manualConnection;
 
     /**
-     * Constructeur avec connexion spécifique.
+     * Constructeur avec connexion spécifique (pour compatibilité).
      */
     public ProduitDAO(Connection connection) {
-        this.connection = connection;
+        this.manualConnection = connection;
     }
 
     /**
-     * Constructeur utilisant la connexion admin par défaut.
+     * Constructeur par défaut utilisant le singleton DBConnection.
      */
     public ProduitDAO() throws ConnexionEchoueeException {
-        this.connection = DBConnection.getInstance().getAdminConnection();
+        this.dbConnection = DBConnection.getInstance();
+    }
+
+    private Connection getConnection() throws SQLException {
+        if (manualConnection != null) {
+            return manualConnection;
+        }
+        try {
+            return dbConnection.getAdminConnection();
+        } catch (ConnexionEchoueeException e) {
+            throw new SQLException("Erreur de connexion à la base de données", e);
+        }
     }
 
     /**
      * Ajoute un nouveau produit dans la base de données.
      */
     public boolean ajouter(Produit produit) throws SQLException {
-        String sql = "INSERT INTO Produit (nom, description, code_barre, prix_unitaire, quantite_stock, seuil_alerte) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO Produit (nom, description, code_barre, prix_unitaire, quantite_stock, seuil_alerte, date_expiration, id_fournisseur) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, produit.getNom());
             stmt.setString(2, produit.getDescription());
             stmt.setString(3, produit.getCodeBarre());
             stmt.setBigDecimal(4, produit.getPrixUnitaire());
             stmt.setInt(5, produit.getQuantiteStock());
             stmt.setInt(6, produit.getSeuilAlerte());
+            stmt.setDate(7, produit.getDateExpiration() != null ? Date.valueOf(produit.getDateExpiration()) : null);
+            if (produit.getIdFournisseur() != null) {
+                stmt.setInt(8, produit.getIdFournisseur());
+            } else {
+                stmt.setNull(8, Types.INTEGER);
+            }
 
-            int rowsAffected = stmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    produit.setIdProduit(rs.getInt(1));
+            if (stmt.executeUpdate() > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next())
+                        produit.setIdProduit(rs.getInt(1));
                 }
                 return true;
             }
@@ -63,16 +78,23 @@ public class ProduitDAO {
      */
     public boolean modifier(Produit produit) throws SQLException {
         String sql = "UPDATE Produit SET nom = ?, description = ?, code_barre = ?, " +
-                "prix_unitaire = ?, quantite_stock = ?, seuil_alerte = ? WHERE id_produit = ?";
+                "prix_unitaire = ?, quantite_stock = ?, seuil_alerte = ?, date_expiration = ?, id_fournisseur = ? WHERE id_produit = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, produit.getNom());
             stmt.setString(2, produit.getDescription());
             stmt.setString(3, produit.getCodeBarre());
             stmt.setBigDecimal(4, produit.getPrixUnitaire());
             stmt.setInt(5, produit.getQuantiteStock());
             stmt.setInt(6, produit.getSeuilAlerte());
-            stmt.setInt(7, produit.getIdProduit());
+            stmt.setDate(7, produit.getDateExpiration() != null ? Date.valueOf(produit.getDateExpiration()) : null);
+            if (produit.getIdFournisseur() != null) {
+                stmt.setInt(8, produit.getIdFournisseur());
+            } else {
+                stmt.setNull(8, Types.INTEGER);
+            }
+            stmt.setInt(9, produit.getIdProduit());
 
             return stmt.executeUpdate() > 0;
         }
@@ -84,7 +106,8 @@ public class ProduitDAO {
     public boolean supprimer(int idProduit) throws SQLException {
         String sql = "DELETE FROM Produit WHERE id_produit = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idProduit);
             return stmt.executeUpdate() > 0;
         }
@@ -94,16 +117,19 @@ public class ProduitDAO {
      * Recherche un produit par son ID.
      */
     public Produit rechercherParId(int idProduit) throws SQLException, ProduitIntrouvableException {
-        String sql = "SELECT * FROM Produit WHERE id_produit = ?";
+        String sql = "SELECT p.*, f.nom_societe as nom_fournisseur FROM Produit p " +
+                "LEFT JOIN Fournisseur f ON p.id_fournisseur = f.id_fournisseur " +
+                "WHERE p.id_produit = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idProduit);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return mapResultSetToProduit(rs);
-            } else {
-                throw new ProduitIntrouvableException(idProduit);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToProduit(rs);
+                } else {
+                    throw new ProduitIntrouvableException(idProduit);
+                }
             }
         }
     }
@@ -112,16 +138,19 @@ public class ProduitDAO {
      * Recherche un produit par son code-barres.
      */
     public Produit rechercherParCodeBarre(String codeBarre) throws SQLException, ProduitIntrouvableException {
-        String sql = "SELECT * FROM Produit WHERE code_barre = ?";
+        String sql = "SELECT p.*, f.nom_societe as nom_fournisseur FROM Produit p " +
+                "LEFT JOIN Fournisseur f ON p.id_fournisseur = f.id_fournisseur " +
+                "WHERE p.code_barre = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, codeBarre);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return mapResultSetToProduit(rs);
-            } else {
-                throw new ProduitIntrouvableException("CODE_BARRE", codeBarre);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToProduit(rs);
+                } else {
+                    throw new ProduitIntrouvableException("CODE_BARRE", codeBarre);
+                }
             }
         }
     }
@@ -130,15 +159,18 @@ public class ProduitDAO {
      * Recherche des produits par nom (recherche partielle).
      */
     public List<Produit> rechercherParNom(String nom) throws SQLException {
-        String sql = "SELECT * FROM Produit WHERE nom LIKE ? ORDER BY nom";
+        String sql = "SELECT p.*, f.nom_societe as nom_fournisseur FROM Produit p " +
+                "LEFT JOIN Fournisseur f ON p.id_fournisseur = f.id_fournisseur " +
+                "WHERE p.nom LIKE ? ORDER BY p.nom";
         List<Produit> produits = new ArrayList<>();
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, "%" + nom + "%");
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                produits.add(mapResultSetToProduit(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    produits.add(mapResultSetToProduit(rs));
+                }
             }
         }
         return produits;
@@ -148,11 +180,14 @@ public class ProduitDAO {
      * Récupère tous les produits.
      */
     public List<Produit> listerTous() throws SQLException {
-        String sql = "SELECT * FROM Produit ORDER BY nom";
+        String sql = "SELECT p.*, f.nom_societe as nom_fournisseur FROM Produit p " +
+                "LEFT JOIN Fournisseur f ON p.id_fournisseur = f.id_fournisseur " +
+                "ORDER BY p.nom";
         List<Produit> produits = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 produits.add(mapResultSetToProduit(rs));
@@ -165,11 +200,14 @@ public class ProduitDAO {
      * Récupère les produits en alerte de stock.
      */
     public List<Produit> listerProduitsEnAlerte() throws SQLException {
-        String sql = "SELECT * FROM Produit WHERE quantite_stock <= seuil_alerte ORDER BY quantite_stock";
+        String sql = "SELECT p.*, f.nom_societe as nom_fournisseur FROM Produit p " +
+                "LEFT JOIN Fournisseur f ON p.id_fournisseur = f.id_fournisseur " +
+                "WHERE p.quantite_stock <= p.seuil_alerte ORDER BY p.quantite_stock";
         List<Produit> produits = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Connection conn = getConnection();
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 produits.add(mapResultSetToProduit(rs));
@@ -184,7 +222,8 @@ public class ProduitDAO {
     public boolean mettreAJourStock(int idProduit, int nouvelleQuantite) throws SQLException {
         String sql = "UPDATE Produit SET quantite_stock = ? WHERE id_produit = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, nouvelleQuantite);
             stmt.setInt(2, idProduit);
             return stmt.executeUpdate() > 0;
@@ -197,7 +236,8 @@ public class ProduitDAO {
     public boolean diminuerStock(int idProduit, int quantite) throws SQLException {
         String sql = "UPDATE Produit SET quantite_stock = quantite_stock - ? WHERE id_produit = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, quantite);
             stmt.setInt(2, idProduit);
             return stmt.executeUpdate() > 0;
@@ -210,41 +250,53 @@ public class ProduitDAO {
     public boolean augmenterStock(int idProduit, int quantite) throws SQLException {
         String sql = "UPDATE Produit SET quantite_stock = quantite_stock + ? WHERE id_produit = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, quantite);
             stmt.setInt(2, idProduit);
             return stmt.executeUpdate() > 0;
         }
     }
 
-    /**
-     * Compte le nombre total de produits.
-     */
-    public int compterProduits() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Produit";
+    public List<Produit> listerProduitsExpirantBientot(int jours) throws SQLException {
+        String sql = "SELECT p.*, f.nom_societe as nom_fournisseur FROM Produit p " +
+                "LEFT JOIN Fournisseur f ON p.id_fournisseur = f.id_fournisseur " +
+                "WHERE p.date_expiration IS NOT NULL AND p.date_expiration <= DATE_ADD(CURDATE(), INTERVAL ? DAY) " +
+                "ORDER BY p.date_expiration";
+        List<Produit> produits = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            if (rs.next()) {
-                return rs.getInt(1);
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, jours);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    produits.add(mapResultSetToProduit(rs));
+                }
             }
-            return 0;
         }
+        return produits;
     }
 
     /**
      * Mappe un ResultSet vers un objet Produit.
      */
     private Produit mapResultSetToProduit(ResultSet rs) throws SQLException {
-        return new Produit(
+        Produit p = new Produit(
                 rs.getInt("id_produit"),
                 rs.getString("nom"),
                 rs.getString("description"),
                 rs.getString("code_barre"),
                 rs.getBigDecimal("prix_unitaire"),
                 rs.getInt("quantite_stock"),
-                rs.getInt("seuil_alerte")
-        );
+                rs.getInt("seuil_alerte"),
+                rs.getDate("date_expiration") != null ? rs.getDate("date_expiration").toLocalDate() : null,
+                rs.getInt("id_fournisseur") != 0 ? rs.getInt("id_fournisseur") : null);
+
+        try {
+            p.setNomFournisseur(rs.getString("nom_fournisseur"));
+        } catch (SQLException e) {
+            // nom_fournisseur might not be in the row if the join was omitted
+        }
+        return p;
     }
 }

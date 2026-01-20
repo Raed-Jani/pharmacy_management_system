@@ -8,10 +8,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.application.Platform;
 
-import com.pharmacie.dao.UtilisateurDAO;
 import com.pharmacie.dao.LogActiviteDAO;
 import com.pharmacie.model.Utilisateur;
 import com.pharmacie.model.LogActivite;
+import com.pharmacie.service.AuthenticationService;
 import com.pharmacie.exception.ConnexionEchoueeException;
 import javafx.stage.Stage;
 
@@ -37,7 +37,7 @@ public class LoginController {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    private UtilisateurDAO utilisateurDAO;
+    private AuthenticationService authService;
     private LogActiviteDAO logDAO;
 
     /**
@@ -81,10 +81,9 @@ public class LoginController {
      */
     @FXML
     public void initialize() {
-        System.out.println("✓ LoginController initialisé");
 
         try {
-            utilisateurDAO = new UtilisateurDAO();
+            authService = AuthenticationService.getInstance();
             logDAO = new LogActiviteDAO();
 
             // Cacher le message d'erreur et l'indicateur de progression
@@ -99,8 +98,6 @@ public class LoginController {
             if (txtPassword != null) {
                 txtPassword.setOnKeyPressed(this::handleKeyPressed);
             }
-
-            System.out.println("✓ Contrôleur prêt");
 
         } catch (ConnexionEchoueeException e) {
             System.err.println("✗ Erreur d'initialisation du contrôleur:");
@@ -123,7 +120,6 @@ public class LoginController {
      */
     @FXML
     private void handleLogin() {
-        System.out.println("\n========== TENTATIVE DE CONNEXION ==========");
 
         String login = txtLogin.getText().trim();
         String password = txtPassword.getText();
@@ -133,8 +129,6 @@ public class LoginController {
             afficherErreur("Veuillez remplir tous les champs");
             return;
         }
-
-        System.out.println("Login: " + login);
 
         // Afficher l'indicateur de progression
         if (progressIndicator != null) {
@@ -150,7 +144,7 @@ public class LoginController {
         // Authentification dans un thread séparé pour ne pas bloquer l'UI
         new Thread(() -> {
             try {
-                Utilisateur utilisateur = utilisateurDAO.authentifier(login, password);
+                Utilisateur utilisateur = authService.login(login, password);
 
                 Platform.runLater(() -> {
                     if (progressIndicator != null) {
@@ -161,27 +155,12 @@ public class LoginController {
                     }
 
                     if (utilisateur != null) {
-                        System.out.println("✓ Authentification réussie");
-                        System.out.println("  Utilisateur: " + utilisateur.getLogin());
-                        System.out.println("  Rôle: " + utilisateur.getRole());
 
-                        // Créer un log de connexion
-                        try {
-                            LogActivite log = LogActivite.creerLogConnexion(
-                                    utilisateur.getIdUtilisateur(),
-                                    utilisateur.getLogin()
-                            );
-                            logDAO.ajouter(log);
-                            System.out.println("✓ Log de connexion créé");
-                        } catch (SQLException e) {
-                            System.err.println("⚠ Erreur lors de la création du log: " + e.getMessage());
-                        }
+                        // Log (déjà géré dans AuthenticationService, mais on peut garder l'affichage
+                        // console)
 
                         // Afficher un message de succès temporaire
                         afficherSucces("Connexion réussie ! Bienvenue " + utilisateur.getLogin());
-
-                        System.out.println("\n✓ Connexion réussie !");
-                        System.out.println("✓ Ouverture du Dashboard...");
 
                         // Ouvrir le Dashboard
                         ouvrirDashboard(utilisateur);
@@ -221,8 +200,7 @@ public class LoginController {
             // Animation de vibration
             try {
                 javafx.animation.TranslateTransition tt = new javafx.animation.TranslateTransition(
-                        javafx.util.Duration.millis(50), lblError
-                );
+                        javafx.util.Duration.millis(50), lblError);
                 tt.setFromX(0);
                 tt.setByX(10);
                 tt.setCycleCount(4);

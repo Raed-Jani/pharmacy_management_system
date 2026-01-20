@@ -1,0 +1,232 @@
+/* 
+   PHARMACARE PREMIUM THEME 
+   Aesthetic: Clinical, High-Tech, Professional
+*/
+
+.root {
+    -fx-primary-dark: #042d62;
+    -fx-primary-light: #0a4da2;
+    -fx-secondary: #2ecc71;
+    -fx-warning: #f39c12;
+    -fx-danger: #e74c3c;
+    -fx-bg-color: #f4f7fa;
+    -fx-card-bg: white;
+    -fx-text-title: #2c3e50;
+    -fx-text-muted: #7f8c8d;
+}
+
+.scroll-pane {
+    -fx-background-color: -fx-bg-color;
+    -fx-background: -fx-bg-color;
+    -fx-border-color: transparent;
+}
+
+/* ===== TITLES & HEADINGS ===== */
+.label-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-dark;
+    -fx-padding: 0 0 5 0;
+}
+
+.label-muted {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 15px;
+}
+
+.label-heading {
+    -fx-font-size: 20px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -fx-primary-dark;
+}
+
+/* ===== QUICK ACTION BUTTONS ===== */
+.quick-action-btn {
+    -fx-background-color: linear-gradient(to right, -fx-primary-dark, -fx-primary-light);
+    -fx-text-fill: white;
+    -fx-background-radius: 15;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(4, 45, 98, 0.3), 10, 0, 0, 5);
+    -fx-padding: 15 25;
+}
+
+.quick-action-btn:hover {
+    -fx-background-color: linear-gradient(to right, -fx-primary-light, #1e69d2);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(gaussian, rgba(4, 45, 98, 0.5), 15, 0, 0, 8);
+}
+
+/* ===== INFO CARDS (GLASS/PREMIUM) ===== */
+.info-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 20, 0, 0, 10);
+    -fx-border-color: rgba(0, 0, 0, 0.02);
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+.info-card:hover {
+    -fx-translate-y: -5;
+    -fx-effect: dropshadow(three-pass-box, rgba(4, 45, 98, 0.1), 30, 0, 0, 15);
+}
+
+.info-card-icon-box {
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+}
+
+.info-card-icon-blue {
+    -fx-background-color: rgba(4, 45, 98, 0.1);
+}
+
+.info-card-icon-orange {
+    -fx-background-color: rgba(243, 156, 18, 0.1);
+}
+
+.info-card-icon-green {
+    -fx-background-color: rgba(46, 204, 113, 0.1);
+}
+
+.info-card-icon-purple {
+    -fx-background-color: rgba(155, 89, 182, 0.1);
+}
+
+.info-card-title {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+.info-card-value {
+    -fx-text-fill: -fx-primary-dark;
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+}
+
+/* ===== DYNAMIC ALERTS (TOP-SHELF) ===== */
+.stock-alert-container {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 15;
+    -fx-padding: 15;
+    -fx-border-color: rgba(0, 0, 0, 0.05);
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
+}
+
+.stock-alert-item {
+    -fx-background-radius: 10;
+    -fx-padding: 12 20;
+    -fx-border-radius: 10;
+}
+
+.stock-alert-critical {
+    -fx-background-color: linear-gradient(to right, #ffefef, #fff5f5);
+    -fx-border-color: #ffcccc;
+    -fx-border-width: 1;
+}
+
+.stock-alert-warning {
+    -fx-background-color: linear-gradient(to right, #fff9e6, #fffcf0);
+    -fx-border-color: #ffecb3;
+    -fx-border-width: 1;
+}
+
+.stock-alert-product-name {
+    -fx-text-fill: #333;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.stock-alert-quantity {
+    -fx-text-fill: #666;
+    -fx-font-size: 13px;
+}
+
+/* ===== ACTIVITY CARD ===== */
+.glass-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 15, 0, 0, 8);
+}
+
+.activity-item {
+    -fx-padding: 12 0;
+    -fx-border-color: #f1f1f1;
+    -fx-border-width: 0 0 1 0;
+}
+
+.activity-item:last-child {
+    -fx-border-width: 0;
+}
+
+/* ===== MAIN DASHBOARD SHELL ===== */
+.header-bar {
+    -fx-background-color: white;
+    -fx-padding: 15 30;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-title {
+    -fx-text-fill: -fx-primary-dark;
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+}
+
+.search-bar {
+    -fx-background-color: #f1f4f8;
+    -fx-background-radius: 12;
+    -fx-padding: 10 20;
+    -fx-border-width: 0;
+    -fx-prompt-text-fill: #999;
+}
+
+/* ===== NAVY SIDEBAR ===== */
+.sidebar-navy {
+    -fx-background-color: linear-gradient(to bottom, #042d62, #021a3a);
+    -fx-pref-width: 280;
+    -fx-padding: 0;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 15 30;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: white;
+}
+
+.sidebar-button.active {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: white;
+    -fx-border-color: -fx-secondary;
+    -fx-border-width: 0 0 0 5;
+}
+
+.sidebar-section-label {
+    -fx-text-fill: rgba(255, 255, 255, 0.4);
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+    -fx-padding: 30 30 15 30;
+}
+
+.sidebar-section-button {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-padding: 25 30;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 16px;
+}

@@ -1,0 +1,260 @@
+/* ===== RAPPORTS VIEW - MODERN DESIGN ===== */
+
+/* Root Background with Gradient */
+.rapports-root {
+    -fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);
+}
+
+/* Main Container */
+.rapports-container {
+    -fx-background-color: transparent;
+}
+
+/* Header Section */
+.rapports-header {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0.3, 0, 5);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
+}
+
+.rapports-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0.4, 0, 2);
+}
+
+/* Export Controls Section */
+.export-controls {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 10;
+    -fx-padding: 10 15;
+    -fx-spacing: 10;
+}
+
+.export-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Custom ComboBox Styling */
+.rapports-combo {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.2, 0, 2);
+}
+
+.rapports-combo .list-cell {
+    -fx-text-fill: #2C3E50;
+    -fx-font-weight: bold;
+}
+
+.rapports-combo:hover {
+    -fx-border-color: rgba(255, 255, 255, 0.8);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0.3, 0, 3);
+}
+
+/* Export Buttons */
+.export-btn {
+    -fx-background-radius: 10;
+    -fx-padding: 12 20;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0.3, 0, 3);
+    -fx-border-width: 0;
+}
+
+.export-btn-produits {
+    -fx-background-color: linear-gradient(to bottom, #3498DB, #2980B9);
+    -fx-text-fill: white;
+}
+
+.export-btn-produits:hover {
+    -fx-background-color: linear-gradient(to bottom, #5DADE2, #3498DB);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 12, 0.4, 0, 4);
+}
+
+.export-btn-ventes {
+    -fx-background-color: linear-gradient(to bottom, #27AE60, #229954);
+    -fx-text-fill: white;
+}
+
+.export-btn-ventes:hover {
+    -fx-background-color: linear-gradient(to bottom, #52BE80, #27AE60);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 12, 0.4, 0, 4);
+}
+
+/* KPI Cards */
+.kpi-card {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 15;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0.2, 0, 5);
+    -fx-border-color: rgba(255, 255, 255, 0.8);
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
+}
+
+.kpi-card:hover {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0.3, 0, 8);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* KPI Card - Revenue */
+.kpi-card-revenue {
+    -fx-border-color: #27AE60;
+    -fx-border-width: 0 0 0 5;
+}
+
+/* KPI Card - Sales */
+.kpi-card-sales {
+    -fx-border-color: #3498DB;
+    -fx-border-width: 0 0 0 5;
+}
+
+/* KPI Card - Top Product */
+.kpi-card-top {
+    -fx-border-color: #9B59B6;
+    -fx-border-width: 0 0 0 5;
+}
+
+/* KPI Labels */
+.kpi-label-title {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 0 0 5 0;
+}
+
+.kpi-label-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.kpi-value-revenue {
+    -fx-text-fill: linear-gradient(to right, #27AE60, #229954);
+}
+
+.kpi-value-sales {
+    -fx-text-fill: linear-gradient(to right, #3498DB, #2980B9);
+}
+
+.kpi-value-top {
+    -fx-text-fill: linear-gradient(to right, #9B59B6, #8E44AD);
+}
+
+/* KPI Icon */
+.kpi-icon {
+    -fx-font-size: 40px;
+    -fx-padding: 0 0 10 0;
+}
+
+.kpi-icon-revenue {
+    -fx-text-fill: #27AE60;
+}
+
+.kpi-icon-sales {
+    -fx-text-fill: #3498DB;
+}
+
+.kpi-icon-top {
+    -fx-text-fill: #9B59B6;
+}
+
+/* Chart Containers */
+.chart-container {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0.2, 0, 5);
+}
+
+.chart-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #2C3E50;
+    -fx-padding: 0 0 15 0;
+}
+
+/* Chart Styling */
+.chart {
+    -fx-background-color: transparent;
+}
+
+.chart-plot-background {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+}
+
+.chart-legend {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+}
+
+/* Bar Chart Custom Colors */
+.default-color0.chart-bar {
+    -fx-bar-fill: linear-gradient(to top, #667eea, #764ba2);
+}
+
+.default-color0.chart-bar:hover {
+    -fx-bar-fill: linear-gradient(to top, #764ba2, #667eea);
+}
+
+/* Pie Chart Custom Colors */
+.default-color0.chart-pie {
+    -fx-pie-color: #667eea;
+}
+
+.default-color1.chart-pie {
+    -fx-pie-color: #764ba2;
+}
+
+.default-color2.chart-pie {
+    -fx-pie-color: #f093fb;
+}
+
+.default-color3.chart-pie {
+    -fx-pie-color: #4facfe;
+}
+
+.default-color4.chart-pie {
+    -fx-pie-color: #43e97b;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        -fx-opacity: 0;
+        -fx-translate-y: -20;
+    }
+    to {
+        -fx-opacity: 1;
+        -fx-translate-y: 0;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        -fx-translate-x: -50;
+        -fx-opacity: 0;
+    }
+    to {
+        -fx-translate-x: 0;
+        -fx-opacity: 1;
+    }
+}

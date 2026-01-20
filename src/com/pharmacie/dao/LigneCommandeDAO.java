@@ -13,14 +13,32 @@ import java.util.List;
  */
 public class LigneCommandeDAO {
 
-    private Connection connection;
+    private DBConnection dbConnection;
+    private Connection manualConnection;
 
+    /**
+     * Constructeur avec connexion spécifique (pour compatibilité).
+     */
     public LigneCommandeDAO(Connection connection) {
-        this.connection = connection;
+        this.manualConnection = connection;
     }
 
+    /**
+     * Constructeur utilisant le singleton DBConnection.
+     */
     public LigneCommandeDAO() throws ConnexionEchoueeException {
-        this.connection = DBConnection.getInstance().getAdminConnection();
+        this.dbConnection = DBConnection.getInstance();
+    }
+
+    private Connection getConnection() throws SQLException {
+        if (manualConnection != null) {
+            return manualConnection;
+        }
+        try {
+            return dbConnection.getAdminConnection();
+        } catch (ConnexionEchoueeException e) {
+            throw new SQLException("Erreur de connexion à la base de données", e);
+        }
     }
 
     /**
@@ -29,8 +47,8 @@ public class LigneCommandeDAO {
     public boolean ajouter(LigneCommande ligne) throws SQLException {
         String sql = "INSERT INTO LigneCommande (id_commande, id_produit, quantite_commandee, prix_achat) " +
                 "VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, ligne.getIdCommande());
             stmt.setInt(2, ligne.getIdProduit());
             stmt.setInt(3, ligne.getQuantiteCommandee());
@@ -39,9 +57,10 @@ public class LigneCommandeDAO {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    ligne.setIdLigneCmd(rs.getInt(1));
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        ligne.setIdLigneCmd(rs.getInt(1));
+                    }
                 }
                 return true;
             }
@@ -59,12 +78,13 @@ public class LigneCommandeDAO {
                 "WHERE lc.id_commande = ?";
         List<LigneCommande> lignes = new ArrayList<>();
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idCommande);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                lignes.add(mapResultSetToLigneCommande(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lignes.add(mapResultSetToLigneCommande(rs));
+                }
             }
         }
         return lignes;
@@ -76,7 +96,8 @@ public class LigneCommandeDAO {
     public boolean supprimer(int idLigneCmd) throws SQLException {
         String sql = "DELETE FROM LigneCommande WHERE id_ligne_cmd = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection conn = getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idLigneCmd);
             return stmt.executeUpdate() > 0;
         }
@@ -91,8 +112,7 @@ public class LigneCommandeDAO {
                 rs.getInt("id_commande"),
                 rs.getInt("id_produit"),
                 rs.getInt("quantite_commandee"),
-                rs.getBigDecimal("prix_achat")
-        );
+                rs.getBigDecimal("prix_achat"));
 
         String nomProduit = rs.getString("nom");
         if (nomProduit != null) {
@@ -102,4 +122,3 @@ public class LigneCommandeDAO {
         return ligne;
     }
 }
-
