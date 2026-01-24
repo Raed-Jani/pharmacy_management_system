@@ -6,219 +6,136 @@ import com.pharmacie.model.Produit;
 import com.pharmacie.model.LogActivite;
 import com.pharmacie.exception.StockInsuffisantException;
 import com.pharmacie.exception.ProduitIntrouvableException;
-import com.pharmacie.exception.ConnexionEchoueeException;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Service métier pour la gestion des stocks de produits.
- * Contient la logique métier et fait appel aux DAO.
+ * Logique métier pour la gestion des stocks de produits.
  */
 public class GestionStock {
 
-    private ProduitDAO produitDAO;
-    private LogActiviteDAO logDAO;
+    private final ProduitDAO produitDAO;
+    private final LogActiviteDAO logDAO;
 
-    /**
-     * Constructeur par défaut.
-     */
-    public GestionStock() throws ConnexionEchoueeException {
+    public GestionStock() {
         this.produitDAO = new ProduitDAO();
         this.logDAO = new LogActiviteDAO();
     }
 
-    /**
-     * Ajoute un nouveau produit au catalogue.
-     */
+    public GestionStock(Connection connection) {
+        this.produitDAO = new ProduitDAO(connection);
+        this.logDAO = new LogActiviteDAO(connection);
+    }
+
     public boolean ajouterProduit(Produit produit, int idUtilisateur) throws SQLException {
-        boolean success = produitDAO.ajouter(produit);
-
-        if (success) {
-            LogActivite log = new LogActivite(
-                    LogActivite.TYPE_MAJ_STOCK,
-                    "Ajout du produit: " + produit.getNom(),
-                    idUtilisateur
-            );
-            logDAO.ajouter(log);
+        if (produitDAO.ajouter(produit)) {
+            logDAO.ajouter(
+                    new LogActivite(LogActivite.TYPE_MAJ_STOCK, "Added product: " + produit.getNom(), idUtilisateur));
+            return true;
         }
-
-        return success;
+        return false;
     }
 
-    /**
-     * Modifie un produit existant.
-     */
     public boolean modifierProduit(Produit produit, int idUtilisateur) throws SQLException {
-        boolean success = produitDAO.modifier(produit);
-
-        if (success) {
-            LogActivite log = new LogActivite(
-                    LogActivite.TYPE_MAJ_STOCK,
-                    "Modification du produit: " + produit.getNom(),
-                    idUtilisateur
-            );
-            logDAO.ajouter(log);
+        if (produitDAO.modifier(produit)) {
+            logDAO.ajouter(new LogActivite(LogActivite.TYPE_MAJ_STOCK, "Modified product: " + produit.getNom(),
+                    idUtilisateur));
+            return true;
         }
-
-        return success;
+        return false;
     }
 
-    /**
-     * Supprime un produit du catalogue.
-     */
-    public boolean supprimerProduit(int idProduit, int idUtilisateur)
-            throws SQLException, ProduitIntrouvableException {
-
+    public boolean supprimerProduit(int idProduit, int idUtilisateur) throws SQLException, ProduitIntrouvableException {
         Produit produit = produitDAO.rechercherParId(idProduit);
-        String nomProduit = produit.getNom();
-
-        boolean success = produitDAO.supprimer(idProduit);
-
-        if (success) {
-            LogActivite log = LogActivite.creerLogSuppression(
-                    "Produit",
-                    nomProduit,
-                    idUtilisateur
-            );
-            logDAO.ajouter(log);
+        String name = produit.getNom();
+        if (produitDAO.supprimer(idProduit)) {
+            logDAO.ajouter(LogActivite.creerLogSuppression("Produit", name, idUtilisateur));
+            return true;
         }
-
-        return success;
+        return false;
     }
 
     /**
-     * Vérifie si un produit peut être vendu en quantité demandée.
+     * Vérifie si le stock est suffisant pour une commande.
+     * 
+     * @throws StockInsuffisantException si la quantité demandée dépasse le stock
+     *                                   actuel.
      */
     public void verifierDisponibilite(int idProduit, int quantite)
             throws SQLException, ProduitIntrouvableException, StockInsuffisantException {
-
         Produit produit = produitDAO.rechercherParId(idProduit);
-
         if (!produit.estDisponible(quantite)) {
-            throw new StockInsuffisantException(
-                    produit.getNom(),
-                    quantite,
-                    produit.getQuantiteStock()
-            );
+            throw new StockInsuffisantException(produit.getNom(), quantite, produit.getQuantiteStock());
         }
     }
 
     /**
-     * Diminue le stock lors d'une vente.
+     * Diminue le stock après une vente et enregistre l'opération dans les logs.
      */
     public void diminuerStock(int idProduit, int quantite, int idUtilisateur)
             throws SQLException, ProduitIntrouvableException, StockInsuffisantException {
-
-        // Vérifier la disponibilité
         verifierDisponibilite(idProduit, quantite);
-
         Produit produit = produitDAO.rechercherParId(idProduit);
-
-        // Diminuer le stock
-        boolean success = produitDAO.diminuerStock(idProduit, quantite);
-
-        if (success) {
-            LogActivite log = LogActivite.creerLogMajStock(
-                    produit.getNom(),
-                    -quantite,
-                    idUtilisateur
-            );
-            logDAO.ajouter(log);
+        if (produitDAO.diminuerStock(idProduit, quantite)) {
+            logDAO.ajouter(LogActivite.creerLogMajStock(produit.getNom(), -quantite, idUtilisateur));
         }
     }
 
     /**
-     * Augmente le stock lors d'une réception de commande.
+     * Augmente le stock (retour client ou commande fournisseur) et log l'action.
      */
     public void augmenterStock(int idProduit, int quantite, int idUtilisateur)
             throws SQLException, ProduitIntrouvableException {
-
         Produit produit = produitDAO.rechercherParId(idProduit);
-
-        boolean success = produitDAO.augmenterStock(idProduit, quantite);
-
-        if (success) {
-            LogActivite log = LogActivite.creerLogMajStock(
-                    produit.getNom(),
-                    quantite,
-                    idUtilisateur
-            );
-            logDAO.ajouter(log);
+        if (produitDAO.augmenterStock(idProduit, quantite)) {
+            logDAO.ajouter(LogActivite.creerLogMajStock(produit.getNom(), quantite, idUtilisateur));
         }
     }
 
-    /**
-     * Récupère les produits en alerte de stock.
-     */
     public List<Produit> getProduitsEnAlerte() throws SQLException {
         return produitDAO.listerProduitsEnAlerte();
     }
 
-    /**
-     * Recherche un produit par ID.
-     */
-    public Produit rechercherProduit(int idProduit)
-            throws SQLException, ProduitIntrouvableException {
+    public Produit rechercherProduit(int idProduit) throws SQLException, ProduitIntrouvableException {
         return produitDAO.rechercherParId(idProduit);
     }
 
-    /**
-     * Recherche un produit par code-barres.
-     */
-    public Produit rechercherProduitParCodeBarre(String codeBarre)
-            throws SQLException, ProduitIntrouvableException {
+    public Produit rechercherProduitParCodeBarre(String codeBarre) throws SQLException, ProduitIntrouvableException {
         return produitDAO.rechercherParCodeBarre(codeBarre);
     }
 
-    /**
-     * Recherche des produits par nom.
-     */
     public List<Produit> rechercherProduitsParNom(String nom) throws SQLException {
         return produitDAO.rechercherParNom(nom);
     }
 
-    /**
-     * Liste tous les produits.
-     */
     public List<Produit> listerTousProduits() throws SQLException {
         return produitDAO.listerTous();
     }
 
-    /**
-     * Génère un rapport de l'état des stocks.
-     */
     public String genererRapportStock() throws SQLException {
-        List<Produit> produits = produitDAO.listerTous();
+        List<Produit> produits = listerTousProduits();
         List<Produit> alertes = produitDAO.listerProduitsEnAlerte();
 
-        StringBuilder rapport = new StringBuilder();
-        rapport.append("=== RAPPORT DE STOCK ===\n\n");
-        rapport.append("Nombre total de produits: ").append(produits.size()).append("\n");
-        rapport.append("Produits en alerte: ").append(alertes.size()).append("\n\n");
+        StringBuilder rapport = new StringBuilder("=== STOCK REPORT ===\n\n")
+                .append("Total products: ").append(produits.size()).append("\n")
+                .append("Products in alert: ").append(alertes.size()).append("\n\n");
 
         if (!alertes.isEmpty()) {
-            rapport.append("--- PRODUITS EN ALERTE ---\n");
-            for (Produit p : alertes) {
-                rapport.append(String.format("- %s: %d unités (Seuil: %d)\n",
-                        p.getNom(), p.getQuantiteStock(), p.getSeuilAlerte()));
-            }
+            rapport.append("--- PRODUCTS IN ALERT ---\n");
+            alertes.forEach(p -> rapport.append(String.format("- %s: %d units (Seuil: %d)\n",
+                    p.getNom(), p.getQuantiteStock(), p.getSeuilAlerte())));
         }
-
         return rapport.toString();
     }
 
     /**
-     * Calcule la valeur totale du stock.
+     * Calcule la valeur monétaire totale du stock actuel.
      */
     public double calculerValeurStock() throws SQLException {
-        List<Produit> produits = produitDAO.listerTous();
-        double valeurTotale = 0.0;
-
-        for (Produit p : produits) {
-            valeurTotale += p.getPrixUnitaire().doubleValue() * p.getQuantiteStock();
-        }
-
-        return valeurTotale;
+        return produitDAO.listerTous().stream()
+                .mapToDouble(p -> p.getPrixUnitaire().doubleValue() * p.getQuantiteStock())
+                .sum();
     }
 }

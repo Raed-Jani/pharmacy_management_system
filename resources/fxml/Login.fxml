@@ -1,84 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" styleClass="blue-gradient-bg" stylesheets="@../css/pharmacy-blue-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.LoginController">
-    
-    <!-- Connection Status Indicator (Top Right) -->
-    <HBox alignment="CENTER_RIGHT" spacing="8" AnchorPane.topAnchor="20" AnchorPane.rightAnchor="20">
-        <Label text="Database:" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 12px;" />
-        <Circle fx:id="statusIndicator" radius="6" styleClass="status-connected" />
-    </HBox>
-    
-    <!-- Main Login Card -->
-    <VBox alignment="CENTER" spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-        
-        <!-- Login Card Container -->
-        <VBox alignment="CENTER" spacing="25" prefWidth="450" styleClass="glass-card" style="-fx-padding: 40;">
-            
-            <!-- Medical Cross Icon -->
-            <Label text="⚕" styleClass="medical-cross" />
-            
-            <!-- Title -->
-            <VBox alignment="CENTER" spacing="8">
-                <Label text="Système de Gestion" styleClass="label-title" style="-fx-text-fill: #1A237E;" />
-                <Label text="PHARMACIE" styleClass="label-title" style="-fx-text-fill: #283593; -fx-font-size: 28px;" />
-                <Label text="Connexion Sécurisée" styleClass="label-muted" style="-fx-font-size: 14px; -fx-padding: 10 0 0 0;" />
-            </VBox>
-            
-            <!-- Login Form -->
-            <VBox spacing="20" prefWidth="350">
-                
-                <!-- Username Field -->
-                <VBox spacing="8">
-                    <Label text="Nom d'utilisateur" styleClass="label-heading" style="-fx-font-size: 14px; -fx-text-fill: #1A237E;" />
-                    <TextField fx:id="txtLogin" promptText="Entrez votre identifiant" styleClass="text-field-blue" />
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="login-root" stylesheets="@../css/pharmacy-blue-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.LoginController">
+    <children>
+        <!-- Main Content -->
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <VBox alignment="CENTER" spacing="25.0">
+                    <children>
+                        <VBox alignment="TOP_CENTER" maxWidth="440.0" spacing="35.0" styleClass="login-card-saas">
+                            <children>
+                                <!-- Branding Header: row-based Logo + Name -->
+                                <VBox spacing="25.0" alignment="CENTER">
+                                    <children>
+                                        <HBox alignment="CENTER" spacing="15.0">
+                                            <children>
+                                                <!-- Premium Pill Logo -->
+                                                <StackPane styleClass="saas-pill-logo">
+                                                    <children>
+                                                        <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true">
+                                                            <image>
+                                                               <Image url="@../images/app_icon.png" />
+                                                            </image>
+                                                         </ImageView>
+                                                    </children>
+                                                </StackPane>
+                                                <Label styleClass="login-brand-name" text="BioVera" />
+                                            </children>
+                                        </HBox>
+                                        
+                                        <VBox alignment="CENTER" spacing="5.0">
+                                            <children>
+                                                <Label styleClass="login-saas-title" text="Login" />
+                                                <Label styleClass="login-saas-subtitle" text="Pharmacy Management System" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Form Fields -->
+                                <VBox spacing="20.0">
+                                    <children>
+                                        <VBox spacing="10.0">
+                                            <children>
+                                                <Label styleClass="login-input-heading" text="Username" />
+                                                <HBox styleClass="login-input-container">
+                                                    <children>
+                                                        <Label styleClass="login-input-icon" text="👤" />
+                                                        <TextField fx:id="txtLogin" promptText="Nom d'utilisateur" styleClass="login-input-field" HBox.hgrow="ALWAYS" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                        
+                                        <VBox spacing="10.0">
+                                            <children>
+                                                <Label styleClass="login-input-heading" text="Password" />
+                                                <HBox styleClass="login-input-container">
+                                                    <children>
+                                                        <Label styleClass="login-input-icon" text="🔒" />
+                                                        <PasswordField fx:id="txtPassword" promptText="Mot de passe" styleClass="login-input-field" HBox.hgrow="ALWAYS" />
+                                                        <Label styleClass="login-input-icon-eye" text="👁" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Options -->
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <CheckBox mnemonicParsing="false" styleClass="login-checkbox" text="Remember me" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Hyperlink styleClass="login-link" text="Forgot Password?" />
+                                    </children>
+                                </HBox>
+                                
+                                <!-- Actions -->
+                                <VBox spacing="15.0" alignment="CENTER">
+                                    <children>
+                                        <StackPane>
+                                            <children>
+                                                <Button fx:id="btnLogin" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" styleClass="btn-primary-saas" text="Login" />
+                                                <ProgressIndicator fx:id="progressIndicator" visible="false" maxHeight="25.0" maxWidth="25.0" />
+                                            </children>
+                                        </StackPane>
+                                        <Label fx:id="lblError" style="-fx-text-fill: #EF4444; -fx-font-size: 13px; -fx-font-weight: 500;" visible="false" wrapText="true" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                        
+                        <!-- Page Footer -->
+                        <Label styleClass="login-footer-saas" text="© 2026 BioVera — Pharmacy Management System" />
+                        <Hyperlink onAction="#handleQuitter" styleClass="login-link-muted" text="Exit System" />
+                    </children>
                 </VBox>
-                
-                <!-- Password Field -->
-                <VBox spacing="8">
-                    <Label text="Mot de passe" styleClass="label-heading" style="-fx-font-size: 14px; -fx-text-fill: #1A237E;" />
-                    <PasswordField fx:id="txtPassword" promptText="Entrez votre mot de passe" styleClass="password-field-blue" />
-                </VBox>
-                
-                <!-- Error Message -->
-                <Label fx:id="lblError" visible="false" wrapText="true" style="-fx-text-fill: #D32F2F; -fx-font-weight: bold; -fx-background-color: #FFEBEE; -fx-padding: 10; -fx-background-radius: 8;" />
-                
-                <!-- Progress Indicator -->
-                <HBox alignment="CENTER">
-                    <ProgressIndicator fx:id="progressIndicator" visible="false" maxHeight="40" maxWidth="40" styleClass="progress-indicator" />
-                </HBox>
-                
-                <!-- Buttons -->
-                <HBox spacing="15" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
-                    <Button fx:id="btnLogin" text="Se Connecter" onAction="#handleLogin" prefWidth="180" styleClass="btn-primary">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Button>
-                    <Button text="Quitter" onAction="#handleQuitter" prefWidth="120" styleClass="btn-secondary">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Button>
-                </HBox>
-            </VBox>
-            
-            <!-- Help Section -->
-            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20 0 0 0; -fx-border-color: #E3F2FD; -fx-border-width: 1 0 0 0;">
-                <Label text="Identifiants par défaut" styleClass="label-muted" style="-fx-font-size: 11px; -fx-padding: 10 0 0 0;" />
-                <Label text="Login: admin  •  Mot de passe: password123" styleClass="label-muted" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #283593;" />
-            </VBox>
-            
-        </VBox>
-        
-        <!-- Footer -->
-        <Label text="© 2026 Pharmacy Management System - Professional Edition" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;" />
-        
-    </VBox>
-    
+            </children>
+        </StackPane>
+    </children>
 </AnchorPane>

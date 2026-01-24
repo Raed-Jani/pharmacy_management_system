@@ -8,67 +8,104 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="768.0" prefWidth="1200.0" stylesheets="@../css/pharmacy-blue-theme.css"
+            prefHeight="800.0" prefWidth="1280.0" stylesheets="@../css/pharmacy-blue-theme.css"
+            styleClass="root"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.pharmacie.ui.controller.DashboardController">
 
-    <!-- Header Bar -->
+    <!-- TOP HEADER -->
     <top>
-        <HBox spacing="20" styleClass="header-bar" alignment="CENTER_LEFT">
-            <Label text="⚕ PHARMACIE" styleClass="header-title"/>
+        <HBox spacing="20" styleClass="header-bar" alignment="CENTER_LEFT" prefHeight="70.0">
+            <padding>
+                <Insets top="0" right="30" bottom="0" left="20"/>
+            </padding>
+            
+            <!-- Brand / Logo Area -->
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <children>
+                    <StackPane styleClass="header-logo-pill">
+                        <children>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@../images/app_icon.png" />
+                                </image>
+                            </ImageView>
+                        </children>
+                    </StackPane>
+                    <Label text="BioVera" styleClass="header-title" />
+                </children>
+            </HBox>
+            
             <Region HBox.hgrow="ALWAYS"/>
             
-            <!-- Search Bar -->
-            <TextField promptText="🔍 Rechercher un médicament..." prefWidth="250" styleClass="search-bar"/>
-            
-            <Label fx:id="lblBienvenue" text="Bienvenue, admin" styleClass="header-label"/>
-            <Label fx:id="lblRole" text="ADMIN" styleClass="header-label-accent"/>
-            <Button text="🔄" onAction="#handleRafraichir" styleClass="btn-icon" />
-            <Button text="Déconnexion" onAction="#handleDeconnexion" styleClass="btn-secondary" style="-fx-padding: 8 16;"/>
+            <!-- User Profile & Actions -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="🔔" styleClass="header-btn-icon" />
+                
+                <VBox alignment="CENTER_RIGHT" spacing="2">
+                    <Label fx:id="lblBienvenue" text="Bienvenue, Admin" styleClass="header-user-name"/>
+                    <Label fx:id="lblRole" text="ADMINISTRATEUR" styleClass="header-user-role"/>
+                </VBox>
+                
+                <Button text="⏻" onAction="#handleDeconnexion" styleClass="header-btn-icon-danger" />
+            </HBox>
         </HBox>
     </top>
 
-    <!-- Main Content Area -->
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="0" styleClass="sidebar-navy" prefWidth="260">
+            <!-- Sidebar Header -->
+            <Label text="NAVIGATION" styleClass="sidebar-section-label"/>
+            
+            <VBox spacing="2">
+                <Button text="🏠  Tableau de Bord" onAction="#handleRafraichir" maxWidth="Infinity" styleClass="sidebar-button"/>
+            </VBox>
+
+            <Label text="GESTION COMMERCIALE" styleClass="sidebar-section-label"/>
+            
+            <VBox spacing="2">
+                <Button fx:id="btnProduits" text="📦  Produits &amp; Stock" onAction="#handleProduits" maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button fx:id="btnVentes" text="🛒  Ventes" onAction="#handleVentes" maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button fx:id="btnClients" text="👥  Clients" onAction="#handleClients" maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button fx:id="btnCommandes" text="🚚  Commandes" onAction="#handleCommandes" maxWidth="Infinity" styleClass="sidebar-button"/>
+                <Button fx:id="btnFournisseurs" text="🏢  Fournisseurs" onAction="#handleFournisseurs" maxWidth="Infinity" styleClass="sidebar-button"/>
+            </VBox>
+
+            <!-- Admin Section -->
+            <VBox fx:id="vboxAdmin" spacing="0">
+                <Label text="ADMINISTRATION" styleClass="sidebar-section-label"/>
+                <VBox spacing="2">
+                    <Button fx:id="btnRapports" text="📊  Rapports &amp; Stats" onAction="#handleRapports" maxWidth="Infinity" styleClass="sidebar-button"/>
+                    <Button fx:id="btnUtilisateurs" text="👤  Utilisateurs" onAction="#handleUtilisateurs" maxWidth="Infinity" styleClass="sidebar-button"/>
+                    <Button fx:id="btnLogs" text="📝  Logs" onAction="#handleLogs" maxWidth="Infinity" styleClass="sidebar-button"/>
+                </VBox>
+            </VBox>
+            
+            <Region VBox.vgrow="ALWAYS"/>
+            
+            <!-- Footer -->
+            <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20;">
+                <Label text="BioVera Pro v1" style="-fx-text-fill: rgba(255,255,255,0.3); -fx-font-size: 10px;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
     <center>
-        <HBox spacing="0">
-            <!-- Navy Sidebar -->
-            <VBox spacing="0" styleClass="sidebar-navy">
-                <Button text="MENU PRINCIPAL" onAction="#handleRafraichir" maxWidth="Infinity" styleClass="sidebar-section-button"/>
-
-                <!-- Gestion Section -->
-                <VBox spacing="0" style="-fx-padding: 10 0;">
-                    <Label text="📦 GESTION" styleClass="sidebar-section-label"/>
-                    <Button fx:id="btnProduits" text="Produits" onAction="#handleProduits" maxWidth="Infinity" styleClass="sidebar-button"/>
-                    <Button fx:id="btnVentes" text="Ventes" onAction="#handleVentes" maxWidth="Infinity" styleClass="sidebar-button"/>
-                    <Button fx:id="btnClients" text="Clients" onAction="#handleClients" maxWidth="Infinity" styleClass="sidebar-button"/>
-                    <Button fx:id="btnCommandes" text="Commandes" onAction="#handleCommandes" maxWidth="Infinity" styleClass="sidebar-button"/>
-                    <Button fx:id="btnFournisseurs" text="Fournisseurs" onAction="#handleFournisseurs" maxWidth="Infinity" styleClass="sidebar-button"/>
+        <BorderPane fx:id="contentArea" style="-fx-background-color: -fx-color-bg-body; -fx-padding: 0;">
+            <center>
+                <!-- Default State -->
+                <VBox alignment="CENTER" spacing="10">
+                    <Label text="Chargement du module..." styleClass="label-subheading"/>
                 </VBox>
-
-                <!-- Administration Section -->
-                <VBox fx:id="vboxAdmin" spacing="0" style="-fx-padding: 10 0;">
-                    <Label text="👤 ADMINISTRATION" styleClass="sidebar-section-label"/>
-                    <Button fx:id="btnRapports" text="Rapports" onAction="#handleRapports" maxWidth="Infinity" styleClass="sidebar-button"/>
-                    <Button fx:id="btnUtilisateurs" text="Utilisateurs" onAction="#handleUtilisateurs" maxWidth="Infinity" styleClass="sidebar-button"/>
-                    <Button fx:id="btnLogs" text="Logs d'Activité" onAction="#handleLogs" maxWidth="Infinity" styleClass="sidebar-button"/>
-                </VBox>
-
-                <Region VBox.vgrow="ALWAYS"/>
-                
-                <!-- Footer in Sidebar -->
-                <Label text="v2.0 Professional" style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 10px; -fx-padding: 15; -fx-alignment: CENTER;" maxWidth="Infinity"/>
-            </VBox>
-
-            <!-- Content Area -->
-            <VBox spacing="0" HBox.hgrow="ALWAYS">
-                <BorderPane fx:id="contentArea" VBox.vgrow="ALWAYS" styleClass="frost-blue-bg" style="-fx-padding: 25;">
-                    <center>
-                        <Label text="Chargement du tableau de bord..." styleClass="label-subtitle" style="-fx-text-fill: #546E7A;"/>
-                    </center>
-                </BorderPane>
-            </VBox>
-        </HBox>
+            </center>
+        </BorderPane>
     </center>
+    
 </BorderPane>

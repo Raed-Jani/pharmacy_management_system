@@ -3,183 +3,125 @@ package com.pharmacie.service;
 import com.pharmacie.dao.*;
 import com.pharmacie.model.*;
 import com.pharmacie.exception.*;
+import com.pharmacie.utils.DBConnection;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Service métier pour la gestion des commandes fournisseurs.
- * Gère les commandes complètes et la mise à jour des stocks.
+ * Service for managing supplier orders.
  */
 public class GestionCommande {
 
-    private CommandeFournisseurDAO commandeDAO;
-    private LigneCommandeDAO ligneCommandeDAO;
-    private ProduitDAO produitDAO;
-    private LogActiviteDAO logDAO;
-    private GestionStock gestionStock;
+    private final CommandeFournisseurDAO commandeDAO = new CommandeFournisseurDAO();
+    private final LigneCommandeFournisseurDAO ligneCommandeDAO = new LigneCommandeFournisseurDAO();
+    private final ProduitDAO produitDAO = new ProduitDAO();
+    private final FournisseurDAO fournisseurDAO = new FournisseurDAO();
+    private final LogActiviteDAO logDAO = new LogActiviteDAO();
 
-    public GestionCommande() throws ConnexionEchoueeException {
-        this.commandeDAO = new CommandeFournisseurDAO();
-        this.ligneCommandeDAO = new LigneCommandeDAO();
-        this.produitDAO = new ProduitDAO();
-        this.logDAO = new LogActiviteDAO();
-        this.gestionStock = new GestionStock();
+    public List<Fournisseur> listerFournisseurs() throws SQLException {
+        return fournisseurDAO.listerTous();
     }
 
-    /**
-     * Crée une nouvelle commande fournisseur avec ses lignes.
-     */
-    public CommandeFournisseur creerCommande(int idFournisseur, List<LigneCommande> lignes,
-                                             int idUtilisateur) throws SQLException {
-
-        // 1. Créer la commande
-        CommandeFournisseur commande = new CommandeFournisseur(
-                CommandeFournisseur.STATUT_EN_COURS,
-                idFournisseur
-        );
-
-        boolean commandeCreee = commandeDAO.ajouter(commande);
-
-        if (!commandeCreee) {
-            throw new SQLException("Échec de création de la commande");
-        }
-
-        // 2. Ajouter les lignes de commande
-        for (LigneCommande ligne : lignes) {
-            ligne.setIdCommande(commande.getIdCommande());
-            ligneCommandeDAO.ajouter(ligne);
-        }
-
-        // 3. Créer un log
-        LogActivite log = new LogActivite(
-                LogActivite.TYPE_MAJ_STOCK,
-                "Création de la commande fournisseur #" + commande.getIdCommande(),
-                idUtilisateur
-        );
-        logDAO.ajouter(log);
-
-        return commande;
+    public List<Produit> listerProduits() throws SQLException {
+        return produitDAO.listerTous();
     }
 
-    /**
-     * Réceptionne une commande et met à jour les stocks.
-     */
+    public CommandeFournisseur creerCommande(int idFournisseur, List<LigneCommandeFournisseur> lignes,
+            int idUtilisateur) throws SQLException, ConnexionEchoueeException {
+        Connection conn = null;
+        boolean originalAutoCommit = true;
+        try {
+            conn = DBConnection.getConnection();
+            originalAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
+
+            CommandeFournisseurDAO transCommandeDAO = new CommandeFournisseurDAO(conn);
+            LigneCommandeFournisseurDAO transLigneCommandeDAO = new LigneCommandeFournisseurDAO(conn);
+            LogActiviteDAO transLogDAO = new LogActiviteDAO(conn);
+
+            CommandeFournisseur cmd = new CommandeFournisseur(CommandeFournisseur.STATUT_EN_COURS, idFournisseur);
+            if (!transCommandeDAO.ajouter(cmd))
+                throw new SQLException("Failed to create order");
+
+            for (LigneCommandeFournisseur line : lignes) {
+                line.setIdCommande(cmd.getIdCommande());
+                transLigneCommandeDAO.ajouter(line);
+            }
+
+            transLogDAO.ajouter(new LogActivite(LogActivite.TYPE_MAJ_STOCK,
+                    "Created supplier order #" + cmd.getIdCommande(), idUtilisateur));
+            conn.commit();
+            return cmd;
+        } catch (Exception e) {
+            if (conn != null)
+                conn.rollback();
+            throw e;
+        } finally {
+            if (conn != null) {
+                conn.setAutoCommit(originalAutoCommit);
+                conn.close();
+            }
+        }
+    }
+
     public void recevoirCommande(int idCommande, int idUtilisateur)
-            throws SQLException, ProduitIntrouvableException {
+            throws SQLException, ProduitIntrouvableException, ConnexionEchoueeException {
+        Connection conn = null;
+        boolean originalAutoCommit = true;
+        try {
+            conn = DBConnection.getConnection();
+            originalAutoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false);
 
-        // 1. Récupérer la commande
-        CommandeFournisseur commande = commandeDAO.rechercherParId(idCommande);
+            CommandeFournisseurDAO transCommandeDAO = new CommandeFournisseurDAO(conn);
+            LigneCommandeFournisseurDAO transLigneCommandeDAO = new LigneCommandeFournisseurDAO(conn);
+            GestionStock transGestionStock = new GestionStock(conn);
+            LogActiviteDAO transLogDAO = new LogActiviteDAO(conn);
 
-        if (commande == null) {
-            throw new SQLException("Commande introuvable: " + idCommande);
+            CommandeFournisseur cmd = transCommandeDAO.rechercherParId(idCommande);
+            if (cmd == null || !cmd.estEnCours())
+                throw new SQLException("Order not found or not in progress: " + idCommande);
+
+            List<LigneCommandeFournisseur> lines = transLigneCommandeDAO.listerParCommande(idCommande);
+            for (LigneCommandeFournisseur line : lines) {
+                transGestionStock.augmenterStock(line.getIdProduit(), line.getQuantiteCommandee(), idUtilisateur);
+            }
+
+            cmd.marquerCommeRecue();
+            transCommandeDAO.modifier(cmd);
+            transLogDAO.ajouter(new LogActivite(LogActivite.TYPE_MAJ_STOCK, "Received supplier order #" + idCommande,
+                    idUtilisateur));
+            conn.commit();
+        } catch (Exception e) {
+            if (conn != null)
+                conn.rollback();
+            throw e;
+        } finally {
+            if (conn != null) {
+                conn.setAutoCommit(originalAutoCommit);
+                conn.close();
+            }
         }
-
-        if (!commande.estEnCours()) {
-            throw new SQLException("La commande n'est pas en cours");
-        }
-
-        // 2. Récupérer les lignes de commande
-        List<LigneCommande> lignes = ligneCommandeDAO.listerParCommande(idCommande);
-
-        // 3. Mettre à jour les stocks
-        for (LigneCommande ligne : lignes) {
-            gestionStock.augmenterStock(
-                    ligne.getIdProduit(),
-                    ligne.getQuantiteCommandee(),
-                    idUtilisateur
-            );
-        }
-
-        // 4. Marquer la commande comme reçue
-        commande.marquerCommeRecue();
-        commandeDAO.modifier(commande);
-
-        // 5. Créer un log
-        LogActivite log = new LogActivite(
-                LogActivite.TYPE_MAJ_STOCK,
-                "Réception de la commande fournisseur #" + idCommande,
-                idUtilisateur
-        );
-        logDAO.ajouter(log);
     }
 
-    /**
-     * Annule une commande.
-     */
     public void annulerCommande(int idCommande, int idUtilisateur) throws SQLException {
-        CommandeFournisseur commande = commandeDAO.rechercherParId(idCommande);
+        CommandeFournisseur cmd = commandeDAO.rechercherParId(idCommande);
+        if (cmd == null || !cmd.estEnCours())
+            throw new SQLException("Only orders in progress can be cancelled");
 
-        if (commande == null) {
-            throw new SQLException("Commande introuvable: " + idCommande);
-        }
-
-        if (!commande.estEnCours()) {
-            throw new SQLException("Seules les commandes en cours peuvent être annulées");
-        }
-
-        commande.annuler();
-        commandeDAO.modifier(commande);
-
-        LogActivite log = new LogActivite(
-                LogActivite.TYPE_SUPPRESSION,
-                "Annulation de la commande fournisseur #" + idCommande,
-                idUtilisateur
-        );
-        logDAO.ajouter(log);
+        cmd.annuler();
+        commandeDAO.modifier(cmd);
+        logDAO.ajouter(new LogActivite(LogActivite.TYPE_SUPPRESSION, "Cancelled supplier order #" + idCommande,
+                idUtilisateur));
     }
 
-    /**
-     * Liste toutes les commandes.
-     */
     public List<CommandeFournisseur> listerCommandes() throws SQLException {
         return commandeDAO.listerTous();
     }
 
-    /**
-     * Liste les commandes par statut.
-     */
-    public List<CommandeFournisseur> listerCommandesParStatut(String statut) throws SQLException {
-        return commandeDAO.listerParStatut(statut);
-    }
-
-    /**
-     * Liste les commandes d'un fournisseur.
-     */
-    public List<CommandeFournisseur> listerCommandesParFournisseur(int idFournisseur)
-            throws SQLException {
-        return commandeDAO.listerParFournisseur(idFournisseur);
-    }
-
-    /**
-     * Récupère les lignes d'une commande.
-     */
-    public List<LigneCommande> getLignesCommande(int idCommande) throws SQLException {
+    public List<LigneCommandeFournisseur> getDetailsCommande(int idCommande) throws SQLException {
         return ligneCommandeDAO.listerParCommande(idCommande);
-    }
-
-    /**
-     * Génère un rapport des commandes en cours.
-     */
-    public String genererRapportCommandesEnCours() throws SQLException {
-        List<CommandeFournisseur> commandes = commandeDAO.listerParStatut(
-                CommandeFournisseur.STATUT_EN_COURS
-        );
-
-        StringBuilder rapport = new StringBuilder();
-        rapport.append("=== COMMANDES FOURNISSEURS EN COURS ===\n\n");
-        rapport.append("Nombre de commandes: ").append(commandes.size()).append("\n\n");
-
-        if (!commandes.isEmpty()) {
-            rapport.append("--- DÉTAIL ---\n");
-            for (CommandeFournisseur c : commandes) {
-                rapport.append(String.format("Commande #%d - Fournisseur: %s - Date: %s\n",
-                        c.getIdCommande(),
-                        c.getNomFournisseur(),
-                        c.getDateCreation()));
-            }
-        }
-
-        return rapport.toString();
     }
 }

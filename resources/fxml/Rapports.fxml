@@ -8,74 +8,124 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Region?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="frost-blue-bg" stylesheets="@../css/pharmacy-blue-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.RapportsController">
 
-    <VBox spacing="25" AnchorPane.bottomAnchor="25" AnchorPane.leftAnchor="25" AnchorPane.rightAnchor="25" AnchorPane.topAnchor="25">
-        
-        <!-- Header Section with Export Controls -->
-        <VBox spacing="15" styleClass="glass-card" style="-fx-padding: 20;">
-            <Label text="📊 Rapports et Statistiques" styleClass="label-title"/>
-            
-            <HBox alignment="CENTER_LEFT" spacing="12">
-                <Label text="Format d'export:" styleClass="label-heading" style="-fx-font-size: 13px;"/>
-                <ComboBox fx:id="comboFormat" prefWidth="110" styleClass="combo-box-blue"/>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button onAction="#handleExportProduits" styleClass="btn-primary" text="📄 Exporter Produits" />
-                <Button onAction="#handleExportVentes" styleClass="btn-primary" text="💰 Exporter Ventes" />
-            </HBox>
-        </VBox>
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <content>
+            <VBox spacing="40" style="-fx-padding: 30; -fx-background-color: transparent;">
+                
+                <!-- SECTION 1: HEADER & ACTIONS -->
+                <HBox alignment="CENTER_LEFT" spacing="25">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label styleClass="label-title" text="Rapports &amp; Statistiques" />
+                        <Label style="-fx-font-size: 14px; -fx-text-fill: -fx-color-text-muted;" text="Analyse détaillée des performances et indicateurs clés de la pharmacie" />
+                    </VBox>
+                    <HBox alignment="CENTER_RIGHT" spacing="20">
+                        <HBox alignment="CENTER" spacing="10">
+                            <Label style="-fx-font-size: 12px; -fx-text-fill: -fx-color-text-muted; -fx-font-weight: 800; -fx-text-transform: uppercase;" text="Format:" />
+                            <ComboBox fx:id="comboFormat" prefWidth="120" styleClass="combo-box" style="-fx-min-height: 45;" />
+                        </HBox>
+                        <Button onAction="#handleExportProduits" prefHeight="45" styleClass="btn-secondary-outline" text="📄 Produits" />
+                        <Button onAction="#handleExportVentes" prefHeight="45" styleClass="btn-primary" style="-fx-background-color: -fx-color-accent;" text="💰 Ventes" />
+                    </HBox>
+                </HBox>
 
-        <!-- KPI Cards Section -->
-        <HBox spacing="20" alignment="CENTER">
-            <!-- Card CA -->
-            <VBox prefWidth="240" styleClass="glass-card" spacing="8" style="-fx-padding: 25; -fx-border-color: #042d62; -fx-border-width: 0 0 0 5;">
-                <Label text="💰" style="-fx-font-size: 40px; -fx-text-fill: #042d62;" />
-                <Label text="Chiffre d'Affaires" styleClass="label-muted" />
-                <Label fx:id="lblTotalCA" text="0.00 TND" styleClass="label-title" style="-fx-font-size: 24px; -fx-text-fill: #042d62;" />
-            </VBox>
+                <Separator style="-fx-opacity: 0.3;" />
 
-            <!-- Card Ventes -->
-            <VBox prefWidth="240" styleClass="glass-card" spacing="8" style="-fx-padding: 25; -fx-border-color: #096b08; -fx-border-width: 0 0 0 5;">
-                <Label text="🛒" style="-fx-font-size: 40px; -fx-text-fill: #096b08;" />
-                <Label text="Total Ventes" styleClass="label-muted" />
-                <Label fx:id="lblTotalVentes" text="0" styleClass="label-title" style="-fx-font-size: 24px; -fx-text-fill: #096b08;" />
-            </VBox>
+                <!-- SECTION 2: KEY PERFORMANCE INDICATORS -->
+                <GridPane hgap="35" vgap="35">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="33.3" />
+                        <ColumnConstraints percentWidth="33.3" />
+                        <ColumnConstraints percentWidth="33.3" />
+                    </columnConstraints>
+                    
+                    <!-- KPI CA -->
+                    <VBox spacing="18" styleClass="info-card" GridPane.columnIndex="0">
+                        <HBox alignment="CENTER_LEFT" spacing="18">
+                            <StackPane styleClass="icon-container, icon-green">
+                                <Label style="-fx-font-size: 26px;" text="💰" />
+                            </StackPane>
+                            <VBox spacing="2">
+                                <Label styleClass="label-card-title" text="Chiffre d'Affaires" />
+                                <Label style="-fx-font-size: 12px; -fx-text-fill: -fx-color-text-muted;" text="Revenu total brut" />
+                            </VBox>
+                        </HBox>
+                        <Label fx:id="lblTotalCA" styleClass="label-value" style="-fx-text-fill: -fx-color-success; -fx-font-size: 32px;" text="0.000 TND" />
+                    </VBox>
+                    
+                    <!-- KPI Ventes -->
+                    <VBox spacing="18" styleClass="info-card" GridPane.columnIndex="1">
+                        <HBox alignment="CENTER_LEFT" spacing="18">
+                            <StackPane styleClass="icon-container, icon-blue">
+                                <Label style="-fx-font-size: 26px;" text="🛒" />
+                            </StackPane>
+                            <VBox spacing="2">
+                                <Label styleClass="label-card-title" text="Total Ventes" />
+                                <Label style="-fx-font-size: 12px; -fx-text-fill: -fx-color-text-muted;" text="Volume des transactions" />
+                            </VBox>
+                        </HBox>
+                        <Label fx:id="lblTotalVentes" styleClass="label-value" style="-fx-font-size: 32px;" text="0" />
+                    </VBox>
+                    
+                    <!-- KPI Top Produit -->
+                    <VBox spacing="18" styleClass="info-card" GridPane.columnIndex="2">
+                        <HBox alignment="CENTER_LEFT" spacing="18">
+                            <StackPane styleClass="icon-container, icon-orange">
+                                <Label style="-fx-font-size: 26px;" text="🏆" />
+                            </StackPane>
+                            <VBox spacing="2">
+                                <Label styleClass="label-card-title" text="Top Produit" />
+                                <Label style="-fx-font-size: 12px; -fx-text-fill: -fx-color-text-muted;" text="Performance maximale" />
+                            </VBox>
+                        </HBox>
+                        <Label fx:id="lblTopProduit" styleClass="label-value" style="-fx-text-fill: -fx-color-warning; -fx-font-size: 20px;" text="-" />
+                    </VBox>
+                    <rowConstraints>
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
 
-            <!-- Card Top Produit -->
-            <VBox prefWidth="240" styleClass="glass-card" spacing="8" style="-fx-padding: 25; -fx-border-color: #88dcff; -fx-border-width: 0 0 0 5;">
-                <Label text="⭐" style="-fx-font-size: 40px; -fx-text-fill: #88dcff;" />
-                <Label text="Top Produit" styleClass="label-muted" />
-                <Label fx:id="lblTopProduit" text="-" styleClass="label-heading" style="-fx-font-size: 18px; -fx-text-fill: #88dcff;" />
-            </VBox>
-        </HBox>
+                <!-- SECTION 3: CHARTS -->
+                <HBox spacing="35" VBox.vgrow="ALWAYS">
+                    <!-- Sales Performance Chart -->
+                    <VBox spacing="20" styleClass="card" style="-fx-padding: 30; -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                        <VBox spacing="6">
+                            <Label styleClass="label-subheading" text="Évolution du Chiffre d'Affaires" />
+                            <Label style="-fx-font-size: 13px; -fx-text-fill: -fx-color-text-muted;" text="Analyse comparative (7j)" />
+                        </VBox>
+                        <BarChart fx:id="barChartCA" legendVisible="false" minHeight="400">
+                            <xAxis>
+                                <CategoryAxis fx:id="xAxisCA" side="BOTTOM" tickLabelRotation="-90" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis fx:id="yAxisCA" label="TND" side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
 
-        <!-- Charts Section -->
-        <HBox spacing="20" VBox.vgrow="ALWAYS">
-            <!-- Bar Chart Container -->
-            <VBox styleClass="glass-card" HBox.hgrow="ALWAYS" spacing="10" style="-fx-padding: 20;">
-                <Label text="📈 CA des 7 derniers jours" styleClass="label-heading" />
-                <BarChart fx:id="barChartCA" styleClass="chart" VBox.vgrow="ALWAYS" legendVisible="false">
-                    <xAxis>
-                        <CategoryAxis fx:id="xAxisCA" label="Date" side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis fx:id="yAxisCA" label="CA (TND)" side="LEFT" />
-                    </yAxis>
-                </BarChart>
+                    <!-- Product Distribution Chart -->
+                    <VBox spacing="20" styleClass="card" style="-fx-padding: 30; -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                        <VBox spacing="6">
+                            <Label styleClass="label-subheading" text="Répartition des Ventes" />
+                            <Label style="-fx-font-size: 13px; -fx-text-fill: -fx-color-text-muted;" text="Performance par produit" />
+                        </VBox>
+                        <PieChart fx:id="pieChartProduits" labelsVisible="true" minHeight="400" />
+                    </VBox>
+                </HBox>
             </VBox>
-            
-            <!-- Pie Chart Container -->
-            <VBox styleClass="glass-card" HBox.hgrow="ALWAYS" spacing="10" style="-fx-padding: 20;">
-                <Label text="🏆 Top 5 Produits vendus" styleClass="label-heading" />
-                <PieChart fx:id="pieChartProduits" styleClass="chart" VBox.vgrow="ALWAYS" />
-            </VBox>
-        </HBox>
-
-    </VBox>
+        </content>
+    </ScrollPane>
 
 </AnchorPane>

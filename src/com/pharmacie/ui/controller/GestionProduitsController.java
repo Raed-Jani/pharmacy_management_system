@@ -4,31 +4,17 @@ import com.pharmacie.model.Produit;
 import com.pharmacie.model.Fournisseur;
 import com.pharmacie.service.GestionStock;
 import com.pharmacie.dao.FournisseurDAO;
-import com.pharmacie.exception.ConnexionEchoueeException;
 import com.pharmacie.exception.ProduitIntrouvableException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.List;
 
 public class GestionProduitsController extends BaseController {
@@ -76,35 +62,26 @@ public class GestionProduitsController extends BaseController {
     @FXML
     private Button btnSupprimer;
 
-    private GestionStock gestionStock;
-    private FournisseurDAO fournisseurDAO;
-    private ObservableList<Produit> produitsList = FXCollections.observableArrayList();
+    private final GestionStock gestionStock = new GestionStock();
+    private final FournisseurDAO fournisseurDAO = new FournisseurDAO();
+    private final ObservableList<Produit> produitsList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        try {
-            gestionStock = new GestionStock();
-            fournisseurDAO = new FournisseurDAO();
-            setupTable();
-            chargerProduits();
-            chargerFournisseurs();
-            setupSearch();
+        setupTable();
+        loadData();
+        setupSearch();
 
-            // Listen to selection
-            tableProduits.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                boolean isSelected = newVal != null;
-                if (isSelected)
-                    remplirFormulaire(newVal);
-                else
-                    viderFormulaire();
-                btnAjouter.setDisable(isSelected);
-                btnModifier.setDisable(!isSelected);
-                btnSupprimer.setDisable(!isSelected);
-            });
-
-        } catch (ConnexionEchoueeException e) {
-            afficherErreur("Erreur d'initialisation", e.getMessage());
-        }
+        tableProduits.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            boolean isSelected = newVal != null;
+            if (isSelected)
+                fillForm(newVal);
+            else
+                clearForm();
+            btnAjouter.setDisable(isSelected);
+            btnModifier.setDisable(!isSelected);
+            btnSupprimer.setDisable(!isSelected);
+        });
     }
 
     private void setupTable() {
@@ -116,21 +93,15 @@ public class GestionProduitsController extends BaseController {
         colExpiration.setCellValueFactory(new PropertyValueFactory<>("dateExpiration"));
         colFournisseur.setCellValueFactory(new PropertyValueFactory<>("nomFournisseur"));
 
-        // Format Date column
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         colExpiration.setCellFactory(column -> new TableCell<Produit, LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(dtf.format(item));
-                }
+                setText((empty || item == null) ? null : dtf.format(item));
             }
         });
 
-        // Highlight rows with low stock OR expiring soon
         tableProduits.setRowFactory(tv -> new TableRow<Produit>() {
             @Override
             protected void updateItem(Produit item, boolean empty) {
@@ -138,17 +109,16 @@ public class GestionProduitsController extends BaseController {
                 if (item == null || empty) {
                     setStyle("");
                 } else if (item.getQuantiteStock() <= 0) {
-                    setStyle("-fx-background-color: #ffcccc;"); // Out of stock - Light red
+                    setStyle("-fx-background-color: #ffcccc;");
                 } else if (item.estEnAlerte()) {
-                    setStyle("-fx-background-color: #fff0b3;"); // Low stock - Light orange/yellow
+                    setStyle("-fx-background-color: #fff0b3;");
                 } else if (item.estProcheExpiration()) {
-                    setStyle("-fx-background-color: #e6ccff;"); // Expiring soon - Light purple
+                    setStyle("-fx-background-color: #e6ccff;");
                 } else {
                     setStyle("");
                 }
             }
         });
-
         tableProduits.setItems(produitsList);
     }
 
@@ -164,22 +134,15 @@ public class GestionProduitsController extends BaseController {
         });
     }
 
-    private void chargerProduits() {
+    private void loadData() {
         try {
             produitsList.setAll(gestionStock.listerTousProduits());
-        } catch (SQLException e) {
-            afficherErreur("Erreur chargement", e.getMessage());
-        }
-    }
-
-    private void chargerFournisseurs() {
-        try {
             List<Fournisseur> fournisseurs = fournisseurDAO.listerTous();
             comboFournisseur.setItems(FXCollections.observableArrayList(fournisseurs));
             comboFournisseur.setConverter(new StringConverter<Fournisseur>() {
                 @Override
                 public String toString(Fournisseur f) {
-                    return f == null ? "Sélectionner un fournisseur" : f.getNomSociete();
+                    return f == null ? "Select Supplier" : f.getNomSociete();
                 }
 
                 @Override
@@ -188,116 +151,76 @@ public class GestionProduitsController extends BaseController {
                 }
             });
         } catch (SQLException e) {
-            System.err.println("Erreur chargement fournisseurs: " + e.getMessage());
+            showError("Load Error", "Failed to load products/suppliers: " + e.getMessage());
         }
     }
 
     @FXML
     private void handleAjouter() {
-        if (!validerFormulaire())
+        if (!validateForm())
             return;
-
         try {
-            Fournisseur f = comboFournisseur.getValue();
-            Produit nouveau = new Produit(
-                    txtNom.getText(),
-                    txtDescription.getText(),
-                    txtCodeBarre.getText(),
-                    new BigDecimal(txtPrix.getText()),
-                    Integer.parseInt(txtStock.getText()),
-                    Integer.parseInt(txtSeuil.getText()),
-                    dateExpiration.getValue(),
-                    f != null ? f.getIdFournisseur() : null);
-
-            if (gestionStock.ajouterProduit(nouveau, getUtilisateurConnecte().getIdUtilisateur())) {
-                afficherSucces("Produit ajouté avec succès");
-                chargerProduits();
-                viderFormulaire();
+            Produit nouveau = getProduitFromForm();
+            if (gestionStock.ajouterProduit(nouveau, user.getIdUtilisateur())) {
+                showSuccess("Product added successfully");
+                loadData();
+                clearForm();
             } else {
-                afficherErreur("Erreur", "Impossible d'ajouter le produit");
+                showError("Error", "Could not add product");
             }
-        } catch (SQLException e) {
-            afficherErreur("Erreur SQL", e.getMessage());
-        } catch (NumberFormatException e) {
-            afficherErreur("Erreur Format", "Prix ou quantités invalides");
+        } catch (Exception e) {
+            showError("Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleModifier() {
         Produit selected = tableProduits.getSelectionModel().getSelectedItem();
-        if (selected == null)
+        if (selected == null || !validateForm())
             return;
-        if (!validerFormulaire())
-            return;
-
         try {
-            Fournisseur f = comboFournisseur.getValue();
-            selected.setNom(txtNom.getText());
-            selected.setDescription(txtDescription.getText());
-            selected.setCodeBarre(txtCodeBarre.getText());
-            selected.setPrixUnitaire(new BigDecimal(txtPrix.getText()));
-            selected.setQuantiteStock(Integer.parseInt(txtStock.getText()));
-            selected.setSeuilAlerte(Integer.parseInt(txtSeuil.getText()));
-            selected.setDateExpiration(dateExpiration.getValue());
-            selected.setIdFournisseur(f != null ? f.getIdFournisseur() : null);
-
-            if (gestionStock.modifierProduit(selected, getUtilisateurConnecte().getIdUtilisateur())) {
-                afficherSucces("Produit modifié avec succès");
-                chargerProduits();
-                viderFormulaire();
+            updateProduitFromForm(selected);
+            if (gestionStock.modifierProduit(selected, user.getIdUtilisateur())) {
+                showSuccess("Product updated successfully");
+                loadData();
+                clearForm();
             } else {
-                afficherErreur("Erreur", "Impossible de modifier le produit");
+                showError("Error", "Could not update product");
             }
-        } catch (SQLException e) {
-            afficherErreur("Erreur SQL", e.getMessage());
-        } catch (NumberFormatException e) {
-            afficherErreur("Erreur Format", "Prix ou quantités invalides");
+        } catch (Exception e) {
+            showError("Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleSupprimer() {
         Produit selected = tableProduits.getSelectionModel().getSelectedItem();
-        if (selected == null)
-            return;
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer le produit " + selected.getNom() + " ?");
-        alert.setContentText("Cette action est irréversible.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (selected != null && confirmDelete(selected.getNom())) {
             try {
-                if (gestionStock.supprimerProduit(selected.getIdProduit(),
-                        getUtilisateurConnecte().getIdUtilisateur())) {
-                    afficherSucces("Produit supprimé");
-                    chargerProduits();
-                    viderFormulaire();
+                if (gestionStock.supprimerProduit(selected.getIdProduit(), user.getIdUtilisateur())) {
+                    showSuccess("Product deleted");
+                    loadData();
+                    clearForm();
                 } else {
-                    afficherErreur("Erreur", "Impossible de supprimer (peut-être lié à des ventes ?)");
+                    showError("Error", "Could not delete product (likely linked to sales)");
                 }
-            } catch (SQLException e) {
-                afficherErreur("Erreur SQL", e.getMessage());
-            } catch (ProduitIntrouvableException e) {
-                afficherErreur("Erreur", "Produit introuvable");
+            } catch (SQLException | ProduitIntrouvableException e) {
+                showError("Error", e.getMessage());
             }
         }
     }
 
     @FXML
     private void handleVider() {
-        viderFormulaire();
+        clearForm();
     }
 
     @FXML
     private void handleRafraichir() {
-        chargerProduits();
-        chargerFournisseurs();
+        loadData();
     }
 
-    private void remplirFormulaire(Produit p) {
+    private void fillForm(Produit p) {
         txtNom.setText(p.getNom());
         txtCodeBarre.setText(p.getCodeBarre() != null ? p.getCodeBarre() : "");
         txtPrix.setText(p.getPrixUnitaire().toString());
@@ -305,21 +228,16 @@ public class GestionProduitsController extends BaseController {
         txtSeuil.setText(String.valueOf(p.getSeuilAlerte()));
         txtDescription.setText(p.getDescription() != null ? p.getDescription() : "");
         dateExpiration.setValue(p.getDateExpiration());
-
-        // Match supplier in combo
         if (p.getIdFournisseur() != null) {
-            for (Fournisseur f : comboFournisseur.getItems()) {
-                if (f.getIdFournisseur() == p.getIdFournisseur()) {
-                    comboFournisseur.setValue(f);
-                    break;
-                }
-            }
+            comboFournisseur.getItems().stream()
+                    .filter(f -> f.getIdFournisseur() == p.getIdFournisseur())
+                    .findFirst().ifPresent(comboFournisseur::setValue);
         } else {
             comboFournisseur.setValue(null);
         }
     }
 
-    private void viderFormulaire() {
+    private void clearForm() {
         txtNom.clear();
         txtCodeBarre.clear();
         txtPrix.clear();
@@ -329,16 +247,34 @@ public class GestionProduitsController extends BaseController {
         dateExpiration.setValue(null);
         comboFournisseur.setValue(null);
         tableProduits.getSelectionModel().clearSelection();
-        btnAjouter.setDisable(false);
-        btnModifier.setDisable(true);
-        btnSupprimer.setDisable(true);
     }
 
-    private boolean validerFormulaire() {
+    private boolean validateForm() {
         if (txtNom.getText().isEmpty() || txtPrix.getText().isEmpty() || txtStock.getText().isEmpty()) {
-            afficherErreur("Erreur", "Nom, Prix et Stock sont obligatoires");
+            showError("Validation Error", "Name, Price, and Stock are required");
             return false;
         }
         return true;
+    }
+
+    private Produit getProduitFromForm() {
+        Fournisseur f = comboFournisseur.getValue();
+        return new Produit(
+                txtNom.getText(), txtDescription.getText(), txtCodeBarre.getText(),
+                new BigDecimal(txtPrix.getText()), Integer.parseInt(txtStock.getText()),
+                Integer.parseInt(txtSeuil.getText()), dateExpiration.getValue(),
+                f != null ? f.getIdFournisseur() : null);
+    }
+
+    private void updateProduitFromForm(Produit p) {
+        Fournisseur f = comboFournisseur.getValue();
+        p.setNom(txtNom.getText());
+        p.setDescription(txtDescription.getText());
+        p.setCodeBarre(txtCodeBarre.getText());
+        p.setPrixUnitaire(new BigDecimal(txtPrix.getText()));
+        p.setQuantiteStock(Integer.parseInt(txtStock.getText()));
+        p.setSeuilAlerte(Integer.parseInt(txtSeuil.getText()));
+        p.setDateExpiration(dateExpiration.getValue());
+        p.setIdFournisseur(f != null ? f.getIdFournisseur() : null);
     }
 }

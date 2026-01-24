@@ -1,9 +1,5 @@
 package com.pharmacie.model;
 
-/**
- * Classe représentant un client de la pharmacie.
- * Correspond à la table Client de la base de données.
- */
 public class Client {
 
     private int idClient;
@@ -23,7 +19,7 @@ public class Client {
      * Constructeur avec tous les paramètres.
      */
     public Client(int idClient, String nom, String prenom, String telephone,
-                  String email, String historiqueMedical) {
+            String email, String historiqueMedical) {
         this.idClient = idClient;
         this.nom = nom;
         this.prenom = prenom;
@@ -36,7 +32,7 @@ public class Client {
      * Constructeur sans ID (pour création).
      */
     public Client(String nom, String prenom, String telephone,
-                  String email, String historiqueMedical) {
+            String email, String historiqueMedical) {
         this.nom = nom;
         this.prenom = prenom;
         this.telephone = telephone;
@@ -132,8 +128,10 @@ public class Client {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Client client = (Client) o;
         return idClient == client.idClient;
     }

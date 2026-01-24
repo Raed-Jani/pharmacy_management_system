@@ -2,10 +2,6 @@ package com.pharmacie.model;
 
 import java.math.BigDecimal;
 
-/**
- * Classe représentant une ligne de vente.
- * Correspond à la table LigneVente de la base de données.
- */
 public class LigneVente {
 
     private int idLigneVente;
@@ -27,7 +23,7 @@ public class LigneVente {
      * Constructeur avec tous les paramètres.
      */
     public LigneVente(int idLigneVente, int idVente, int idProduit,
-                      int quantiteVendue, BigDecimal prixApplique) {
+            int quantiteVendue, BigDecimal prixApplique) {
         this.idLigneVente = idLigneVente;
         this.idVente = idVente;
         this.idProduit = idProduit;
@@ -39,7 +35,7 @@ public class LigneVente {
      * Constructeur sans ID (pour création).
      */
     public LigneVente(int idVente, int idProduit, int quantiteVendue,
-                      BigDecimal prixApplique) {
+            BigDecimal prixApplique) {
         this.idVente = idVente;
         this.idProduit = idProduit;
         this.quantiteVendue = quantiteVendue;
@@ -128,8 +124,10 @@ public class LigneVente {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LigneVente that = (LigneVente) o;
         return idLigneVente == that.idLigneVente;
     }

@@ -4,25 +4,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.application.Platform;
-
 import com.pharmacie.model.Utilisateur;
-import com.pharmacie.service.GestionStock;
-import com.pharmacie.service.GestionVente;
-import com.pharmacie.exception.ConnexionEchoueeException;
+import java.io.IOException;
 
-import java.sql.SQLException;
-
-/**
- * Contrôleur principal du tableau de bord.
- */
-public class DashboardController {
+public class DashboardController extends BaseController {
 
     @FXML
     private Label lblBienvenue;
@@ -33,117 +23,112 @@ public class DashboardController {
     @FXML
     private VBox vboxAdmin;
 
-    private Utilisateur utilisateurConnecte;
-    private GestionStock gestionStock;
-    private GestionVente gestionVente;
-
     @FXML
     public void initialize() {
-        System.out.println("✓ DashboardController initialisé");
-        try {
-            gestionStock = new GestionStock();
-            gestionVente = new GestionVente();
-            chargerAccueil();
-        } catch (ConnexionEchoueeException e) {
-            afficherErreur("Erreur d'initialisation", e.getMessage());
-        }
+        // Initial view load is triggered by setUtilisateur
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateurConnecte = utilisateur;
+    @Override
+    public void setUtilisateur(Utilisateur user) {
+        super.setUtilisateur(user);
         if (lblBienvenue != null)
-            lblBienvenue.setText("Bienvenue, " + utilisateur.getLogin());
+            lblBienvenue.setText("Welcome, " + user.getLogin());
         if (lblRole != null)
-            lblRole.setText("Rôle: " + utilisateur.getRole());
-        if (!utilisateur.estAdmin() && vboxAdmin != null) {
+            lblRole.setText("Role: " + user.getRole());
+        if (!user.estAdmin() && vboxAdmin != null) {
             vboxAdmin.setVisible(false);
             vboxAdmin.setManaged(false);
         }
+        loadAccueil();
     }
 
     @FXML
     public void handleRafraichir() {
-        chargerAccueil();
+        loadAccueil();
     }
 
-    public void chargerAccueil() {
-        chargerVue("/fxml/Accueil.fxml", "Tableau de Bord");
+    public void loadAccueil() {
+        loadView("/fxml/Accueil.fxml", "Dashboard Home");
     }
 
     @FXML
     public void handleProduits() {
-        chargerVue("/fxml/GestionProduits.fxml", "Gestion des Produits");
+        loadView("/fxml/GestionProduits.fxml", "Product Management");
     }
 
     @FXML
     public void handleVentes() {
-        chargerVue("/fxml/GestionVentes.fxml", "Gestion des Ventes");
+        loadView("/fxml/GestionVentes.fxml", "Sales Management");
     }
 
     @FXML
     public void handleClients() {
-        chargerVue("/fxml/GestionClients.fxml", "Gestion des Clients");
+        loadView("/fxml/GestionClients.fxml", "Client Management");
     }
 
     @FXML
     public void handleCommandes() {
-        chargerVue("/fxml/GestionCommandes.fxml", "Gestion des Commandes");
+        loadView("/fxml/GestionCommandes.fxml", "Order Management");
     }
 
     @FXML
     public void handleFournisseurs() {
-        chargerVue("/fxml/GestionFournisseurs.fxml", "Gestion des Fournisseurs");
+        loadView("/fxml/GestionFournisseurs.fxml", "Supplier Management");
     }
 
     @FXML
     public void handleRapports() {
-        if (utilisateurConnecte != null && utilisateurConnecte.estAdmin()) {
-            chargerVue("/fxml/Rapports.fxml", "Rapports");
-        }
+        if (user != null && user.estAdmin())
+            loadView("/fxml/Rapports.fxml", "Reports");
     }
 
     @FXML
     public void handleUtilisateurs() {
-        if (utilisateurConnecte != null && utilisateurConnecte.estAdmin()) {
-            chargerVue("/fxml/GestionUtilisateurs.fxml", "Gestion des Utilisateurs");
-        }
+        if (user != null && user.estAdmin())
+            loadView("/fxml/GestionUtilisateurs.fxml", "User Management");
     }
 
     @FXML
     public void handleLogs() {
-        if (utilisateurConnecte != null && utilisateurConnecte.estAdmin()) {
-            chargerVue("/fxml/ConsultationLogs.fxml", "Logs");
-        }
+        if (user != null && user.estAdmin())
+            loadView("/fxml/ConsultationLogs.fxml", "Activity Logs");
     }
 
-    private void chargerVue(String fxmlPath, String titre) {
+    private void loadView(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent vue = loader.load();
-            Object controller = loader.getController();
-            if (controller instanceof BaseController) {
-                BaseController base = (BaseController) controller;
-                base.setUtilisateur(utilisateurConnecte);
-                base.setDashboardController(this);
+            Parent view = loader.load();
+            Object ctrl = loader.getController();
+            if (ctrl instanceof BaseController) {
+                BaseController base = (BaseController) ctrl;
+                base.setUtilisateur(this.user);
+                base.setDashboard(this);
             }
-            contentArea.setCenter(vue);
-        } catch (Exception e) {
+            contentArea.setCenter(view);
+        } catch (IOException e) {
             e.printStackTrace();
-            Label message = new Label("Module: " + titre);
-            contentArea.setCenter(new VBox(message));
+            showError("Load Error", "Failed to load " + title + ": " + e.getMessage());
         }
     }
 
     @FXML
-    private void handleDeconnexion() {
-        // Logic for logout shortened for brevity
-        Platform.exit();
+    public void handleDeconnexion() {
+        if (confirm("Logout", "Are you sure you want to log out?")) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+                Parent root = loader.load();
+                Scene scene = contentArea.getScene();
+                if (scene != null) {
+                    scene.setRoot(root);
+                }
+            } catch (IOException e) {
+                showError("Error", "Failed to return to login screen.");
+            }
+        }
     }
 
-    private void afficherErreur(String titre, String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(titre);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    public void handleLogout() {
+        handleDeconnexion();
     }
 }

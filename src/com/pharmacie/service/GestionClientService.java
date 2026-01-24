@@ -2,16 +2,18 @@ package com.pharmacie.service;
 
 import com.pharmacie.dao.ClientDAO;
 import com.pharmacie.model.Client;
-import com.pharmacie.exception.ConnexionEchoueeException;
 
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Service for managing clients.
+ */
 public class GestionClientService {
 
-    private ClientDAO clientDAO;
+    private final ClientDAO clientDAO;
 
-    public GestionClientService() throws ConnexionEchoueeException {
+    public GestionClientService() {
         this.clientDAO = new ClientDAO();
     }
 
@@ -24,13 +26,12 @@ public class GestionClientService {
     }
 
     public List<Client> rechercherParNom(String nom) throws SQLException {
-        return clientDAO.rechercherParNom(nom); // Assuming DAO has this, otherwise filter in service
+        return clientDAO.rechercherParNom(nom);
     }
 
     public boolean ajouterClient(Client client) throws SQLException {
-        // Business logic validation could go here
         if (client.getNom() == null || client.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du client est obligatoire");
+            throw new IllegalArgumentException("Client name is required");
         }
         return clientDAO.ajouter(client);
     }

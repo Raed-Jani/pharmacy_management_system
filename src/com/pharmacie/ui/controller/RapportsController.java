@@ -2,7 +2,6 @@ package com.pharmacie.ui.controller;
 
 import com.pharmacie.service.GestionVente;
 import com.pharmacie.model.Utilisateur;
-import com.pharmacie.exception.ConnexionEchoueeException;
 
 import com.pharmacie.service.ExportService;
 import com.pharmacie.dao.ProduitDAO;
@@ -20,12 +19,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RapportsController extends BaseController {
@@ -41,10 +41,6 @@ public class RapportsController extends BaseController {
 
     @FXML
     private BarChart<String, Number> barChartCA;
-    @FXML
-    private CategoryAxis xAxisCA;
-    @FXML
-    private NumberAxis yAxisCA;
 
     @FXML
     private PieChart pieChartProduits;
@@ -61,15 +57,17 @@ public class RapportsController extends BaseController {
 
     @FXML
     public void initialize() {
+        if (barChartCA != null) {
+            barChartCA.setAnimated(false);
+            CategoryAxis xAxis = (CategoryAxis) barChartCA.getXAxis();
+            xAxis.setTickLabelRotation(-45);
+        }
+
         comboFormat.setItems(FXCollections.observableArrayList("PDF", "CSV"));
         comboFormat.setValue("PDF");
 
-        try {
-            gestionVente = new GestionVente();
-            chargerStats();
-        } catch (ConnexionEchoueeException e) {
-            afficherErreur("Erreur", "Problème de connexion.");
-        }
+        gestionVente = new GestionVente();
+        chargerStats();
     }
 
     private void chargerStats() {
@@ -103,17 +101,29 @@ public class RapportsController extends BaseController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Chiffre d'Affaires");
 
-        for (String entry : data) {
-            // Expected format "YYYY-MM-DD: 123.45 TND"
-            try {
-                String[] parts = entry.split(": ");
-                String date = parts[0];
-                double amount = Double.parseDouble(parts[1].replace(" TND", "").replace(",", "."));
-                series.getData().add(new XYChart.Data<>(date, amount));
-            } catch (Exception e) {
-                System.err.println("Erreur parsing CA chart data: " + entry);
+        if (data != null) {
+            for (String entry : data) {
+                // Format: "YYYY-MM-DD: 123.45 TND" or "YYYY-MM-DD: 123.45"
+                try {
+                    String[] parts = entry.split(":");
+                    if (parts.length >= 2) {
+                        String date = parts[0].trim();
+                        // Shorten date from YYYY-MM-DD to MM-DD
+                        if (date.length() >= 10) {
+                            date = date.substring(5);
+                        }
+                        String valueStr = parts[1].trim().split(" ")[0].replace(",", ".");
+                        double amount = Double.parseDouble(valueStr);
+                        series.getData().add(new XYChart.Data<>(date, amount));
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erreur parsing CA chart data: " + entry + " - " + e.getMessage());
+                }
             }
         }
+
+        CategoryAxis xAxis = (CategoryAxis) barChartCA.getXAxis();
+        xAxis.getCategories().clear(); // CRITICAL: Clear categories to prevent clumping
 
         barChartCA.getData().clear();
         barChartCA.getData().add(series);
@@ -122,15 +132,39 @@ public class RapportsController extends BaseController {
     private void updatePieChart(List<String> data) {
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
 
-        for (String entry : data) {
-            // Expected format "Nom (Qté)"
-            try {
-                String nom = entry.substring(0, entry.lastIndexOf("(")).trim();
-                String qteStr = entry.substring(entry.lastIndexOf("(") + 1, entry.lastIndexOf(")"));
-                int qte = Integer.parseInt(qteStr);
-                pieData.add(new PieChart.Data(nom, qte));
-            } catch (Exception e) {
-                System.err.println("Erreur parsing Pie chart data: " + entry);
+        if (data != null) {
+            // First pass: Calculate total quantity for percentages
+            double totalQte = 0;
+            List<Object[]> parsedEntries = new ArrayList<>();
+            for (String entry : data) {
+                try {
+                    String nom;
+                    int qte;
+                    if (entry.contains("(") && entry.contains(")")) {
+                        nom = entry.substring(0, entry.lastIndexOf("(")).trim();
+                        String qteStr = entry.substring(entry.lastIndexOf("(") + 1, entry.lastIndexOf(")"));
+                        qte = Integer.parseInt(qteStr);
+                    } else if (entry.contains(":")) {
+                        String[] parts = entry.split(":");
+                        nom = parts[0].trim();
+                        qte = Integer.parseInt(parts[1].trim().split(" ")[0]);
+                    } else {
+                        continue;
+                    }
+                    totalQte += qte;
+                    parsedEntries.add(new Object[] { nom, qte });
+                } catch (Exception e) {
+                    System.err.println("Erreur pre-parsing Pie chart: " + entry);
+                }
+            }
+
+            // Second pass: Create data with percentages
+            for (Object[] entry : parsedEntries) {
+                String nom = (String) entry[0];
+                int qte = (int) entry[1];
+                double percentage = (totalQte > 0) ? (qte / totalQte) * 100 : 0;
+                String label = String.format("%s (%.1f%%)", nom, percentage);
+                pieData.add(new PieChart.Data(label, qte));
             }
         }
 
@@ -139,49 +173,39 @@ public class RapportsController extends BaseController {
 
     @FXML
     private void handleExportProduits() {
-        String format = comboFormat.getValue();
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Enregistrer l'export des produits (" + format + ")");
-
-        String fileName = "export_produits." + format.toLowerCase();
-        chooser.setInitialFileName(fileName);
-
-        if ("PDF".equals(format)) {
-            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-        } else {
-            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-        }
-
-        File file = chooser.showSaveDialog(lblTotalCA.getScene().getWindow());
-
-        if (file != null) {
-            try {
-                ProduitDAO pdao = new ProduitDAO();
-                List<Produit> produits = pdao.listerTous();
-                ExportService exportService = new ExportService();
-
-                if ("PDF".equals(format)) {
-                    exportService.exporterProduitsPDF(produits, file.toPath());
-                } else {
-                    exportService.exporterProduits(produits, file.toPath());
-                }
-
-                afficherSucces("Export Réussi",
-                        "La liste des produits a été exportée en " + format + " vers: " + file.getAbsolutePath());
-            } catch (Exception e) {
-                afficherErreur("Erreur Export", "Impossible d'exporter en " + format + ": " + e.getMessage());
+        exporterDonnees("produits", (service, path) -> {
+            ProduitDAO pdao = new ProduitDAO();
+            List<Produit> produits = pdao.listerTous();
+            if ("PDF".equals(comboFormat.getValue())) {
+                service.exporterProduitsPDF(produits, path);
+            } else {
+                service.exporterProduits(produits, path);
             }
-        }
+        });
     }
 
     @FXML
     private void handleExportVentes() {
+        exporterDonnees("ventes", (service, path) -> {
+            VenteDAO vdao = new VenteDAO();
+            List<Vente> ventes = vdao.listerTous();
+            if ("PDF".equals(comboFormat.getValue())) {
+                service.exporterVentesPDF(ventes, path);
+            } else {
+                service.exporterVentes(ventes, path);
+            }
+        });
+    }
+
+    private interface ExportAction {
+        void execute(ExportService service, java.nio.file.Path path) throws Exception;
+    }
+
+    private void exporterDonnees(String typeName, ExportAction action) {
         String format = comboFormat.getValue();
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Enregistrer l'export des ventes (" + format + ")");
-
-        String fileName = "export_ventes." + format.toLowerCase();
-        chooser.setInitialFileName(fileName);
+        chooser.setTitle("Enregistrer l'export des " + typeName + " (" + format + ")");
+        chooser.setInitialFileName("export_" + typeName + "." + format.toLowerCase());
 
         if ("PDF".equals(format)) {
             chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
@@ -193,18 +217,11 @@ public class RapportsController extends BaseController {
 
         if (file != null) {
             try {
-                VenteDAO vdao = new VenteDAO();
-                List<Vente> ventes = vdao.listerTous();
                 ExportService exportService = new ExportService();
-
-                if ("PDF".equals(format)) {
-                    exportService.exporterVentesPDF(ventes, file.toPath());
-                } else {
-                    exportService.exporterVentes(ventes, file.toPath());
-                }
-
+                action.execute(exportService, file.toPath());
                 afficherSucces("Export Réussi",
-                        "Le journal des ventes a été exporté en " + format + " vers: " + file.getAbsolutePath());
+                        "Les données (" + typeName + ") ont été exportées en " + format + " vers: "
+                                + file.getAbsolutePath());
             } catch (Exception e) {
                 afficherErreur("Erreur Export", "Impossible d'exporter en " + format + ": " + e.getMessage());
             }

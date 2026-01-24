@@ -2,10 +2,6 @@ package com.pharmacie.model;
 
 import java.time.LocalDateTime;
 
-/**
- * Classe représentant une commande passée à un fournisseur.
- * Correspond à la table CommandeFournisseur de la base de données.
- */
 public class CommandeFournisseur {
 
     // Constantes pour les statuts
@@ -32,7 +28,7 @@ public class CommandeFournisseur {
      * Constructeur avec tous les paramètres.
      */
     public CommandeFournisseur(int idCommande, LocalDateTime dateCreation,
-                               LocalDateTime dateReception, String statut, int idFournisseur) {
+            LocalDateTime dateReception, String statut, int idFournisseur) {
         this.idCommande = idCommande;
         this.dateCreation = dateCreation;
         this.dateReception = dateReception;
@@ -161,8 +157,10 @@ public class CommandeFournisseur {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         CommandeFournisseur that = (CommandeFournisseur) o;
         return idCommande == that.idCommande;
     }

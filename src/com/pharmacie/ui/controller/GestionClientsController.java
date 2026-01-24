@@ -2,19 +2,12 @@ package com.pharmacie.ui.controller;
 
 import com.pharmacie.dao.ClientDAO;
 import com.pharmacie.model.Client;
-import com.pharmacie.model.Utilisateur;
-import com.pharmacie.service.GestionClientService;
-import com.pharmacie.exception.ConnexionEchoueeException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class GestionClientsController extends BaseController {
 
@@ -53,25 +46,14 @@ public class GestionClientsController extends BaseController {
     @FXML
     private Button btnSupprimer;
 
-    private ClientDAO clientDAO;
-    private ObservableList<Client> clientList = FXCollections.observableArrayList();
-
-    @Override
-    public void setUtilisateur(Utilisateur utilisateur) {
-        super.setUtilisateur(utilisateur);
-        // Check permissions if needed specific to clients
-    }
+    private final ClientDAO clientDAO = new ClientDAO();
+    private final ObservableList<Client> clientList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        try {
-            clientDAO = new ClientDAO();
-            setupTable();
-            chargerClients();
-            setupSelectionListener();
-        } catch (ConnexionEchoueeException e) {
-            afficherErreur("Erreur", "Impossible de connecter à la base de données.");
-        }
+        setupTable();
+        loadClients();
+        setupSelectionListener();
     }
 
     private void setupTable() {
@@ -81,7 +63,6 @@ public class GestionClientsController extends BaseController {
         colTel.setCellValueFactory(new PropertyValueFactory<>("telephone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colHistorique.setCellValueFactory(new PropertyValueFactory<>("historiqueMedical"));
-
         tableClients.setItems(clientList);
     }
 
@@ -89,106 +70,83 @@ public class GestionClientsController extends BaseController {
         tableClients.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
             boolean isSelected = newVal != null;
             if (isSelected)
-                remplirFormulaire(newVal);
+                fillForm(newVal);
             else
-                viderFormulaire();
+                clearForm();
             btnModifier.setDisable(!isSelected);
             btnSupprimer.setDisable(!isSelected);
             btnAjouter.setDisable(isSelected);
         });
     }
 
-    private void chargerClients() {
+    private void loadClients() {
         try {
             clientList.setAll(clientDAO.listerTous());
         } catch (SQLException e) {
-            afficherErreur("Erreur chargement", e.getMessage());
+            showError("Load Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleRechercher() {
-        String recherche = txtRecherche.getText();
+        String search = txtRecherche.getText();
         try {
-            if (recherche == null || recherche.trim().isEmpty()) {
-                chargerClients();
+            if (search == null || search.trim().isEmpty()) {
+                loadClients();
             } else {
-                clientList.setAll(clientDAO.rechercherParNom(recherche));
+                clientList.setAll(clientDAO.rechercherParNom(search));
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur recherche", e.getMessage());
+            showError("Search Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleAjouter() {
-        if (!validerFormulaire())
+        if (!validateForm())
             return;
-
-        Client nouveau = new Client();
-        nouveau.setNom(txtNom.getText());
-        nouveau.setPrenom(txtPrenom.getText());
-        nouveau.setTelephone(txtTelephone.getText());
-        nouveau.setEmail(txtEmail.getText());
-        nouveau.setHistoriqueMedical(txtHistorique.getText());
-
+        Client c = getClientFromForm(new Client());
         try {
-            if (clientDAO.ajouter(nouveau)) {
-                afficherSucces("Client ajouté avec succès");
-                chargerClients();
-                viderFormulaire();
+            if (clientDAO.ajouter(c)) {
+                showSuccess("Client added successfully");
+                loadClients();
+                clearForm();
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur ajout", e.getMessage());
+            showError("Add Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleModifier() {
         Client selected = tableClients.getSelectionModel().getSelectedItem();
-        if (selected == null || !validerFormulaire())
+        if (selected == null || !validateForm())
             return;
-
-        selected.setNom(txtNom.getText());
-        selected.setPrenom(txtPrenom.getText());
-        selected.setTelephone(txtTelephone.getText());
-        selected.setEmail(txtEmail.getText());
-        selected.setHistoriqueMedical(txtHistorique.getText());
-
+        getClientFromForm(selected);
         try {
             if (clientDAO.modifier(selected)) {
-                afficherSucces("Client modifié avec succès");
-                chargerClients();
+                showSuccess("Client updated successfully");
+                loadClients();
                 tableClients.refresh();
-                viderFormulaire();
+                clearForm();
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur modification", e.getMessage());
+            showError("Update Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleSupprimer() {
         Client selected = tableClients.getSelectionModel().getSelectedItem();
-        if (selected == null)
-            return;
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer le client ?");
-        alert.setContentText("Cette action est irréversible.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (selected != null && confirmDelete(selected.getNom() + " " + selected.getPrenom())) {
             try {
                 if (clientDAO.supprimer(selected.getIdClient())) {
-                    afficherSucces("Client supprimé");
-                    chargerClients();
-                    viderFormulaire();
+                    showSuccess("Client deleted");
+                    loadClients();
+                    clearForm();
                 }
             } catch (SQLException e) {
-                afficherErreur("Erreur suppression",
-                        "Impossible de supprimer (peut-être lié à des ventes ?)\n" + e.getMessage());
+                showError("Delete Error", "Could not delete client (likely linked to sales)\n" + e.getMessage());
             }
         }
     }
@@ -196,10 +154,15 @@ public class GestionClientsController extends BaseController {
     @FXML
     private void handleVider() {
         tableClients.getSelectionModel().clearSelection();
-        viderFormulaire();
+        clearForm();
     }
 
-    private void remplirFormulaire(Client client) {
+    @FXML
+    private void handleRafraichir() {
+        loadClients();
+    }
+
+    private void fillForm(Client client) {
         txtNom.setText(client.getNom());
         txtPrenom.setText(client.getPrenom());
         txtTelephone.setText(client.getTelephone());
@@ -207,7 +170,7 @@ public class GestionClientsController extends BaseController {
         txtHistorique.setText(client.getHistoriqueMedical());
     }
 
-    private void viderFormulaire() {
+    private void clearForm() {
         txtNom.clear();
         txtPrenom.clear();
         txtTelephone.clear();
@@ -215,11 +178,20 @@ public class GestionClientsController extends BaseController {
         txtHistorique.clear();
     }
 
-    private boolean validerFormulaire() {
+    private boolean validateForm() {
         if (txtNom.getText().isEmpty() || txtPrenom.getText().isEmpty()) {
-            afficherErreur("Validation", "Nom et Prénom requis");
+            showError("Validation Error", "Name and First Name are required");
             return false;
         }
         return true;
+    }
+
+    private Client getClientFromForm(Client c) {
+        c.setNom(txtNom.getText());
+        c.setPrenom(txtPrenom.getText());
+        c.setTelephone(txtTelephone.getText());
+        c.setEmail(txtEmail.getText());
+        c.setHistoriqueMedical(txtHistorique.getText());
+        return c;
     }
 }

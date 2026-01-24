@@ -1,9 +1,5 @@
 package com.pharmacie.model;
 
-/**
- * Classe représentant un fournisseur de produits pharmaceutiques.
- * Correspond à la table Fournisseur de la base de données.
- */
 public class Fournisseur {
 
     private int idFournisseur;
@@ -22,7 +18,7 @@ public class Fournisseur {
      * Constructeur avec tous les paramètres.
      */
     public Fournisseur(int idFournisseur, String nomSociete, String adresse,
-                       String telephone, String email) {
+            String telephone, String email) {
         this.idFournisseur = idFournisseur;
         this.nomSociete = nomSociete;
         this.adresse = adresse;
@@ -112,8 +108,10 @@ public class Fournisseur {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Fournisseur that = (Fournisseur) o;
         return idFournisseur == that.idFournisseur;
     }

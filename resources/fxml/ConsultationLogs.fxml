@@ -11,40 +11,40 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Region?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.ConsultationLogsController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/pharmacy-blue-theme.css" styleClass="root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.ConsultationLogsController">
    <children>
-      <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-         </padding>
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
          <children>
-            <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <!-- En-tête -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 0 0 10 0;">
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="Consultation des Logs" styleClass="label-title"/>
+                    <Label text="Historique des actions et activités système" style="-fx-font-size: 14px; -fx-text-fill: -fx-color-text-muted;"/>
+                </VBox>
+                <Button mnemonicParsing="false" onAction="#handleRafraichir" styleClass="btn-secondary" text="🔄 Actualiser" />
+            </HBox>
+            
+            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="card">
                <children>
-                  <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;" text="Consultation des Logs d'Activité" />
-                  <Region HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#handleRafraichir" style="-fx-background-color: #3498DB; -fx-text-fill: white;" text="🔄 Rafraîchir" />
+                  <Label text="Filtrer par type:" style="-fx-font-weight: bold;"/>
+                  <TextField fx:id="txtFiltreType" promptText="Rechercher un type..." prefWidth="250.0" styleClass="search-bar" />
                </children>
             </HBox>
             
-            <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
-               <children>
-                  <Label text="Filtrer par type:" />
-                  <TextField fx:id="txtFiltreType" promptText="Rechercher un type..." prefWidth="200.0" />
-               </children>
-            </HBox>
-            
-            <TableView fx:id="tableLogs" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5;">
-              <columns>
-                <TableColumn fx:id="colId" prefWidth="60.0" text="ID" />
-                <TableColumn fx:id="colDate" prefWidth="180.0" text="Date et Heure" />
-                  <TableColumn fx:id="colType" prefWidth="150.0" text="Type d'Action" />
-                  <TableColumn fx:id="colDescription" prefWidth="300.0" text="Description" />
-                  <TableColumn fx:id="colUtilisateur" prefWidth="100.0" text="ID Utilisateur" />
-              </columns>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TableView>
+            <VBox styleClass="card" VBox.vgrow="ALWAYS" style="-fx-padding: 0;">
+                <TableView fx:id="tableLogs" VBox.vgrow="ALWAYS">
+                  <columns>
+                    <TableColumn fx:id="colId" prefWidth="60.0" text="ID" />
+                    <TableColumn fx:id="colDate" prefWidth="180.0" text="Date et Heure" />
+                      <TableColumn fx:id="colType" prefWidth="150.0" text="Type d'Action" />
+                      <TableColumn fx:id="colDescription" prefWidth="300.0" text="Description" />
+                      <TableColumn fx:id="colUtilisateur" prefWidth="100.0" text="ID Utilisateur" />
+                  </columns>
+                   <columnResizePolicy>
+                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                   </columnResizePolicy>
+                </TableView>
+            </VBox>
          </children>
       </VBox>
    </children>

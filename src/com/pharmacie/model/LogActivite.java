@@ -2,10 +2,6 @@ package com.pharmacie.model;
 
 import java.time.LocalDateTime;
 
-/**
- * Classe représentant un log d'activité dans le système.
- * Correspond à la table LogActivite de la base de données.
- */
 public class LogActivite {
 
     // Constantes pour les types d'actions
@@ -33,7 +29,7 @@ public class LogActivite {
      * Constructeur avec tous les paramètres.
      */
     public LogActivite(int idLog, LocalDateTime dateAction, String typeAction,
-                       String description, Integer idUtilisateur) {
+            String description, Integer idUtilisateur) {
         this.idLog = idLog;
         this.dateAction = dateAction;
         this.typeAction = typeAction;
@@ -119,8 +115,7 @@ public class LogActivite {
         return new LogActivite(
                 TYPE_CONNEXION,
                 "Connexion de l'utilisateur: " + login,
-                idUtilisateur
-        );
+                idUtilisateur);
     }
 
     /**
@@ -130,8 +125,7 @@ public class LogActivite {
         return new LogActivite(
                 TYPE_VENTE,
                 String.format("Vente ID %d - Montant: %.2f TND", idVente, montant),
-                idUtilisateur
-        );
+                idUtilisateur);
     }
 
     /**
@@ -141,8 +135,7 @@ public class LogActivite {
         return new LogActivite(
                 TYPE_MAJ_STOCK,
                 String.format("Mise à jour stock: %s (Quantité: %d)", nomProduit, quantite),
-                idUtilisateur
-        );
+                idUtilisateur);
     }
 
     /**
@@ -152,8 +145,7 @@ public class LogActivite {
         return new LogActivite(
                 TYPE_SUPPRESSION,
                 String.format("Suppression %s: %s", typeObjet, nomObjet),
-                idUtilisateur
-        );
+                idUtilisateur);
     }
 
     @Override
@@ -169,8 +161,10 @@ public class LogActivite {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LogActivite that = (LogActivite) o;
         return idLog == that.idLog;
     }

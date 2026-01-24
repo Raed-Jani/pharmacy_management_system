@@ -1,8 +1,30 @@
+### Compiled Java Files ###
+*.class
+*.log
+*.ctxt
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+!lib/*.jar
+!lib/**/*.jar
+!lib/**/*.dll
+
+### virtual machine crash logs ###
+hs_err_pid*
+replay_pid*
+
 ### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-.kotlin
 
 ### Eclipse ###
 .apt_generated
@@ -25,6 +47,30 @@ bin/
 
 ### VS Code ###
 .vscode/
+*.code-workspace
+.history/
+
+### Windows ###
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
 
 ### Mac OS ###
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+### Build Artifacts & Project Specific ###
+build_temp/
+output_exe/
+database/backup/
+Rapport G9.pdf
+*.exe
+*.msi
+*.msm
+*.msp
+temp/
+tmp/

@@ -9,20 +9,18 @@ import java.io.PrintWriter;
 import java.io.FileWriter;
 
 /**
- * Service pour sauvegarder et restaurer la base de données.
+ * Service gérant la sauvegarde manuelle de la base de données.
+ * Génère un script SQL complet (INSERTs) pour la récupération.
  */
 public class DatabaseBackupService {
 
     /**
-     * Sauvegarde la base de données dans un fichier SQL.
-     * Implémentation simplifiée par itération sur les tables si mysqldump n'est pas
-     * utilisé.
-     * Pour ce projet, on va essayer d'utiliser un export SQL basique.
+     * Exporte toutes les tables de l'application vers un fichier SQL.
      */
     public void sauvegarder(Path destination) throws SQLException, ConnexionEchoueeException, IOException {
         Connection conn = DBConnection.getInstance().getAdminConnection();
         try (PrintWriter writer = new PrintWriter(new FileWriter(destination.toFile()))) {
-            writer.println("-- Sauvegarde Pharmacie DB");
+            writer.println("-- Backup Pharmacie DB");
             writer.println("-- Date: " + java.time.LocalDateTime.now());
             writer.println();
 
@@ -37,6 +35,10 @@ public class DatabaseBackupService {
         }
     }
 
+    /**
+     * Parcourt une table et génère les instructions INSERT correspondantes.
+     * Gère l'échappement des caractères spéciaux pour éviter les erreurs SQL.
+     */
     private void exportTable(Connection conn, String table, PrintWriter writer) throws SQLException {
         String sql = "SELECT * FROM " + table;
         try (Statement stmt = conn.createStatement();

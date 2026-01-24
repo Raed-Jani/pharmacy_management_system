@@ -2,26 +2,23 @@ package com.pharmacie.ui.controller;
 
 import com.pharmacie.dao.UtilisateurDAO;
 import com.pharmacie.model.Utilisateur;
-import com.pharmacie.exception.ConnexionEchoueeException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class GestionUtilisateursController extends BaseController {
 
     @FXML
     private TableView<Utilisateur> tableUtilisateurs;
-    @FXML
-    private TableColumn<Utilisateur, Integer> colId;
+
     @FXML
     private TableColumn<Utilisateur, String> colLogin;
+    @FXML
+    private TableColumn<Utilisateur, String> colPassword;
     @FXML
     private TableColumn<Utilisateur, String> colNom;
     @FXML
@@ -48,115 +45,103 @@ public class GestionUtilisateursController extends BaseController {
     private Button btnSupprimer;
 
     private UtilisateurDAO utilisateurDAO;
-    private ObservableList<Utilisateur> userList = FXCollections.observableArrayList();
-
-    @Override
-    public void setUtilisateur(Utilisateur utilisateur) {
-        super.setUtilisateur(utilisateur);
-        if (utilisateur != null && !utilisateur.estAdmin()) {
-            afficherErreur("Accès Refusé", "Vous n'avez pas les droits d'administrateur.");
-            // Désactiver l'interface
-            tableUtilisateurs.setDisable(true);
-            btnAjouter.setDisable(true);
-        }
-    }
+    private ObservableList<Utilisateur> userList;
 
     @FXML
     public void initialize() {
         try {
             utilisateurDAO = new UtilisateurDAO();
+            userList = FXCollections.observableArrayList();
+
             setupTable();
-            setupForm();
-            chargerUtilisateurs();
+            if (cbRole != null) {
+                cbRole.getItems().setAll(Utilisateur.ROLE_ADMIN, Utilisateur.ROLE_EMPLOYE);
+                cbRole.setValue(Utilisateur.ROLE_EMPLOYE);
+            }
+            loadUsers();
             setupSelectionListener();
-        } catch (ConnexionEchoueeException e) {
-            afficherErreur("Erreur", "Impossible de connecter à la base de données.");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void setupTable() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("idUtilisateur"));
-        colLogin.setCellValueFactory(new PropertyValueFactory<>("login"));
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
-
-        tableUtilisateurs.setItems(userList);
-    }
-
-    private void setupForm() {
-        cbRole.getItems().addAll(Utilisateur.ROLE_ADMIN, Utilisateur.ROLE_EMPLOYE);
-        cbRole.setValue(Utilisateur.ROLE_EMPLOYE);
+        if (colLogin != null)
+            colLogin.setCellValueFactory(new PropertyValueFactory<>("login"));
+        if (colPassword != null) {
+            colPassword.setCellValueFactory(
+                    cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getMotDePasse()));
+            colPassword.setVisible(true);
+        }
+        if (colNom != null)
+            colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        if (colPrenom != null)
+            colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        if (colRole != null)
+            colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
+        if (tableUtilisateurs != null)
+            tableUtilisateurs.setItems(userList);
     }
 
     private void setupSelectionListener() {
+        if (tableUtilisateurs == null)
+            return;
         tableUtilisateurs.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
             boolean isSelected = newVal != null;
             if (isSelected)
-                remplirFormulaire(newVal);
+                fillForm(newVal);
             else
-                viderFormulaire();
-            btnModifier.setDisable(!isSelected);
-            btnSupprimer.setDisable(!isSelected);
-            btnAjouter.setDisable(isSelected);
+                clearForm();
+            if (btnModifier != null)
+                btnModifier.setDisable(!isSelected);
+            if (btnSupprimer != null)
+                btnSupprimer.setDisable(!isSelected);
+            if (btnAjouter != null)
+                btnAjouter.setDisable(isSelected);
         });
     }
 
-    private void chargerUtilisateurs() {
+    private void loadUsers() {
         try {
-            userList.setAll(utilisateurDAO.listerTous());
+            if (utilisateurDAO != null && userList != null) {
+                userList.setAll(utilisateurDAO.listerTous());
+            }
         } catch (SQLException e) {
-            afficherErreur("Erreur chargement", e.getMessage());
+            showError("Load Error", "Database error: " + e.getMessage());
         }
     }
 
     @FXML
     private void handleAjouter() {
-        if (!validerFormulaire())
+        if (!validateForm())
             return;
-
-        Utilisateur nouveau = new Utilisateur();
-        nouveau.setLogin(txtLogin.getText());
-        nouveau.setMotDePasse(txtPassword.getText());
-        nouveau.setNom(txtNom.getText());
-        nouveau.setPrenom(txtPrenom.getText());
-        nouveau.setRole(cbRole.getValue());
-
+        Utilisateur u = getUserFromForm(new Utilisateur());
         try {
-            if (utilisateurDAO.ajouter(nouveau)) {
-                afficherSucces("Utilisateur ajouté avec succès");
-                chargerUtilisateurs();
-                viderFormulaire();
+            if (utilisateurDAO.ajouter(u)) {
+                showSuccess("User added successfully");
+                loadUsers();
+                clearForm();
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur ajout", e.getMessage());
+            showError("Add Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleModifier() {
         Utilisateur selected = tableUtilisateurs.getSelectionModel().getSelectedItem();
-        if (selected == null || !validerFormulaire())
+        if (selected == null || !validateForm())
             return;
-
-        selected.setLogin(txtLogin.getText());
-        // Only update password if not empty
-        if (!txtPassword.getText().isEmpty()) {
-            selected.setMotDePasse(txtPassword.getText());
-        }
-        selected.setNom(txtNom.getText());
-        selected.setPrenom(txtPrenom.getText());
-        selected.setRole(cbRole.getValue());
-
+        getUserFromForm(selected);
         try {
             if (utilisateurDAO.modifier(selected)) {
-                afficherSucces("Utilisateur modifié avec succès");
-                chargerUtilisateurs();
+                showSuccess("User updated successfully");
+                loadUsers();
                 tableUtilisateurs.refresh();
-                viderFormulaire();
+                clearForm();
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur modification", e.getMessage());
+            showError("Update Error", e.getMessage());
         }
     }
 
@@ -165,66 +150,103 @@ public class GestionUtilisateursController extends BaseController {
         Utilisateur selected = tableUtilisateurs.getSelectionModel().getSelectedItem();
         if (selected == null)
             return;
-
-        // Prevent deleting yourself
-        if (utilisateurConnecte != null && selected.getIdUtilisateur() == utilisateurConnecte.getIdUtilisateur()) {
-            afficherErreur("Action interdite", "Vous ne pouvez pas supprimer votre propre compte.");
+        if (user != null && selected.getIdUtilisateur() == user.getIdUtilisateur()) {
+            showError("Action Forbidden", "You cannot delete your own account.");
             return;
         }
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer l'utilisateur ?");
-        alert.setContentText("Cette action est irréversible.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (confirmDelete("user " + selected.getLogin())) {
             try {
                 if (utilisateurDAO.supprimer(selected.getIdUtilisateur())) {
-                    afficherSucces("Utilisateur supprimé");
-                    chargerUtilisateurs();
-                    viderFormulaire();
+                    showSuccess("User deleted");
+                    loadUsers();
+                    clearForm();
                 }
             } catch (SQLException e) {
-                afficherErreur("Erreur suppression", "Impossible de supprimer: " + e.getMessage());
+                showError("Delete Error", "Could not delete user: " + e.getMessage());
             }
         }
     }
 
     @FXML
     private void handleVider() {
-        tableUtilisateurs.getSelectionModel().clearSelection();
-        viderFormulaire();
+        if (tableUtilisateurs != null)
+            tableUtilisateurs.getSelectionModel().clearSelection();
+        clearForm();
     }
 
-    private void remplirFormulaire(Utilisateur user) {
-        txtLogin.setText(user.getLogin());
-        txtPassword.clear(); // Security: don't show password
-        txtPassword.setPromptText("Laisser vide pour ne pas changer");
-        txtNom.setText(user.getNom());
-        txtPrenom.setText(user.getPrenom());
-        cbRole.setValue(user.getRole());
+    @FXML
+    private void handleRafraichir() {
+        loadUsers();
     }
 
-    private void viderFormulaire() {
-        txtLogin.clear();
-        txtPassword.clear();
-        txtPassword.setPromptText("");
-        txtNom.clear();
-        txtPrenom.clear();
-        cbRole.setValue(Utilisateur.ROLE_EMPLOYE);
+    private void fillForm(Utilisateur u) {
+        if (txtLogin != null)
+            txtLogin.setText(u.getLogin());
+        if (txtPassword != null) {
+            txtPassword.clear();
+            txtPassword.setPromptText("Leave blank to keep current");
+        }
+        if (txtNom != null)
+            txtNom.setText(u.getNom());
+        if (txtPrenom != null)
+            txtPrenom.setText(u.getPrenom());
+        if (cbRole != null)
+            cbRole.setValue(u.getRole());
     }
 
-    private boolean validerFormulaire() {
+    private void clearForm() {
+        if (txtLogin != null)
+            txtLogin.clear();
+        if (txtPassword != null) {
+            txtPassword.clear();
+            txtPassword.setPromptText("");
+        }
+        if (txtNom != null)
+            txtNom.clear();
+        if (txtPrenom != null)
+            txtPrenom.clear();
+        if (cbRole != null)
+            cbRole.setValue(Utilisateur.ROLE_EMPLOYE);
+    }
+
+    private boolean validateForm() {
+        if (txtLogin == null || txtNom == null)
+            return false;
         if (txtLogin.getText().isEmpty() || txtNom.getText().isEmpty()) {
-            afficherErreur("Validation", "Login et Nom requis");
+            showError("Validation Error", "Login and Name are required");
             return false;
         }
-        if (tableUtilisateurs.getSelectionModel().getSelectedItem() == null && txtPassword.getText().isEmpty()) {
-            afficherErreur("Validation", "Mot de passe requis pour la création");
+        if (tableUtilisateurs != null && tableUtilisateurs.getSelectionModel().getSelectedItem() == null
+                && txtPassword != null && txtPassword.getText().isEmpty()) {
+            showError("Validation Error", "Password is required for new users");
             return false;
         }
         return true;
     }
 
+    private Utilisateur getUserFromForm(Utilisateur u) {
+        if (txtLogin != null)
+            u.setLogin(txtLogin.getText());
+        if (txtPassword != null && !txtPassword.getText().isEmpty())
+            u.setMotDePasse(txtPassword.getText());
+        if (txtNom != null)
+            u.setNom(txtNom.getText());
+        if (txtPrenom != null)
+            u.setPrenom(txtPrenom.getText());
+        if (cbRole != null)
+            u.setRole(cbRole.getValue());
+        return u;
+    }
+
+    @Override
+    public void setUtilisateur(Utilisateur utilisateur) {
+        super.setUtilisateur(utilisateur);
+        if (utilisateur != null && !utilisateur.estAdmin()) {
+            showError("Access Denied", "You do not have administrator privileges.");
+            if (tableUtilisateurs != null)
+                tableUtilisateurs.setDisable(true);
+            if (btnAjouter != null)
+                btnAjouter.setDisable(true);
+        }
+    }
 }

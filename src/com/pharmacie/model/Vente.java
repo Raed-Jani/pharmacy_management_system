@@ -4,10 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Classe représentant une vente dans la pharmacie.
- * Correspond à la table Vente de la base de données.
- */
 public class Vente {
 
     private int idVente;
@@ -30,7 +26,7 @@ public class Vente {
      * Constructeur avec tous les paramètres.
      */
     public Vente(int idVente, LocalDateTime dateVente, BigDecimal totalVente,
-                 Integer idClient, int idUtilisateur) {
+            Integer idClient, int idUtilisateur) {
         this.idVente = idVente;
         this.dateVente = dateVente;
         this.totalVente = totalVente;
@@ -152,8 +148,10 @@ public class Vente {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Vente vente = (Vente) o;
         return idVente == vente.idVente;
     }

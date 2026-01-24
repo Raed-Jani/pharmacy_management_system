@@ -8,23 +8,29 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.pharmacie.ui.controller.GestionClientsController"
             prefHeight="600.0" prefWidth="800.0"
-            style="-fx-background-color: #F5F6FA;">
+            stylesheets="@../css/pharmacy-blue-theme.css"
+            styleClass="root">
 
-    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <VBox spacing="20" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
         
         <!-- En-tête -->
-        <HBox alignment="CENTER_LEFT" spacing="15">
-            <Label text="👥 Gestion des Clients" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <TextField fx:id="txtRecherche" promptText="Rechercher par nom..." prefWidth="250"/>
-            <Button text="🔍" onAction="#handleRechercher"/>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 0 0 25 0;">
+            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                <Label text="Gestion des Clients" styleClass="label-title"/>
+                <Label text="Base de données et historique médical des patients" style="-fx-font-size: 14px; -fx-text-fill: -fx-color-text-muted;"/>
+            </VBox>
+            
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <TextField fx:id="txtRecherche" promptText="Rechercher par nom..." prefWidth="250" styleClass="search-bar"/>
+                <Button text="🔄 Actualiser" onAction="#handleRafraichir" styleClass="btn-secondary"/>
+            </HBox>
         </HBox>
 
         <!-- Contenu Principal -->
         <HBox spacing="20" VBox.vgrow="ALWAYS">
             
             <!-- Liste des clients -->
-            <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <VBox HBox.hgrow="ALWAYS" styleClass="card">
                 <TableView fx:id="tableClients" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
@@ -34,37 +40,50 @@
                         <TableColumn fx:id="colEmail" text="Email" prefWidth="150"/>
                         <TableColumn fx:id="colHistorique" text="Historique Médical" prefWidth="200"/>
                     </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
                 </TableView>
             </VBox>
 
             <!-- Formulaire -->
-            <VBox prefWidth="300" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" spacing="15">
-                <Label text="Détails du Client" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495E;"/>
+            <VBox prefWidth="300" styleClass="card" spacing="15">
+                <Label text="Détails du Client" styleClass="label-subheading"/>
                 
-                <GridPane vgap="10" hgap="10">
-                    <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-                    <Label text="Prénom:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-                    <Label text="Tél:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtTelephone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-                    <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtEmail" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-                    <Label text="Historique:" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
-                    <TextArea fx:id="txtHistorique" prefRowCount="4" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-                </GridPane>
+                <VBox spacing="15">
+                    <VBox spacing="5">
+                        <Label text="Nom *" styleClass="label-form"/>
+                        <TextField fx:id="txtNom" promptText="Ex: Ben Ahmed" styleClass="text-field"/>
+                    </VBox>
+                    
+                    <VBox spacing="5">
+                        <Label text="Prénom" styleClass="label-form"/>
+                        <TextField fx:id="txtPrenom" promptText="Ex: Mohamed" styleClass="text-field"/>
+                    </VBox>
+                    
+                    <VBox spacing="5">
+                        <Label text="Téléphone" styleClass="label-form"/>
+                        <TextField fx:id="txtTelephone" promptText="Ex: 22 123 456" styleClass="text-field"/>
+                    </VBox>
+                    
+                    <VBox spacing="5">
+                        <Label text="Email" styleClass="label-form"/>
+                        <TextField fx:id="txtEmail" promptText="client@email.com" styleClass="text-field"/>
+                    </VBox>
+                    
+                    <VBox spacing="5">
+                        <Label text="Historique Médical" styleClass="label-form"/>
+                        <TextArea fx:id="txtHistorique" prefRowCount="3" wrapText="true" promptText="Allergies, maladies chroniques..." styleClass="text-field"/>
+                    </VBox>
+                </VBox>
 
                 <HBox spacing="10" alignment="CENTER">
-                    <Button fx:id="btnAjouter" text="Ajouter" onAction="#handleAjouter" style="-fx-background-color: #2ECC71; -fx-text-fill: white;" prefWidth="90"/>
-                    <Button fx:id="btnModifier" text="Modifier" onAction="#handleModifier" style="-fx-background-color: #F39C12; -fx-text-fill: white;" disable="true" prefWidth="90"/>
+                    <Button fx:id="btnAjouter" text="Ajouter" onAction="#handleAjouter" styleClass="button, btn-success" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnModifier" text="Modifier" onAction="#handleModifier" styleClass="button, btn-secondary" disable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                 </HBox>
                 <HBox spacing="10" alignment="CENTER">
-                    <Button fx:id="btnSupprimer" text="Supprimer" onAction="#handleSupprimer" style="-fx-background-color: #E74C3C; -fx-text-fill: white;" disable="true" prefWidth="90"/>
-                    <Button text="Nouveau" onAction="#handleVider" style="-fx-background-color: #95A5A6; -fx-text-fill: white;" prefWidth="90"/>
+                    <Button fx:id="btnSupprimer" text="Supprimer" onAction="#handleSupprimer" styleClass="button, btn-danger" disable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button text="Nouveau" onAction="#handleVider" styleClass="button, btn-secondary" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                 </HBox>
             </VBox>
 

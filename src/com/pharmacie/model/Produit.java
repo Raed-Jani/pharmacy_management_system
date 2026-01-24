@@ -3,10 +3,6 @@ package com.pharmacie.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * Classe représentant un produit pharmaceutique.
- * Correspond à la table Produit de la base de données.
- */
 public class Produit {
 
     private int idProduit;

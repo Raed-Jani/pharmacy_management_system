@@ -1,73 +1,92 @@
 package com.pharmacie.ui.controller;
 
 import com.pharmacie.model.Utilisateur;
+import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import java.util.Optional;
 
-/**
- * Classe abstraite de base pour tous les contrôleurs.
- * Gère l'utilisateur connecté, le contrôleur dashboard et fournit des méthodes
- * utilitaires.
- */
 public abstract class BaseController {
 
-    protected Utilisateur utilisateurConnecte;
-    protected DashboardController dashboardController;
+    protected Utilisateur user;
+    protected DashboardController dashboard;
 
-    /**
-     * Définit l'utilisateur connecté pour cette vue.
-     */
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateurConnecte = utilisateur;
+    @FXML
+    protected Label lblHeaderName;
+    @FXML
+    protected Label lblHeaderRole;
+
+    public void setUtilisateur(Utilisateur user) {
+        this.user = user;
+        updateHeaderUserInfo();
     }
 
-    /**
-     * Récupère l'utilisateur connecté.
-     */
-    public Utilisateur getUtilisateurConnecte() {
-        return utilisateurConnecte;
+    protected void updateHeaderUserInfo() {
+        if (user != null) {
+            if (lblHeaderName != null)
+                lblHeaderName.setText(user.getLogin());
+            if (lblHeaderRole != null)
+                lblHeaderRole.setText(user.getRole());
+        }
     }
 
-    /**
-     * Définit le contrôleur du tableau de bord.
-     */
-    public void setDashboardController(DashboardController dashboardController) {
-        this.dashboardController = dashboardController;
+    @FXML
+    protected void handleLogout() {
+        if (dashboard != null) {
+            dashboard.handleDeconnexion();
+        }
     }
 
-    /**
-     * Affiche une boîte de dialogue d'erreur.
-     */
-    protected void afficherErreur(String titre, String message) {
-        afficherAlerte(Alert.AlertType.ERROR, titre, message);
+    public Utilisateur getUtilisateur() {
+        return user;
     }
 
-    /**
-     * Affiche une boîte de dialogue d'information (Succès).
-     */
-    protected void afficherSucces(String message) {
-        afficherAlerte(Alert.AlertType.INFORMATION, "Succès", message);
+    public void setDashboard(DashboardController dashboard) {
+        this.dashboard = dashboard;
     }
 
-    /**
-     * Affiche un message de succès avec titre.
-     */
-    protected void afficherSucces(String titre, String message) {
-        afficherAlerte(Alert.AlertType.INFORMATION, titre, message);
+    protected void showInfo(String title, String message) {
+        showAlert(Alert.AlertType.INFORMATION, title, message);
     }
 
-    /**
-     * Affiche une boîte de dialogue d'information standard.
-     */
-    protected void afficherInformation(String titre, String message) {
-        afficherAlerte(Alert.AlertType.INFORMATION, titre, message);
+    protected void showSuccess(String message) {
+        showInfo("Success", message);
     }
 
-    /**
-     * Affiche une boîte de dialogue d'alerte personnalisée.
-     */
-    protected void afficherAlerte(Alert.AlertType type, String titre, String message) {
+    protected void showError(String title, String message) {
+        showAlert(Alert.AlertType.ERROR, title, message);
+    }
+
+    protected void afficherErreur(String title, String message) {
+        showError(title, message);
+    }
+
+    protected void afficherSucces(String title, String message) {
+        showSuccess(message);
+    }
+
+    protected void afficherInfo(String title, String message) {
+        showInfo(title, message);
+    }
+
+    protected boolean confirm(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    protected boolean confirmDelete(String target) {
+        return confirm("Confirm Deletion",
+                "Are you sure you want to delete " + target + "? This action is irreversible.");
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
-        alert.setTitle(titre);
+        alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

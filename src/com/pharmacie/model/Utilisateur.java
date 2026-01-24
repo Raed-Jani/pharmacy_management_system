@@ -1,9 +1,5 @@
 package com.pharmacie.model;
 
-/**
- * Classe représentant un utilisateur du système.
- * Correspond à la table Utilisateur de la base de données.
- */
 public class Utilisateur {
 
     public static final String ROLE_ADMIN = "ADMIN";

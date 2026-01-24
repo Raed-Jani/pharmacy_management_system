@@ -8,32 +8,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO pour gérer les clients
- */
 public class ClientDAO {
 
-    private DBConnection dbConnection;
+    private Connection manualConnection;
 
-    public ClientDAO() throws ConnexionEchoueeException {
-        this.dbConnection = DBConnection.getInstance();
+    public ClientDAO() {
+    }
+
+    public ClientDAO(Connection connection) {
+        this.manualConnection = connection;
     }
 
     private Connection getConnection() throws SQLException {
+        if (manualConnection != null)
+            return manualConnection;
         try {
-            return dbConnection.getAdminConnection();
+            return DBConnection.getConnection();
         } catch (ConnexionEchoueeException e) {
-            throw new SQLException("Erreur de connexion", e);
+            throw new SQLException("Connection error: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Ajoute un nouveau client
-     */
     public boolean ajouter(Client client) throws SQLException {
         String query = "INSERT INTO Client (nom, prenom, telephone, email, historique_medical) VALUES (?, ?, ?, ?, ?)";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, client.getNom());
             stmt.setString(2, client.getPrenom());
             stmt.setString(3, client.getTelephone());
@@ -51,13 +49,9 @@ public class ClientDAO {
         }
     }
 
-    /**
-     * Récupère un client par ID
-     */
     public Client rechercherParId(int idClient) throws SQLException {
         String query = "SELECT * FROM Client WHERE id_client = ?";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
             stmt.setInt(1, idClient);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next() ? mapperResultSet(rs) : null;
@@ -65,14 +59,10 @@ public class ClientDAO {
         }
     }
 
-    /**
-     * Liste tous les clients
-     */
     public List<Client> listerTous() throws SQLException {
         List<Client> clients = new ArrayList<>();
         String query = "SELECT * FROM Client ORDER BY nom, prenom";
-        Connection conn = getConnection();
-        try (Statement stmt = conn.createStatement();
+        try (Statement stmt = getConnection().createStatement();
                 ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next())
                 clients.add(mapperResultSet(rs));
@@ -80,14 +70,10 @@ public class ClientDAO {
         return clients;
     }
 
-    /**
-     * Recherche un client par nom
-     */
     public List<Client> rechercherParNom(String nom) throws SQLException {
         List<Client> clients = new ArrayList<>();
         String query = "SELECT * FROM Client WHERE nom LIKE ? ORDER BY nom, prenom";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
             stmt.setString(1, "%" + nom + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next())
@@ -97,41 +83,28 @@ public class ClientDAO {
         return clients;
     }
 
-    /**
-     * Recherche un client par email
-     */
     public Client rechercherParEmail(String email) throws SQLException {
         String query = "SELECT * FROM Client WHERE email = ?";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, email);
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next() ? mapperResultSet(rs) : null;
-            }
-        }
+        return findOne(query, email);
     }
 
-    /**
-     * Recherche un client par téléphone
-     */
     public Client rechercherParTelephone(String telephone) throws SQLException {
         String query = "SELECT * FROM Client WHERE telephone = ?";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, telephone);
+        return findOne(query, telephone);
+    }
+
+    private Client findOne(String query, String param) throws SQLException {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
+            stmt.setString(1, param);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next() ? mapperResultSet(rs) : null;
             }
         }
     }
 
-    /**
-     * Modifie un client existant
-     */
     public boolean modifier(Client client) throws SQLException {
         String query = "UPDATE Client SET nom = ?, prenom = ?, telephone = ?, email = ?, historique_medical = ? WHERE id_client = ?";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
             stmt.setString(1, client.getNom());
             stmt.setString(2, client.getPrenom());
             stmt.setString(3, client.getTelephone());
@@ -142,33 +115,22 @@ public class ClientDAO {
         }
     }
 
-    /**
-     * Supprime un client
-     */
     public boolean supprimer(int idClient) throws SQLException {
         String query = "DELETE FROM Client WHERE id_client = ?";
-        Connection conn = getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
             stmt.setInt(1, idClient);
             return stmt.executeUpdate() > 0;
         }
     }
 
-    /**
-     * Compte le nombre total de clients
-     */
     public int compterTous() throws SQLException {
         String query = "SELECT COUNT(*) as total FROM Client";
-        Connection conn = getConnection();
-        try (Statement stmt = conn.createStatement();
+        try (Statement stmt = getConnection().createStatement();
                 ResultSet rs = stmt.executeQuery(query)) {
             return rs.next() ? rs.getInt("total") : 0;
         }
     }
 
-    /**
-     * Mappe un ResultSet vers une entité Client
-     */
     private Client mapperResultSet(ResultSet rs) throws SQLException {
         Client client = new Client();
         client.setIdClient(rs.getInt("id_client"));

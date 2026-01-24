@@ -1,8 +1,5 @@
 package com.pharmacie.exception;
 
-/**
- * Exception levée lorsque la connexion à la base de données échoue.
- */
 public class ConnexionEchoueeException extends Exception {
 
     private String messageAide;

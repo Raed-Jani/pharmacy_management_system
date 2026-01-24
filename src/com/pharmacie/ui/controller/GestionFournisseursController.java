@@ -2,17 +2,12 @@ package com.pharmacie.ui.controller;
 
 import com.pharmacie.dao.FournisseurDAO;
 import com.pharmacie.model.Fournisseur;
-import com.pharmacie.model.Utilisateur;
-import com.pharmacie.exception.ConnexionEchoueeException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class GestionFournisseursController extends BaseController {
 
@@ -47,24 +42,14 @@ public class GestionFournisseursController extends BaseController {
     @FXML
     private Button btnSupprimer;
 
-    private FournisseurDAO fournisseurDAO;
-    private ObservableList<Fournisseur> fournisseurList = FXCollections.observableArrayList();
-
-    @Override
-    public void setUtilisateur(Utilisateur utilisateur) {
-        super.setUtilisateur(utilisateur);
-    }
+    private final FournisseurDAO fournisseurDAO = new FournisseurDAO();
+    private final ObservableList<Fournisseur> fournisseurList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        try {
-            fournisseurDAO = new FournisseurDAO();
-            setupTable();
-            chargerFournisseurs();
-            setupSelectionListener();
-        } catch (ConnexionEchoueeException e) {
-            afficherErreur("Erreur", "Impossible de connecter à la base de données.");
-        }
+        setupTable();
+        loadFournisseurs();
+        setupSelectionListener();
     }
 
     private void setupTable() {
@@ -73,7 +58,6 @@ public class GestionFournisseursController extends BaseController {
         colAdresse.setCellValueFactory(new PropertyValueFactory<>("adresse"));
         colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-
         tableFournisseurs.setItems(fournisseurList);
     }
 
@@ -81,104 +65,83 @@ public class GestionFournisseursController extends BaseController {
         tableFournisseurs.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
             boolean isSelected = newVal != null;
             if (isSelected)
-                remplirFormulaire(newVal);
+                fillForm(newVal);
             else
-                viderFormulaire();
+                clearForm();
             btnModifier.setDisable(!isSelected);
             btnSupprimer.setDisable(!isSelected);
             btnAjouter.setDisable(isSelected);
         });
     }
 
-    private void chargerFournisseurs() {
+    private void loadFournisseurs() {
         try {
             fournisseurList.setAll(fournisseurDAO.listerTous());
         } catch (SQLException e) {
-            afficherErreur("Erreur chargement", e.getMessage());
+            showError("Load Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleRechercher() {
-        String recherche = txtRecherche.getText();
+        String search = txtRecherche.getText();
         try {
-            if (recherche == null || recherche.trim().isEmpty()) {
-                chargerFournisseurs();
+            if (search == null || search.trim().isEmpty()) {
+                loadFournisseurs();
             } else {
-                fournisseurList.setAll(fournisseurDAO.rechercherParNom(recherche));
+                fournisseurList.setAll(fournisseurDAO.rechercherParNom(search));
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur recherche", e.getMessage());
+            showError("Search Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleAjouter() {
-        if (!validerFormulaire())
+        if (!validateForm())
             return;
-
-        Fournisseur nouveau = new Fournisseur();
-        nouveau.setNomSociete(txtNomSociete.getText());
-        nouveau.setAdresse(txtAdresse.getText());
-        nouveau.setTelephone(txtTelephone.getText());
-        nouveau.setEmail(txtEmail.getText());
-
+        Fournisseur f = getFournisseurFromForm(new Fournisseur());
         try {
-            if (fournisseurDAO.ajouter(nouveau)) {
-                afficherSucces("Fournisseur ajouté avec succès");
-                chargerFournisseurs();
-                viderFormulaire();
+            if (fournisseurDAO.ajouter(f)) {
+                showSuccess("Supplier added successfully");
+                loadFournisseurs();
+                clearForm();
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur ajout", e.getMessage());
+            showError("Add Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleModifier() {
         Fournisseur selected = tableFournisseurs.getSelectionModel().getSelectedItem();
-        if (selected == null || !validerFormulaire())
+        if (selected == null || !validateForm())
             return;
-
-        selected.setNomSociete(txtNomSociete.getText());
-        selected.setAdresse(txtAdresse.getText());
-        selected.setTelephone(txtTelephone.getText());
-        selected.setEmail(txtEmail.getText());
-
+        getFournisseurFromForm(selected);
         try {
             if (fournisseurDAO.modifier(selected)) {
-                afficherSucces("Fournisseur modifié avec succès");
-                chargerFournisseurs();
+                showSuccess("Supplier updated successfully");
+                loadFournisseurs();
                 tableFournisseurs.refresh();
-                viderFormulaire();
+                clearForm();
             }
         } catch (SQLException e) {
-            afficherErreur("Erreur modification", e.getMessage());
+            showError("Update Error", e.getMessage());
         }
     }
 
     @FXML
     private void handleSupprimer() {
         Fournisseur selected = tableFournisseurs.getSelectionModel().getSelectedItem();
-        if (selected == null)
-            return;
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer le fournisseur ?");
-        alert.setContentText("Cette action est irréversible. Attention si des commandes sont liées.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (selected != null && confirmDelete(selected.getNomSociete())) {
             try {
                 if (fournisseurDAO.supprimer(selected.getIdFournisseur())) {
-                    afficherSucces("Fournisseur supprimé");
-                    chargerFournisseurs();
-                    viderFormulaire();
+                    showSuccess("Supplier deleted");
+                    loadFournisseurs();
+                    clearForm();
                 }
             } catch (SQLException e) {
-                afficherErreur("Erreur suppression",
-                        "Impossible de supprimer (probablement lié à des commandes)\n" + e.getMessage());
+                showError("Delete Error", "Could not delete supplier (likely linked to orders)\n" + e.getMessage());
             }
         }
     }
@@ -186,28 +149,41 @@ public class GestionFournisseursController extends BaseController {
     @FXML
     private void handleVider() {
         tableFournisseurs.getSelectionModel().clearSelection();
-        viderFormulaire();
+        clearForm();
     }
 
-    private void remplirFormulaire(Fournisseur f) {
+    @FXML
+    private void handleRafraichir() {
+        loadFournisseurs();
+    }
+
+    private void fillForm(Fournisseur f) {
         txtNomSociete.setText(f.getNomSociete());
         txtAdresse.setText(f.getAdresse());
         txtTelephone.setText(f.getTelephone());
         txtEmail.setText(f.getEmail());
     }
 
-    private void viderFormulaire() {
+    private void clearForm() {
         txtNomSociete.clear();
         txtAdresse.clear();
         txtTelephone.clear();
         txtEmail.clear();
     }
 
-    private boolean validerFormulaire() {
+    private boolean validateForm() {
         if (txtNomSociete.getText().isEmpty()) {
-            afficherErreur("Validation", "Nom société requis");
+            showError("Validation Error", "Company Name is required");
             return false;
         }
         return true;
+    }
+
+    private Fournisseur getFournisseurFromForm(Fournisseur f) {
+        f.setNomSociete(txtNomSociete.getText());
+        f.setAdresse(txtAdresse.getText());
+        f.setTelephone(txtTelephone.getText());
+        f.setEmail(txtEmail.getText());
+        return f;
     }
 }

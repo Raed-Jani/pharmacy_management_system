@@ -1,9 +1,4 @@
 
-
--- ============================================================
--- SECTION 1: CRÉATION DE LA BASE DE DONNÉES
--- ============================================================
-
 DROP DATABASE IF EXISTS pharmacie_db;
 CREATE DATABASE pharmacie_db 
     CHARACTER SET utf8mb4 
@@ -11,9 +6,7 @@ CREATE DATABASE pharmacie_db
 
 USE pharmacie_db;
 
--- ============================================================
--- SECTION 2: CRÉATION DES TABLES
--- ============================================================
+--CRÉATION DES TABLES
 
 -- Table Utilisateur
 -- Gestion des utilisateurs du système (administrateurs et employés)
@@ -144,10 +137,6 @@ CREATE TABLE LigneVente (
     INDEX idx_produit (id_produit)
 ) ENGINE=InnoDB;
 
--- ============================================================
--- SECTION 3: DONNÉES DE TEST
--- ============================================================
-
 -- Insertion des utilisateurs (mot de passe: 'password123' - à hasher en production)
 INSERT INTO Utilisateur (login, mot_de_passe, role) VALUES
 ('admin', 'password123', 'ADMIN'),
@@ -221,10 +210,7 @@ INSERT INTO LogActivite (date_action, type_action, description, id_utilisateur) 
 ('2025-01-17 14:00:00', 'CONNEXION', 'Connexion de l\'employé au système', 3),
 ('2025-01-17 14:15:00', 'VENTE', 'Vente ID 3 - Montant: 42.50 TND', 3);
 
--- ============================================================
--- SECTION 4: CRÉATION DES UTILISATEURS MYSQL ET PRIVILÈGES
--- ============================================================
-
+-- CRÉATION DES UTILISATEURS MYSQL ET PRIVILÈGES
 -- Suppression des utilisateurs s'ils existent déjà
 DROP USER IF EXISTS 'admin_pharmacie'@'localhost';
 DROP USER IF EXISTS 'employe_pharmacie'@'localhost';
@@ -252,10 +238,7 @@ GRANT INSERT ON pharmacie_db.LogActivite TO 'employe_pharmacie'@'localhost';
 
 -- Application des privilèges
 FLUSH PRIVILEGES;
-
--- ============================================================
--- SECTION 5: VUES UTILES (OPTIONNEL)
--- ============================================================
+-- VUES UTILES
 
 -- Vue pour les produits en alerte de stock
 CREATE VIEW V_Produits_Alerte AS
@@ -291,10 +274,6 @@ INNER JOIN LigneVente lv ON p.id_produit = lv.id_produit
 GROUP BY p.id_produit, p.nom
 ORDER BY total_vendu DESC;
 
--- ============================================================
--- FIN DU SCRIPT
--- ============================================================
-
 -- Affichage des informations de connexion
 SELECT 'Base de données créée avec succès!' AS Message;
 SELECT 'Utilisateur admin: admin_pharmacie / Mot de passe: Admin@Pharma2025' AS Info_Admin;
@@ -306,11 +285,7 @@ SELECT 'Utilisateur employé: employe_pharmacie / Mot de passe: Employe@Pharma20
 DROP DATABASE IF EXISTS pharmacie_db;
 CREATE DATABASE pharmacie_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE pharmacie_db;
-
--- ============================================================
--- TABLES
--- ============================================================
-
+-- Tables
 -- Table Utilisateur
 CREATE TABLE Utilisateur (
     id_utilisateur INT AUTO_INCREMENT PRIMARY KEY,
@@ -404,10 +379,7 @@ CREATE TABLE LogActivite (
     FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- ============================================================
 -- INDEX POUR OPTIMISATION DES REQUÊTES
--- ============================================================
-
 CREATE INDEX idx_produit_nom ON Produit(nom);
 CREATE INDEX idx_produit_code_barre ON Produit(code_barre);
 CREATE INDEX idx_vente_date ON Vente(date_vente);
@@ -415,10 +387,7 @@ CREATE INDEX idx_vente_client ON Vente(id_client);
 CREATE INDEX idx_log_type ON LogActivite(type_action);
 CREATE INDEX idx_log_date ON LogActivite(date_action);
 
--- ============================================================
 -- CRÉATION DES UTILISATEURS MYSQL
--- ============================================================
-
 -- Utilisateur Administrateur (tous droits)
 DROP USER IF EXISTS 'admin_pharmacie'@'localhost';
 CREATE USER 'admin_pharmacie'@'localhost' IDENTIFIED BY 'admin_password_123';
@@ -432,11 +401,7 @@ GRANT DELETE ON pharmacie_db.LigneVente TO 'employe_pharmacie'@'localhost';
 GRANT DELETE ON pharmacie_db.LigneCommande TO 'employe_pharmacie'@'localhost';
 
 FLUSH PRIVILEGES;
-
--- ============================================================
 -- DONNÉES DE TEST
--- ============================================================
-
 -- Utilisateurs de test
 INSERT INTO Utilisateur (login, mot_de_passe, role) VALUES
 ('admin', 'password123', 'ADMIN'),
@@ -498,20 +463,14 @@ INSERT INTO LogActivite (date_action, type_action, description, id_utilisateur) 
 ('2026-01-17 08:00:00', 'CONNEXION', 'Connexion de l''utilisateur: employe2', 3),
 ('2026-01-17 09:15:00', 'VENTE', 'Vente ID 3 - Montant: 24.80 TND', 3);
 
--- ============================================================
 -- MISE À JOUR DES STOCKS APRÈS LES VENTES
--- ============================================================
-
 UPDATE Produit SET quantite_stock = quantite_stock - 2 WHERE id_produit = 1;
 UPDATE Produit SET quantite_stock = quantite_stock - 2 WHERE id_produit = 4;
 UPDATE Produit SET quantite_stock = quantite_stock - 2 WHERE id_produit = 5;
 UPDATE Produit SET quantite_stock = quantite_stock - 1 WHERE id_produit = 8;
 UPDATE Produit SET quantite_stock = quantite_stock - 2 WHERE id_produit = 3;
 
--- ============================================================
 -- VÉRIFICATION
--- ============================================================
-
 SELECT 'Base de données créée avec succès !' AS Message;
 SELECT COUNT(*) AS NombreUtilisateurs FROM Utilisateur;
 SELECT COUNT(*) AS NombreProduits FROM Produit;

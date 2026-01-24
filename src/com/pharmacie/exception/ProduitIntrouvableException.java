@@ -1,8 +1,5 @@
 package com.pharmacie.exception;
 
-/**
- * Exception levée lorsqu'un produit est introuvable.
- */
 public class ProduitIntrouvableException extends Exception {
 
     private int idProduit;

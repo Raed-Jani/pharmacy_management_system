@@ -3,30 +3,35 @@ package com.pharmacie.ui.controller;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.application.Platform;
-
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import com.pharmacie.model.Utilisateur;
 import com.pharmacie.service.DashboardStatisticsService;
-import com.pharmacie.exception.ConnexionEchoueeException;
-
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.List;
 
-/**
- * Contrôleur pour la page d'accueil du tableau de bord.
- * Implémente un design premium avec alertes dynamiques et actions rapides.
- */
 public class AccueilController extends BaseController {
 
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Label lblWelcome;
+    @FXML
+    private Label lblDashboardSubtitle;
     @FXML
     private Label lblTotalProducts;
     @FXML
@@ -41,116 +46,185 @@ public class AccueilController extends BaseController {
     private VBox vboxActivites;
 
     @FXML
+    private Button btnQuickSale;
+    @FXML
+    private Button btnQuickOrder;
+    @FXML
+    private Button btnQuickProduits;
+    @FXML
+    private Button btnQuickClients;
+    @FXML
     private Button btnQuickRapports;
     @FXML
     private Button btnQuickUtilisateurs;
 
-    private DashboardStatisticsService statsService;
-    private boolean serviceDisponible = false;
+    @FXML
+    private VBox kpiCA;
+    @FXML
+    private VBox cardVentesChart;
+    @FXML
+    private VBox cardActivites;
+
+    @FXML
+    private LineChart<String, Number> chartVentes;
+    @FXML
+    private PieChart chartStock;
+
+    private final DashboardStatisticsService statsService = new DashboardStatisticsService();
 
     @FXML
     public void initialize() {
-        try {
-            statsService = new DashboardStatisticsService();
-            serviceDisponible = true;
-            refreshData();
-        } catch (ConnexionEchoueeException e) {
-            System.err.println("⚠ Erreur de connexion stats: " + e.getMessage());
-            serviceDisponible = false;
+        if (chartVentes != null) {
+            chartVentes.setAnimated(false);
+            CategoryAxis xAxis = (CategoryAxis) chartVentes.getXAxis();
+            xAxis.setTickLabelRotation(-45);
         }
+        refreshData();
+        animateEntrance();
+        setupAnimations();
+    }
+
+    private void animateEntrance() {
+        if (scrollPane != null) {
+            scrollPane.setOpacity(0);
+            FadeTransition ft = new FadeTransition(Duration.millis(800), scrollPane);
+            ft.setFromValue(0);
+            ft.setToValue(1);
+            ft.setDelay(Duration.millis(100));
+            ft.play();
+        }
+    }
+
+    private void setupAnimations() {
+        addHoverAnimation(btnQuickSale);
+        addHoverAnimation(btnQuickOrder);
+        addHoverAnimation(btnQuickProduits);
+        addHoverAnimation(btnQuickClients);
+        addHoverAnimation(btnQuickRapports);
+        addHoverAnimation(btnQuickUtilisateurs);
+    }
+
+    private void addHoverAnimation(Button btn) {
+        if (btn == null)
+            return;
+        btn.setOnMouseEntered(mouseEvent -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(200), btn);
+            st.setToX(1.05);
+            st.setToY(1.05);
+            st.play();
+        });
+        btn.setOnMouseExited(mouseEvent -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(200), btn);
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.play();
+        });
     }
 
     @Override
-    public void setUtilisateur(Utilisateur utilisateur) {
-        super.setUtilisateur(utilisateur);
-        updateButtonVisibility();
+    public void setUtilisateur(Utilisateur user) {
+        super.setUtilisateur(user);
+        updateUIForRole();
     }
 
-    private void updateButtonVisibility() {
-        if (utilisateurConnecte != null) {
-            boolean isAdmin = utilisateurConnecte.estAdmin();
-            if (btnQuickRapports != null) {
-                btnQuickRapports.setVisible(isAdmin);
-                btnQuickRapports.setManaged(isAdmin);
+    private void updateUIForRole() {
+        if (user != null) {
+            boolean isAdmin = user.estAdmin();
+            if (lblWelcome != null) {
+                lblWelcome.setText(isAdmin ? "Admin Dashboard" : "Welcome, " + user.getLogin());
             }
-            if (btnQuickUtilisateurs != null) {
-                btnQuickUtilisateurs.setVisible(isAdmin);
-                btnQuickUtilisateurs.setManaged(isAdmin);
+            if (lblDashboardSubtitle != null) {
+                lblDashboardSubtitle.setText(isAdmin ? "Global overview of pharmacy activity" : "Ready for a new day?");
             }
+
+            setVisibility(kpiCA, isAdmin);
+            setVisibility(cardVentesChart, isAdmin);
+            setVisibility(cardActivites, isAdmin);
+            setVisibility(btnQuickRapports, isAdmin);
+            setVisibility(btnQuickUtilisateurs, isAdmin);
         }
     }
 
-    public void refreshData() {
-        if (!serviceDisponible || statsService == null)
-            return;
+    private void setVisibility(javafx.scene.Node node, boolean visible) {
+        if (node != null) {
+            node.setVisible(visible);
+            node.setManaged(visible);
+        }
+    }
 
+    @FXML
+    private void handleRafraichir() {
+        refreshData();
+    }
+
+    public void refreshData() {
         new Thread(() -> {
             try {
-                // 1. Fetch Data
-                Map<String, Object> stocks = statsService.getEtatStocks();
-                BigDecimal caJour = statsService.getChiffreAffairesPeriode(LocalDate.now(), LocalDate.now());
-                List<Map<String, Object>> alertes = statsService.getProduitsEnAlerte();
-                List<Map<String, Object>> activities = statsService.getVentesRecentes(8);
+                Map<String, Object> stocks = statsService.getStockSummary();
+                BigDecimal caJour = statsService.getRevenueForPeriod(LocalDate.now(), LocalDate.now());
+                List<Map<String, Object>> alerts = statsService.getAlertProducts();
+                List<Map<String, Object>> activities = statsService.getRecentSales(8);
+                List<String> caData = statsService.getDailyRevenueHistory(7);
+                int pending = statsService.getPendingOrdersCount();
 
-                // 2. Update UI
                 Platform.runLater(() -> {
-                    updateKpis(stocks, caJour);
-                    updateAlerts(alertes);
+                    updateKpis(stocks, caJour, pending);
+                    updateAlerts(alerts);
                     updateActivities(activities);
+                    updateCharts(stocks, caData);
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error refreshing dashboard data: " + e.getMessage());
             }
         }).start();
     }
 
-    private void updateKpis(Map<String, Object> stocks, BigDecimal caJour) {
+    private void updateKpis(Map<String, Object> stocks, BigDecimal caJour, int pending) {
         if (lblTotalProducts != null)
-            lblTotalProducts.setText(stocks.getOrDefault("totalProduits", "0").toString());
+            lblTotalProducts.setText(stocks.getOrDefault("totalProducts", "0").toString());
         if (lblLowStockItems != null)
-            lblLowStockItems.setText(stocks.getOrDefault("enAlerte", "0").toString());
+            lblLowStockItems.setText(stocks.getOrDefault("lowStock", "0").toString());
         if (lblTodaysSales != null)
             lblTodaysSales.setText(String.format("%.2f TND", caJour));
         if (lblPendingOrders != null)
-            lblPendingOrders.setText("--"); // Commande data not yet in service
+            lblPendingOrders.setText(String.valueOf(pending));
     }
 
-    private void updateAlerts(List<Map<String, Object>> alertes) {
+    private void updateAlerts(List<Map<String, Object>> alerts) {
         if (vboxStockAlerts == null)
             return;
         vboxStockAlerts.getChildren().clear();
 
-        if (alertes.isEmpty()) {
-            Label msg = new Label("✅ Tout est en ordre. Aucun produit en alerte.");
-            msg.setStyle("-fx-text-fill: #2ecc71; -fx-font-weight: bold; -fx-padding: 10;");
+        if (alerts.isEmpty()) {
+            Label msg = new Label("✅ Everything in order. No low stock items.");
+            msg.setStyle("-fx-text-fill: #27ae60; -fx-padding: 20; -fx-alignment: CENTER;");
             vboxStockAlerts.getChildren().add(msg);
             return;
         }
 
-        for (Map<String, Object> alerte : alertes) {
+        for (Map<String, Object> alerte : alerts) {
             HBox row = new HBox(15);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(12, 20, 12, 20));
+            row.setPadding(new Insets(12, 18, 12, 18));
+            row.setStyle(
+                    "-fx-background-color: #fff1f2; -fx-background-radius: 12; -fx-border-color: #fecdd3; -fx-border-width: 1;");
 
-            int stock = (int) alerte.get("stock");
-            boolean isCritical = (stock == 0);
-            row.getStyleClass().addAll("stock-alert-item", isCritical ? "stock-alert-critical" : "stock-alert-warning");
-
-            VBox info = new VBox(3);
+            VBox info = new VBox(4);
             HBox.setHgrow(info, Priority.ALWAYS);
 
             Label nom = new Label(alerte.get("nom").toString());
-            nom.getStyleClass().add("stock-alert-product-name");
+            nom.setStyle("-fx-font-weight: 800; -fx-font-size: 14px; -fx-text-fill: #991b1b;");
 
-            Label details = new Label("Stock: " + stock + " | Seuil: " + alerte.get("seuil"));
-            details.getStyleClass().add("stock-alert-quantity");
+            Label stock = new Label("Stock: " + alerte.get("stock") + " / Min: " + alerte.get("seuil"));
+            stock.setStyle("-fx-text-fill: #b91c1c; -fx-font-size: 12px;");
 
-            info.getChildren().addAll(nom, details);
+            info.getChildren().addAll(nom, stock);
 
-            Label status = new Label(isCritical ? "❌ RUPTURE" : "⚠ BAS STOCK");
-            status.setStyle("-fx-font-weight: 900; -fx-text-fill: " + (isCritical ? "#e74c3c" : "#f39c12") + ";");
+            Button btn = new Button("Commander");
+            btn.getStyleClass().add("btn-order-small");
+            btn.setOnAction(ae -> handleNewOrder());
 
-            row.getChildren().addAll(info, status);
+            row.getChildren().addAll(info, btn);
             vboxStockAlerts.getChildren().add(row);
         }
     }
@@ -162,45 +236,120 @@ public class AccueilController extends BaseController {
 
         for (Map<String, Object> act : activities) {
             HBox item = new HBox(15);
-            item.getStyleClass().add("activity-item");
             item.setAlignment(Pos.CENTER_LEFT);
-            item.setPadding(new Insets(10, 0, 10, 0));
+            item.setPadding(new Insets(10, 15, 10, 15));
+            item.setStyle(
+                    "-fx-background-color: #f8fafc; -fx-background-radius: 10; -fx-border-color: #e2e8f0; -fx-border-width: 1;");
 
             Label icon = new Label("💰");
-            VBox info = new VBox(2);
-            Label desc = new Label("Vente #" + act.get("id") + " - " + act.get("client"));
-            desc.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-            Label time = new Label("Montant: " + act.get("total") + " TND");
-            time.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px;");
+            icon.setStyle("-fx-font-size: 18px;");
 
-            info.getChildren().addAll(desc, time);
+            VBox info = new VBox(2);
+            HBox.setHgrow(info, Priority.ALWAYS);
+
+            Label title = new Label("Vente #" + act.get("id") + " - " + act.get("client"));
+            title.setStyle("-fx-font-weight: bold; -fx-text-fill: -fx-color-text-body;");
+
+            Label val = new Label(act.get("total") + " TND");
+            val.setStyle("-fx-text-fill: -fx-color-success; -fx-font-weight: 700;");
+
+            info.getChildren().addAll(title, val);
+
             item.getChildren().addAll(icon, info);
+
             vboxActivites.getChildren().add(item);
         }
     }
 
-    // Navigation
+    private void updateCharts(Map<String, Object> stocks, List<String> caData) {
+        if (chartVentes != null) {
+            CategoryAxis xAxis = (CategoryAxis) chartVentes.getXAxis();
+            xAxis.getCategories().clear(); // CRITICAL: Clear categories to prevent clumping
+
+            chartVentes.getData().clear();
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Revenue (7j)");
+
+            if (caData != null) {
+                for (String entry : caData) {
+                    try {
+                        String[] parts = entry.split(":");
+                        if (parts.length >= 2) {
+                            String date = parts[0].trim();
+                            if (date.length() >= 10) {
+                                date = date.substring(5); // MM-DD
+                            }
+                            double amount = Double.parseDouble(parts[1].trim().split(" ")[0].replace(",", "."));
+                            series.getData().add(new XYChart.Data<>(date, amount));
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error parsing CA chart data: " + e.getMessage());
+                    }
+                }
+            }
+            chartVentes.getData().add(series);
+
+            xAxis.setTickLabelRotation(-45);
+        }
+
+        if (chartStock != null && stocks != null) {
+            chartStock.getData().clear();
+            int total = (int) stocks.getOrDefault("totalProducts", 0);
+            int low = (int) stocks.getOrDefault("lowStock", 0);
+            int out = (int) stocks.getOrDefault("outOfStock", 0);
+            if (total > 0) {
+                double normalVal = (int) stocks.getOrDefault("totalProducts", 0)
+                        - (int) stocks.getOrDefault("lowStock", 0) - (int) stocks.getOrDefault("outOfStock", 0);
+                double lowVal = (int) stocks.getOrDefault("lowStock", 0);
+                double outVal = (int) stocks.getOrDefault("outOfStock", 0);
+
+                double normalPct = (normalVal / total) * 100;
+                double lowPct = (lowVal / total) * 100;
+                double outPct = (outVal / total) * 100;
+
+                if (normalVal > 0)
+                    chartStock.getData().add(new PieChart.Data(String.format("Normal (%.0f%%)", normalPct), normalVal));
+                if (lowVal > 0)
+                    chartStock.getData().add(new PieChart.Data(String.format("Bas (%.0f%%)", lowPct), lowVal));
+                if (outVal > 0)
+                    chartStock.getData().add(new PieChart.Data(String.format("Rupture (%.0f%%)", outPct), outVal));
+            }
+        }
+    }
+
     @FXML
     private void handleNewSale() {
-        if (dashboardController != null)
-            dashboardController.handleVentes();
+        if (dashboard != null)
+            dashboard.handleVentes();
     }
 
     @FXML
     private void handleNewOrder() {
-        if (dashboardController != null)
-            dashboardController.handleCommandes();
+        if (dashboard != null)
+            dashboard.handleCommandes();
+    }
+
+    @FXML
+    private void handleGoToProduits() {
+        if (dashboard != null)
+            dashboard.handleProduits();
+    }
+
+    @FXML
+    private void handleGoToClients() {
+        if (dashboard != null)
+            dashboard.handleClients();
     }
 
     @FXML
     private void handleGoToRapports() {
-        if (dashboardController != null)
-            dashboardController.handleRapports();
+        if (dashboard != null)
+            dashboard.handleRapports();
     }
 
     @FXML
     private void handleGoToUtilisateurs() {
-        if (dashboardController != null)
-            dashboardController.handleUtilisateurs();
+        if (dashboard != null)
+            dashboard.handleUtilisateurs();
     }
 }
