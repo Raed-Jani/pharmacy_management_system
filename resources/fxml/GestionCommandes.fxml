@@ -23,7 +23,7 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@../css/pharmacy-blue-theme.css" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.GestionCommandesController">
     <children>
-    <VBox spacing="25" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+    <VBox spacing="25" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
             <!-- En-tête -->
             <HBox alignment="CENTER_LEFT" spacing="20">

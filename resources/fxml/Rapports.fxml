@@ -23,7 +23,7 @@
 
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <content>
-            <VBox spacing="40" style="-fx-padding: 30; -fx-background-color: transparent;">
+            <VBox spacing="40" style="-fx-padding: 0; -fx-background-color: transparent;">
                 
                 <!-- SECTION 1: HEADER & ACTIONS -->
                 <HBox alignment="CENTER_LEFT" spacing="25">

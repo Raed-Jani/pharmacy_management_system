@@ -96,8 +96,9 @@ public class LoginController extends BaseController {
             Stage stage = (Stage) scene.getWindow();
             if (!stage.isMaximized())
                 stage.setMaximized(true);
-        } catch (IOException e) {
-            displayError("Failed to open dashboard: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            displayError("Dashboard Load Error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
 

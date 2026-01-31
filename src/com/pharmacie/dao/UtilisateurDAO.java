@@ -158,6 +158,19 @@ public class UtilisateurDAO {
         }
     }
 
+    /**
+     * S'assure qu'au moins un administrateur existe dans la base de données.
+     * Si la table est vide, crée le compte admin par défaut.
+     */
+    public void assurerAdminExiste() throws SQLException {
+        if (!loginExiste("admin")) {
+            Utilisateur admin = new Utilisateur("admin", "password123", "ADMIN");
+            admin.setNom("Administrateur");
+            admin.setPrenom("Système");
+            ajouter(admin);
+        }
+    }
+
     private Utilisateur mapResultSetToUtilisateur(ResultSet rs) throws SQLException {
         return new Utilisateur(
                 rs.getInt("id_utilisateur"),

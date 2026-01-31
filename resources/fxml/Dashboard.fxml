@@ -13,11 +13,13 @@
 <?import javafx.scene.image.ImageView?>
 
 <StackPane fx:id="dashboardRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.pharmacie.ui.controller.DashboardController">
+           fx:controller="com.pharmacie.ui.controller.DashboardController"
+           style="-fx-padding: 0; -fx-background-color: -fx-color-bg-body;">
     
-    <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                prefHeight="800.0" prefWidth="1280.0" stylesheets="@../css/pharmacy-blue-theme.css"
-                styleClass="root">
+    <BorderPane stylesheets="@../css/pharmacy-blue-theme.css"
+                styleClass="root"
+                maxWidth="1.7976931348623157E308" maxHeight="1.7976931348623157E308"
+                StackPane.alignment="TOP_LEFT">
 
     <!-- TOP HEADER -->
     <top>
@@ -109,6 +111,8 @@
         </BorderPane>
     </center>
     
+    </BorderPane> <!-- Added missing closing tag for main BorderPane -->
+
     <!-- Overlay for toast notifications (on top of BorderPane) -->
     <StackPane fx:id="toastOverlay" id="toastOverlay" mouseTransparent="true" pickOnBounds="false" />
 

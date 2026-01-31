@@ -11,7 +11,7 @@
             stylesheets="@../css/pharmacy-blue-theme.css"
             styleClass="root">
 
-    <VBox spacing="20" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
+    <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
         
         <!-- En-tête -->
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 0 0 25 0;">

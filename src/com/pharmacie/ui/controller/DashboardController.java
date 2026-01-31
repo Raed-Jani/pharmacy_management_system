@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.application.Platform;
 import com.pharmacie.model.Utilisateur;
 import java.io.IOException;
+import java.net.URL;
 
 public class DashboardController extends BaseController {
 
@@ -142,7 +143,11 @@ public class DashboardController extends BaseController {
 
     private void loadView(String fxmlPath, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            URL url = getClass().getResource(fxmlPath);
+            if (url == null) {
+                throw new IOException("FXML resource not found: " + fxmlPath);
+            }
+            FXMLLoader loader = new FXMLLoader(url);
             Parent view = loader.load();
             Object ctrl = loader.getController();
             if (ctrl instanceof BaseController) {
@@ -151,9 +156,10 @@ public class DashboardController extends BaseController {
                 base.setDashboard(this);
             }
             contentArea.setCenter(view);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showError("Load Error", "Failed to load " + title + ": " + e.getMessage());
+            showError("Load Error",
+                    "Failed to load " + title + ": " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
 
