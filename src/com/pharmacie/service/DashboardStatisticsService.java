@@ -93,6 +93,8 @@ public class DashboardStatisticsService {
         String query = "SELECT COUNT(*) as total, " +
                 "SUM(CASE WHEN quantite_stock = 0 THEN 1 ELSE 0 END) as outOfStock, " +
                 "SUM(CASE WHEN quantite_stock <= seuil_alerte AND quantite_stock > 0 THEN 1 ELSE 0 END) as lowStock, " +
+                "SUM(CASE WHEN quantite_stock <= seuil_alerte OR quantite_stock = 0 THEN 1 ELSE 0 END) as totalAlerts, "
+                +
                 "SUM(CASE WHEN date_expiration <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as expiringSoon "
                 +
                 "FROM Produit";
@@ -103,6 +105,7 @@ public class DashboardStatisticsService {
                 stats.put("totalProducts", rs.getInt("total"));
                 stats.put("outOfStock", rs.getInt("outOfStock"));
                 stats.put("lowStock", rs.getInt("lowStock"));
+                stats.put("totalAlerts", rs.getInt("totalAlerts"));
                 stats.put("expiringSoon", rs.getInt("expiringSoon"));
             }
         }
@@ -111,7 +114,7 @@ public class DashboardStatisticsService {
 
     public List<Map<String, Object>> getAlertProducts() throws SQLException {
         List<Map<String, Object>> results = new ArrayList<>();
-        String query = "SELECT nom, quantite_stock, seuil_alerte FROM Produit WHERE quantite_stock <= seuil_alerte ORDER BY quantite_stock";
+        String query = "SELECT nom, quantite_stock, seuil_alerte FROM Produit WHERE quantite_stock <= seuil_alerte OR quantite_stock = 0 ORDER BY quantite_stock";
         try (Connection conn = getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query)) {

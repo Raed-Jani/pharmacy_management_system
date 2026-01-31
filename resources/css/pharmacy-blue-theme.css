@@ -1,54 +1,37 @@
-/*
-   BIOVERA PRO PRO V1 - INFINITE BLUE THEME
-   Design Philosophy: Professional, Clean, Trustworthy, Modern.
-   Color Palette: "Infinite Blue"
-*/
-
 .root {
-    /* === CORE PALETTE === */
+
     -fx-color-primary: #1E40AF;
-    /* Royal Blue - Main Actions */
+
     -fx-color-primary-dark: #1E3A8A;
-    /* Deep Blue - Hover/Active */
+
     -fx-color-secondary: #0F172A;
-    /* Midnight - Sidebar/Text */
+
     -fx-color-accent: #3B82F6;
-    /* Ocean Blue - Highlights/Focus */
 
-    /* === FUNCTIONAL COLORS === */
     -fx-color-success: #10B981;
-    /* Emerald - Positive states */
+
     -fx-color-warning: #F59E0B;
-    /* Amber - Warnings */
+
     -fx-color-danger: #EF4444;
-    /* Red - Errors/Delete */
+
     -fx-color-info: #0EA5E9;
-    /* Sky - Information */
 
-    /* === NEUTRALS & BACKGROUNDS === */
     -fx-color-bg-body: #F8FAFC;
-    /* Slate 50 - Main Background */
+
     -fx-color-bg-surface: #FFFFFF;
-    /* White - Cards/Panels */
+
     -fx-color-border: #E2E8F0;
-    /* Slate 200 - Borders */
 
-    /* === TEXT === */
     -fx-color-text-title: #0F172A;
-    /* Slate 900 - Headings */
-    -fx-color-text-body: #334155;
-    /* Slate 700 - Body Text */
-    -fx-color-text-muted: #64748B;
-    /* Slate 500 - Secondary Text */
 
-    /* === COMMON PROPERTIES === */
+    -fx-color-text-body: #334155;
+
+    -fx-color-text-muted: #64748B;
+
     -fx-font-family: 'Segoe UI', 'Inter', sans-serif;
     -fx-background-color: -fx-color-bg-body;
 }
 
-/* =========================================================================
-   SCROLLBARS
-   ========================================================================= */
 .scroll-bar {
     -fx-background-color: transparent;
 }
@@ -68,9 +51,6 @@
     -fx-background-color: #94A3B8;
 }
 
-/* =========================================================================
-   TYPOGRAPHY
-   ========================================================================= */
 .label-heading {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
@@ -106,19 +86,16 @@
 
 .label-form {
     -fx-text-fill: #475569;
-    /* Darker Slate 600 */
+
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-transform: uppercase;
     -fx-padding: 0 0 2px 2px;
 }
 
-/* =========================================================================
-   HEADER & BRANDING
-   ========================================================================= */
 .header-bar {
     -fx-background-color: linear-gradient(to right, #0F172A, #1E3A8A);
-    /* Midnight to Deep Blue */
+
     -fx-border-color: transparent transparent rgba(255, 255, 255, 0.1) transparent;
     -fx-border-width: 0 0 1px 0;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 2);
@@ -129,7 +106,7 @@
     -fx-font-size: 28px;
     -fx-font-weight: 900;
     -fx-text-fill: #FFFFFF;
-    /* White for dark background */
+
     -fx-letter-spacing: 0.5px;
 }
 
@@ -160,7 +137,7 @@
 .header-btn-icon-danger {
     -fx-background-color: transparent;
     -fx-text-fill: #FDA4AF;
-    /* Soft light red for dark background */
+
     -fx-font-size: 16px;
     -fx-padding: 8px;
     -fx-cursor: hand;
@@ -174,9 +151,9 @@
 
 .header-logo-pill {
     -fx-background-color: #1E3A8A;
-    /* Darker Blue */
+
     -fx-background-radius: 8px;
-    /* Rounded square */
+
     -fx-min-width: 42px;
     -fx-min-height: 42px;
     -fx-max-width: 42px;
@@ -187,7 +164,7 @@
 
 .header-logo-icon {
     -fx-text-fill: #FFFFFF;
-    /* Pure White from image */
+
     -fx-font-size: 20px;
     -fx-rotate: -45;
 }
@@ -220,10 +197,6 @@
     -fx-prompt-text-fill: #94A3B8;
 }
 
-
-/* =========================================================================
-   BUTTONS (MODERN)
-   ========================================================================= */
 .button {
     -fx-background-color: -fx-color-primary;
     -fx-text-fill: white;
@@ -250,7 +223,6 @@
     -fx-effect: none;
 }
 
-/* Variant: Secondary (Outline) */
 .btn-secondary {
     -fx-background-color: transparent;
     -fx-border-color: -fx-color-border;
@@ -265,7 +237,6 @@
     -fx-border-color: -fx-color-text-muted;
 }
 
-/* Variant: Danger */
 .btn-danger {
     -fx-background-color: white;
     -fx-border-color: -fx-color-danger;
@@ -279,7 +250,6 @@
     -fx-text-fill: white;
 }
 
-/* Variant: Success */
 .btn-success {
     -fx-background-color: -fx-color-success;
     -fx-text-fill: white;
@@ -289,7 +259,6 @@
     -fx-background-color: #059669;
 }
 
-/* Variant: Icon Button */
 .btn-icon {
     -fx-background-color: transparent;
     -fx-padding: 8px;
@@ -304,7 +273,6 @@
     -fx-text-fill: #FFFFFF;
 }
 
-/* Variant: Quick Action (Dashboard) */
 .quick-action-btn {
     -fx-background-color: linear-gradient(to right, -fx-color-primary, -fx-color-accent);
     -fx-background-radius: 12px;
@@ -318,9 +286,6 @@
     -fx-background-color: linear-gradient(to right, -fx-color-primary-dark, -fx-color-primary);
 }
 
-/* =========================================================================
-   TEXT FIELDS & INPUTS
-   ========================================================================= */
 .text-field,
 .date-picker .text-field,
 .combo-box {
@@ -334,7 +299,7 @@
     -fx-text-fill: -fx-color-text-body;
     -fx-font-size: 13px;
     -fx-prompt-text-fill: #94a3b8;
-    /* Slightly darker than muted for contrast */
+
 }
 
 .combo-box>.list-cell {
@@ -356,9 +321,6 @@
     -fx-padding: 8px 15px;
 }
 
-/* =========================================================================
-   CARDS & CONTAINERS
-   ========================================================================= */
 .card,
 .panel,
 .glass-card,
@@ -370,7 +332,6 @@
     -fx-padding: 20px;
 }
 
-/* Dashboard Info Cards */
 .info-card {
     -fx-padding: 25px;
     -fx-min-width: 240px;
@@ -396,23 +357,20 @@
     -fx-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* State: No Alerts (Neutral/Success) */
 .alert-panel-success {
     -fx-border-color: #E2E8F0;
     -fx-effect: dropshadow(three-pass-box, rgba(148, 163, 184, 0.1), 15, 0, 0, 8);
 }
 
-/* State: Warning (1-4 Alerts) */
 .alert-panel-warning {
     -fx-border-color: #FCD34D;
-    /* Amber 300 */
+
     -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.15), 20, 0, 0, 10);
 }
 
-/* State: Critical (5+ Alerts) */
 .alert-panel-critical {
     -fx-border-color: #FCA5A5;
-    /* Red 300 */
+
     -fx-effect: dropshadow(three-pass-box, rgba(239, 68, 68, 0.25), 30, 0, 0, 15);
 }
 
@@ -455,7 +413,6 @@
     -fx-scale-y: 1.05;
 }
 
-/* Icon Containers in Cards */
 .icon-container {
     -fx-padding: 10px;
     -fx-background-radius: 10px;
@@ -480,9 +437,6 @@
     -fx-background-color: rgba(124, 58, 237, 0.1);
 }
 
-/* =========================================================================
-   SIDEBAR
-   ========================================================================= */
 .sidebar-navy {
     -fx-background-color: -fx-color-secondary;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 0);
@@ -498,20 +452,20 @@
 
 .sidebar-section-label {
     -fx-text-fill: #CBD5E1;
-    /* Muted but readable Slate 300 */
+
     -fx-font-size: 15px;
-    /* Even larger as requested */
+
     -fx-font-weight: 900;
     -fx-padding: 30px 20px 10px 25px;
-    /* Increased padding for the larger text */
+
     -fx-text-transform: uppercase;
     -fx-letter-spacing: 1.5px;
-    /* Slightly more letter spacing for the larger size */
+
 }
 
 .sidebar-button {
     -fx-text-fill: #CBD5E1;
-    /* Slate 300 */
+
     -fx-background-color: transparent;
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 12px 25px;
@@ -531,13 +485,10 @@
 .sidebar-button-active {
     -fx-background-color: linear-gradient(to right, rgba(59, 130, 246, 0.2), transparent);
     -fx-text-fill: #60A5FA;
-    /* Blue 400 */
+
     -fx-border-color: -fx-color-accent;
 }
 
-/* =========================================================================
-   TABLE VIEW (PREMIUM REDESIGN)
-   ========================================================================= */
 .table-view {
     -fx-background-color: transparent;
     -fx-table-cell-border-color: transparent;
@@ -546,7 +497,7 @@
     -fx-border-radius: 12px;
     -fx-padding: 0;
     -fx-cell-size: 26px;
-    /* Ultra compact height */
+
 }
 
 .table-view .column-header-background {
@@ -564,10 +515,10 @@
 
 .table-view .column-header .label {
     -fx-text-fill: #64748B;
-    /* Slate 500 */
+
     -fx-font-weight: 800;
     -fx-font-size: 9px;
-    /* Tighter headers */
+
     -fx-text-transform: uppercase;
     -fx-letter-spacing: 1px;
 }
@@ -581,7 +532,7 @@
 
 .table-row-cell:filled:odd {
     -fx-background-color: #F9FBFF;
-    /* Very subtle blue-gray tint for zebra striping */
+
 }
 
 .table-row-cell:hover {
@@ -590,7 +541,7 @@
 
 .table-row-cell:selected {
     -fx-background-color: rgba(59, 130, 246, 0.08);
-    /* Modern subtle selection */
+
     -fx-background-insets: 0;
     -fx-border-width: 0 0 1px 0;
     -fx-border-color: transparent transparent #E2E8F0 transparent;
@@ -598,9 +549,9 @@
 
 .table-cell {
     -fx-text-fill: #334155;
-    /* Slate 700 */
+
     -fx-font-size: 12px;
-    /* Slightly smaller for compactness */
+
     -fx-alignment: CENTER;
     -fx-padding: 0 15px;
     -fx-border-color: transparent;
@@ -616,9 +567,6 @@
     -fx-font-size: 14px;
 }
 
-/* =========================================================================
-   TABPANE (MODERN)
-   ========================================================================= */
 .tab-pane {
     -fx-background-color: -fx-color-bg-body;
 }
@@ -663,17 +611,13 @@
     -fx-border-color: transparent;
 }
 
-/* ============================================================================
-   LOGIN SCREEN STYLES (Modern & Creative)
-   ============================================================================ */
-
 .login-root {
     -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #1E3A8A, #0F172A);
 }
 
 .login-card {
     -fx-background-color: rgba(255, 255, 255, 0.85);
-    /* Semi-transparent for glass effect */
+
     -fx-background-radius: 24;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 100, 0, 0, 40);
     -fx-padding: 60 70;
@@ -682,10 +626,6 @@
     -fx-border-radius: 24;
 }
 
-/* Note: JavaFX doesn't support -fx-backdrop-filter out of the box, 
-   but we achieve the 'aesthetic' look through transparency and deep shadows. */
-
-/* --- PREMIUM SAAS LOGIN REDESIGN --- */
 .login-root {
     -fx-background-color: linear-gradient(to bottom right, #F8FAFC, #EFF6FF);
 }
@@ -699,10 +639,9 @@
     -fx-border-width: 1px;
 }
 
-/* SaaS Square Logo (BioVera) */
 .saas-pill-logo {
     -fx-background-color: #1E3A8A;
-    /* Darker blue */
+
     -fx-background-radius: 12px;
     -fx-min-width: 80px;
     -fx-min-height: 80px;
@@ -740,14 +679,12 @@
     -fx-text-fill: #64748B;
 }
 
-/* Cleaned up old titles */
-
 .login-input-heading {
     -fx-text-fill: #334155;
-    /* Darker for accessibility */
+
     -fx-font-size: 15px;
     -fx-font-weight: 700;
-    /* Much bolder */
+
 }
 
 .login-input-container {
@@ -773,10 +710,10 @@
 
 .login-input-icon {
     -fx-text-fill: -fx-color-primary;
-    /* Match brand color */
+
     -fx-font-size: 20px;
     -fx-opacity: 1.0;
-    /* Full visibility */
+
 }
 
 .login-input-icon-eye {
@@ -872,10 +809,6 @@
     -fx-background-color: #EF4444;
 }
 
-/* ============================================================================
-   POS (Point of Sale) REFINEMENTS
-   ============================================================================ */
-
 .pos-total-card {
     -fx-background-color: -fx-color-secondary;
     -fx-padding: 25;
@@ -898,7 +831,6 @@
     -fx-padding: 0 0 10 0;
 }
 
-/* Quick Action Button Variants */
 .quick-action-btn-blue {
     -fx-background-color: linear-gradient(to right, #3b82f6, #2563eb);
 }
@@ -979,7 +911,7 @@
 
 .btn-pos-validate {
     -fx-background-color: #10B981;
-    /* Premium Emerald Green */
+
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: 800;
@@ -996,7 +928,7 @@
 .btn-pos-validate:disabled {
     -fx-opacity: 0.4;
     -fx-background-color: #1E293B;
-    /* Darker muted color when disabled */
+
     -fx-effect: none;
 }
 
@@ -1015,7 +947,6 @@
     -fx-min-height: 45;
 }
 
-/* Report Stat Cards */
 .stat-card {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -1055,9 +986,6 @@
     -fx-font-weight: 900;
 }
 
-/* =========================================================================
-   CHARTS & VISUALS
-   ========================================================================= */
 .chart {
     -fx-padding: 10px;
 }
@@ -1072,38 +1000,30 @@
     -fx-font-weight: bold;
 }
 
-/* BarChart Colors (Professional Indigo) */
 .default-color0.chart-bar {
     -fx-bar-fill: #4338ca;
     -fx-background-radius: 4 4 0 0;
 }
 
-/* PieChart Colors (Distinct Explanatory Palette) */
 .default-color0.chart-pie {
     -fx-pie-color: #4338ca;
 }
 
-/* Indigo */
 .default-color1.chart-pie {
     -fx-pie-color: #059669;
 }
 
-/* Emerald */
 .default-color2.chart-pie {
     -fx-pie-color: #d97706;
 }
 
-/* Amber */
 .default-color3.chart-pie {
     -fx-pie-color: #7c3aed;
 }
 
-/* Purple */
 .default-color4.chart-pie {
     -fx-pie-color: #0ea5e9;
 }
-
-/* Sky Blue */
 
 .chart-pie-label {
     -fx-fill: -fx-color-text-body;
@@ -1121,7 +1041,6 @@
     -fx-font-weight: bold;
 }
 
-/* Utilities */
 .label-muted {
     -fx-text-fill: -fx-color-text-muted;
 }
@@ -1139,7 +1058,6 @@
     -fx-background-color: -fx-color-primary-dark;
 }
 
-/* Orders Module Creative Polish */
 .order-setup-container {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -1178,9 +1096,6 @@
     -fx-padding: 0 0 5 0;
 }
 
-/* =========================================================================
-   DATE PICKER POPUP (MODERN & PROFESSIONAL - ULTRA LIGHT REFINEMENT)
-   ========================================================================= */
 .date-picker-popup {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -1196,11 +1111,10 @@
     -fx-padding: 0 0 12px 0;
 }
 
-/* Fix for oversized navigation buttons - Using specific modena selectors */
 .date-picker-popup>.month-year-pane>.left-button,
 .date-picker-popup>.month-year-pane>.right-button {
     -fx-background-color: #F1F5F9;
-    /* Very light slate */
+
     -fx-background-radius: 8px;
     -fx-padding: 8px;
     -fx-min-height: 32px;
@@ -1208,7 +1122,7 @@
     -fx-max-height: 32px;
     -fx-max-width: 32px;
     -fx-text-fill: #64748B;
-    /* Professional slate text */
+
     -fx-effect: none;
     -fx-cursor: hand;
 }
@@ -1219,11 +1133,10 @@
     -fx-text-fill: #5774d3;
 }
 
-/* Arrows inside buttons */
 .date-picker-popup>.month-year-pane>.left-button>.left-arrow,
 .date-picker-popup>.month-year-pane>.right-button>.right-arrow {
     -fx-background-color: #94A3B8;
-    /* Muted slate for the arrow icon */
+
     -fx-padding: 4px;
 }
 
@@ -1275,9 +1188,9 @@
 
 .date-picker-popup>.calendar-grid>.selected {
     -fx-background-color: #DBEAFE;
-    /* Very Light Blue for selection */
+
     -fx-text-fill: #1E40AF;
-    /* Deep Blue text */
+
     -fx-background-radius: 6px;
     -fx-font-weight: bold;
 }
@@ -1291,29 +1204,25 @@
     -fx-text-fill: #E2E8F0;
 }
 
-/* Specific styling for the cart table to make it larger and more readable */
 .table-cart {
     -fx-cell-size: 45px;
-    /* Larger row height for the cart */
+
 }
 
 .table-cart .table-cell {
     -fx-font-size: 14px;
-    /* Larger font for the cart items */
+
 }
 
 .table-cart .column-header-background {
     -fx-pref-height: 48px;
-    /* Restoring standard header height for the cart */
+
 }
 
 .table-cart .column-header .label {
     -fx-font-size: 11px;
 }
 
-/* =========================================================================
-   CHECKBOX (PREMIUM)
-   ========================================================================= */
 .check-box {
     -fx-text-fill: -fx-color-text-body;
     -fx-font-size: 13px;

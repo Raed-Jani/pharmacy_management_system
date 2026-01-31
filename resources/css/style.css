@@ -1,10 +1,6 @@
-/* === STYLES GÉNÉRAUX === */
-
 * {
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
-
-/* === BOUTONS === */
 
 .button {
     -fx-padding: 10px 20px;
@@ -22,13 +18,9 @@
     -fx-opacity: 0.8;
 }
 
-/* === LABELS === */
-
 .label {
     -fx-text-fill: #2C3E50;
 }
-
-/* === TABLEVIEW === */
 
 .table-view {
     -fx-font-size: 11px;
@@ -37,8 +29,6 @@
 .table-view:focused {
     -fx-focus-color: #3498DB;
 }
-
-/* === TEXTFIELD === */
 
 .text-field {
     -fx-padding: 8px;
@@ -51,13 +41,9 @@
     -fx-text-fill: #2C3E50;
 }
 
-/* === ALERTS === */
-
 .alert {
     -fx-font-size: 12px;
 }
-
-/* === MENU ITEMS === */
 
 .menu-bar {
     -fx-background-color: #34495E;
@@ -67,8 +53,6 @@
     -fx-text-fill: white;
 }
 
-/* === SCROLLPANE === */
-
 .scroll-pane {
     -fx-padding: 0;
     -fx-font-size: 11px;
@@ -77,8 +61,6 @@
 . scroll-bar {
     -fx-background-color: #ECF0F1;
 }
-
-/* === CUSTOM COLORS === */
 
 .success { -fx-text-fill: #27AE60; }
 .warning { -fx-text-fill:  #F39C12; }

@@ -3,10 +3,14 @@ package com.pharmacie.ui.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.Parent;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import com.pharmacie.model.Utilisateur;
@@ -22,10 +26,52 @@ public class DashboardController extends BaseController {
     private BorderPane contentArea;
     @FXML
     private VBox vboxAdmin;
+    @FXML
+    private StackPane dashboardRoot; // Bound to the root StackPane
+    @FXML
+    private StackPane toastOverlay; // Bound via FXML (dedicated overlay)
+
+    /**
+     * Get the StackPane container for notifications.
+     * Includes a fail-safe programmatic creation if injection fails.
+     */
+    public Pane getRootPane() {
+        // 1. Check injected field
+        if (toastOverlay != null)
+            return toastOverlay;
+
+        // 2. Search in scene if fields are null
+        if (dashboardRoot != null && dashboardRoot.getScene() != null) {
+            Node found = dashboardRoot.getScene().lookup("#toastOverlay");
+            if (found instanceof Pane) {
+                toastOverlay = (StackPane) found;
+                return toastOverlay;
+            }
+        }
+
+        // 3. Last resort fallback
+        return (dashboardRoot != null) ? dashboardRoot : contentArea;
+    }
 
     @FXML
     public void initialize() {
-        // Initial view load is triggered by setUtilisateur
+        System.out.println("DEBUG DashboardController: initialize() called");
+
+        // Use Platform.runLater to wait for full scene attachment
+        Platform.runLater(() -> {
+            if (toastOverlay == null && dashboardRoot != null && dashboardRoot.getScene() != null) {
+                Node found = dashboardRoot.getScene().lookup("#toastOverlay");
+                if (found instanceof StackPane) {
+                    toastOverlay = (StackPane) found;
+                    System.out.println("DEBUG DashboardController: toastOverlay recovered via manual lookup");
+                }
+            }
+
+            if (toastOverlay != null) {
+                toastOverlay.setPickOnBounds(false);
+                toastOverlay.setMouseTransparent(false);
+            }
+        });
     }
 
     @Override

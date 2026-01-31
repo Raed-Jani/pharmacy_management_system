@@ -1,61 +1,66 @@
 package com.pharmacie.ui.controller;
 
 import com.pharmacie.model.Utilisateur;
+import com.pharmacie.ui.notification.ToastNotification;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import java.util.Optional;
 
+/**
+ * Base class for all UI controllers, providing common utilities for
+ * user management, navigation feedback, and notifications.
+ */
 public abstract class BaseController {
 
     protected Utilisateur user;
     protected DashboardController dashboard;
 
     @FXML
-    protected Label lblHeaderName;
-    @FXML
-    protected Label lblHeaderRole;
+    protected Label lblHeaderName; // Common header title if present
 
     public void setUtilisateur(Utilisateur user) {
         this.user = user;
-        updateHeaderUserInfo();
-    }
-
-    protected void updateHeaderUserInfo() {
-        if (user != null) {
-            if (lblHeaderName != null)
-                lblHeaderName.setText(user.getLogin());
-            if (lblHeaderRole != null)
-                lblHeaderRole.setText(user.getRole());
-        }
-    }
-
-    @FXML
-    protected void handleLogout() {
-        if (dashboard != null) {
-            dashboard.handleDeconnexion();
-        }
-    }
-
-    public Utilisateur getUtilisateur() {
-        return user;
     }
 
     public void setDashboard(DashboardController dashboard) {
         this.dashboard = dashboard;
     }
 
+    /**
+     * Get the root Pane for displaying toast notifications.
+     * Delegates to the dashboard controller if available.
+     */
+    protected Pane getRootPane() {
+        if (dashboard != null) {
+            return dashboard.getRootPane();
+        }
+
+        // Fallback: search for the scene root if not in a dashboard context
+        if (lblHeaderName != null && lblHeaderName.getScene() != null) {
+            Node root = lblHeaderName.getScene().getRoot();
+            if (root instanceof Pane) {
+                return (Pane) root;
+            }
+        }
+        return null;
+    }
+
     protected void showInfo(String title, String message) {
-        showAlert(Alert.AlertType.INFORMATION, title, message);
+        showToast(message, ToastNotification.Type.INFO);
     }
 
     protected void showSuccess(String message) {
-        showInfo("Success", message);
+        showToast(message, ToastNotification.Type.SUCCESS);
     }
 
     protected void showError(String title, String message) {
-        showAlert(Alert.AlertType.ERROR, title, message);
+        showToast(message, ToastNotification.Type.ERROR);
     }
 
     protected void afficherErreur(String title, String message) {
@@ -70,6 +75,21 @@ public abstract class BaseController {
         showInfo(title, message);
     }
 
+    /**
+     * Display a toast notification (non-blocking)
+     */
+    private void showToast(String message, ToastNotification.Type type) {
+        Pane rootPane = getRootPane();
+        if (rootPane != null) {
+            ToastNotification.show(rootPane, message, type);
+        } else {
+            System.out.println("TOAST FALLBACK [" + type + "] " + message);
+        }
+    }
+
+    /**
+     * Show a confirmation dialog (modal - requires user interaction)
+     */
     protected boolean confirm(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -82,13 +102,5 @@ public abstract class BaseController {
     protected boolean confirmDelete(String target) {
         return confirm("Confirm Deletion",
                 "Are you sure you want to delete " + target + "? This action is irreversible.");
-    }
-
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

@@ -183,7 +183,7 @@ public class AccueilController extends BaseController {
         if (lblTotalProducts != null)
             lblTotalProducts.setText(stocks.getOrDefault("totalProducts", "0").toString());
         if (lblLowStockItems != null)
-            lblLowStockItems.setText(stocks.getOrDefault("lowStock", "0").toString());
+            lblLowStockItems.setText(stocks.getOrDefault("totalAlerts", "0").toString());
         if (lblTodaysSales != null)
             lblTodaysSales.setText(String.format("%.2f TND", caJour));
         if (lblPendingOrders != null)

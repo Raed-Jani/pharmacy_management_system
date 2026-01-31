@@ -1,16 +1,11 @@
-/* ===== RAPPORTS VIEW - MODERN DESIGN ===== */
-
-/* Root Background with Gradient */
 .rapports-root {
     -fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);
 }
 
-/* Main Container */
 .rapports-container {
     -fx-background-color: transparent;
 }
 
-/* Header Section */
 .rapports-header {
     -fx-background-color: rgba(255, 255, 255, 0.15);
     -fx-background-radius: 15;
@@ -28,7 +23,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0.4, 0, 2);
 }
 
-/* Export Controls Section */
 .export-controls {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-background-radius: 10;
@@ -42,7 +36,6 @@
     -fx-font-size: 13px;
 }
 
-/* Custom ComboBox Styling */
 .rapports-combo {
     -fx-background-color: white;
     -fx-background-radius: 8;
@@ -62,7 +55,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0.3, 0, 3);
 }
 
-/* Export Buttons */
 .export-btn {
     -fx-background-radius: 10;
     -fx-padding: 12 20;
@@ -97,7 +89,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 12, 0.4, 0, 4);
 }
 
-/* KPI Cards */
 .kpi-card {
     -fx-background-color: rgba(255, 255, 255, 0.95);
     -fx-background-radius: 15;
@@ -115,25 +106,21 @@
     -fx-scale-y: 1.03;
 }
 
-/* KPI Card - Revenue */
 .kpi-card-revenue {
     -fx-border-color: #27AE60;
     -fx-border-width: 0 0 0 5;
 }
 
-/* KPI Card - Sales */
 .kpi-card-sales {
     -fx-border-color: #3498DB;
     -fx-border-width: 0 0 0 5;
 }
 
-/* KPI Card - Top Product */
 .kpi-card-top {
     -fx-border-color: #9B59B6;
     -fx-border-width: 0 0 0 5;
 }
 
-/* KPI Labels */
 .kpi-label-title {
     -fx-text-fill: #7F8C8D;
     -fx-font-size: 13px;
@@ -158,7 +145,6 @@
     -fx-text-fill: linear-gradient(to right, #9B59B6, #8E44AD);
 }
 
-/* KPI Icon */
 .kpi-icon {
     -fx-font-size: 40px;
     -fx-padding: 0 0 10 0;
@@ -176,7 +162,6 @@
     -fx-text-fill: #9B59B6;
 }
 
-/* Chart Containers */
 .chart-container {
     -fx-background-color: rgba(255, 255, 255, 0.95);
     -fx-background-radius: 15;
@@ -191,7 +176,6 @@
     -fx-padding: 0 0 15 0;
 }
 
-/* Chart Styling */
 .chart {
     -fx-background-color: transparent;
 }
@@ -206,7 +190,6 @@
     -fx-padding: 10;
 }
 
-/* Bar Chart Custom Colors */
 .default-color0.chart-bar {
     -fx-bar-fill: linear-gradient(to top, #667eea, #764ba2);
 }
@@ -215,7 +198,6 @@
     -fx-bar-fill: linear-gradient(to top, #764ba2, #667eea);
 }
 
-/* Pie Chart Custom Colors */
 .default-color0.chart-pie {
     -fx-pie-color: #667eea;
 }
@@ -236,7 +218,6 @@
     -fx-pie-color: #43e97b;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         -fx-opacity: 0;

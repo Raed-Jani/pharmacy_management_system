@@ -143,7 +143,7 @@ public class Produit {
      * Vérifie si le produit est en alerte de stock.
      */
     public boolean estEnAlerte() {
-        return quantiteStock <= seuilAlerte;
+        return quantiteStock <= seuilAlerte || quantiteStock == 0;
     }
 
     /**
