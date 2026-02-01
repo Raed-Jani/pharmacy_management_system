@@ -18,7 +18,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("BioVera Pro v1 - Système de Gestion de Pharmacie");
+        this.primaryStage.setTitle("BioVera Pro v1.1 (New Build) - Système de Gestion de Pharmacie");
 
         loadAppIcon();
 
@@ -92,6 +92,10 @@ public class MainApp extends Application {
         try {
             String css = getClass().getResource("/css/style.css").toExternalForm();
             scene.getStylesheets().add(css);
+
+            // Add theme toggle button CSS for visibility
+            String themeButtonCss = getClass().getResource("/css/theme-toggle-button.css").toExternalForm();
+            scene.getStylesheets().add(themeButtonCss);
         } catch (Exception e) {
             // CSS optionnel, on continue sans si non trouvé
         }

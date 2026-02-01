@@ -18,6 +18,7 @@ import com.pharmacie.model.Utilisateur;
 import com.pharmacie.util.ThemeManager;
 import java.io.IOException;
 import java.net.URL;
+import javafx.scene.shape.SVGPath;
 
 public class DashboardController extends BaseController {
 
@@ -86,18 +87,24 @@ public class DashboardController extends BaseController {
             } else {
                 System.out.println("DEBUG: btnThemeToggle is injected correctly.");
                 btnThemeToggle.setVisible(true);
-                btnThemeToggle.setStyle("-fx-background-color: purple; -fx-text-fill: lime; -fx-font-size: 20px;");
-                btnThemeToggle.toFront();
             }
 
             // Apply saved theme and update button icon
             if (dashboardRoot != null) {
                 ThemeManager.applyTheme(dashboardRoot);
-                if (btnThemeToggle != null) {
-                    btnThemeToggle.setText(ThemeManager.getThemeIcon());
-                }
+                updateThemeButtonIcon();
             }
         });
+    }
+
+    private void updateThemeButtonIcon() {
+        if (btnThemeToggle != null) {
+            SVGPath svg = new SVGPath();
+            svg.setContent(ThemeManager.getThemeIcon());
+            svg.getStyleClass().add("theme-icon");
+            btnThemeToggle.setGraphic(svg);
+            btnThemeToggle.setText(""); // Remove the fallback text
+        }
     }
 
     @Override
@@ -122,10 +129,8 @@ public class DashboardController extends BaseController {
     @FXML
     public void handleToggleTheme() {
         if (dashboardRoot != null) {
-            String newIcon = ThemeManager.toggleTheme(dashboardRoot);
-            if (btnThemeToggle != null) {
-                btnThemeToggle.setText(newIcon);
-            }
+            ThemeManager.toggleTheme(dashboardRoot);
+            updateThemeButtonIcon();
         }
     }
 

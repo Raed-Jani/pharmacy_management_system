@@ -44,7 +44,7 @@ public class ThemeManager {
         isDarkMode = !isDarkMode;
         applyTheme(root);
         savePreference();
-        return isDarkMode ? "☀️" : "🌙";
+        return getThemeIcon();
     }
 
     /**
@@ -66,12 +66,15 @@ public class ThemeManager {
     }
 
     /**
-     * Get the appropriate theme icon for the toggle button
-     * 
-     * @return Moon icon for light mode, sun icon for dark mode
+     * Get the appropriate theme SVG path for the toggle button
      */
     public static String getThemeIcon() {
-        return isDarkMode ? "☀️" : "🌙";
+        // SVG Moon Path for light mode (to indicate dark mode option)
+        String moon = "M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1-8.313-12.454z";
+        // SVG Sun Path for dark mode (to indicate light mode option)
+        String sun = "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 11h2v2H2v-2zm18 0h2v2h-2v-2zM11 2h2v2h-2V2zm0 18h2v2h-2v-2zM5.99 4.58l1.41 1.41-1.41 1.41-1.41-1.41 1.41-1.41zm12.02 12.02l1.41 1.41-1.41 1.41-1.41-1.41 1.41-1.41zM5.99 19.42l1.41-1.41 1.41 1.41-1.41 1.41-1.41-1.41zm12.02-12.02l1.41-1.41 1.41 1.41-1.41 1.41-1.41-1.41z";
+
+        return isDarkMode ? sun : moon;
     }
 
     /**

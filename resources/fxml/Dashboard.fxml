@@ -49,11 +49,11 @@
             
                 <!-- User Profile & Actions -->
             <HBox spacing="15" alignment="CENTER">
-                
-                <Button text="🔔" styleClass="header-btn-icon" />
-
-                <!-- Dark Mode Toggle Button (MOVED AFTER BELL) -->
-                <Button fx:id="btnThemeToggle" text="🌙" onAction="#handleToggleTheme" styleClass="header-btn-icon" />
+                <!-- Group Toggle and Bell -->
+                <HBox spacing="10" alignment="CENTER">
+                    <Button text="🔔" styleClass="header-btn-icon" />
+                    <Button fx:id="btnThemeToggle" onAction="#handleToggleTheme" styleClass="header-btn-icon" />
+                </HBox>
                 
                 <VBox alignment="CENTER_RIGHT" spacing="2">
                     <Label fx:id="lblBienvenue" text="Bienvenue, Admin" styleClass="header-user-name"/>

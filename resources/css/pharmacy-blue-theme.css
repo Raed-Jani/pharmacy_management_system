@@ -2281,3 +2281,44 @@
     -fx-text-fill: #34D399 !important;
     /* Brighter Green */
 }
+
+/* =========================================================================
+   FINAL OVERRIDES FOR VISIBILITY
+   ========================================================================= */
+
+/* FIX LISTS & COMBOBOX POPUPS */
+.dark-mode .list-view, 
+.dark-mode .list-cell, 
+.dark-mode .combo-box-popup .list-view, 
+.dark-mode .combo-box-popup .list-cell {
+    -fx-background-color: #1E293B !important;
+    -fx-control-inner-background: #1E293B !important;
+    -fx-text-fill: #F1F5F9 !important;
+}
+
+.dark-mode .list-cell:filled:selected, 
+.dark-mode .list-cell:filled:hover {
+    -fx-background-color: #334155 !important;
+    -fx-text-fill: #FFFFFF !important;
+}
+
+/* TOAST NOTIFICATIONS */
+.toast-root {
+    -fx-background-color: white !important;
+    -fx-background-radius: 6 !important;
+    -fx-border-width: 0 0 0 5 !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0.2, 0, 4) !important;
+}
+.toast-title { -fx-font-size: 14px !important; -fx-font-weight: bold !important; -fx-text-fill: #1E293B !important; }
+.toast-message { -fx-font-size: 12px !important; -fx-text-fill: #475569 !important; }
+.toast-close-btn { -fx-text-fill: #94A3B8 !important; }
+
+.dark-mode .toast-root {
+    -fx-background-color: #1E293B !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 20, 0, 0, 8) !important;
+}
+.dark-mode .toast-title { -fx-text-fill: #F8FAFC !important; }
+.dark-mode .toast-message { -fx-text-fill: #94A3B8 !important; }
+.dark-mode .toast-success { -fx-border-color: #10B981 !important; }
+.dark-mode .toast-error { -fx-border-color: #EF4444 !important; }
+

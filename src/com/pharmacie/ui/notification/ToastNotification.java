@@ -149,23 +149,15 @@ public class ToastNotification {
 
         toast.setPadding(new Insets(15));
 
-        // High Contrast Styling: White Background
-        String style = String.format(
-                "-fx-background-color: white; " +
-                        "-fx-background-radius: 4; " +
-                        "-fx-border-color: %s; " +
-                        "-fx-border-width: 0 0 0 4; " + // Left border accent only
-                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);", // Subtle shadow
-                type.getColor());
-        toast.setStyle(style);
+        // Use Style Classes
+        toast.getStyleClass().addAll("toast-root", "toast-" + type.name().toLowerCase());
 
         // Icon Circle
         StackPane iconContainer = new StackPane();
-        iconContainer.setStyle(String.format(
-                "-fx-background-color: %s; -fx-background-radius: 50; -fx-min-width: 32; -fx-min-height: 32;",
-                type.getBgColor()));
+        iconContainer.getStyleClass().add("toast-icon-container");
+
         Label icon = new Label(type.getIcon());
-        icon.setStyle(String.format("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: %s;", type.getColor()));
+        icon.getStyleClass().add("toast-icon");
         iconContainer.getChildren().add(icon);
 
         // Text Content
@@ -174,21 +166,17 @@ public class ToastNotification {
         HBox.setHgrow(textContent, Priority.ALWAYS);
 
         Label titleLabel = new Label(type.getTitle());
-        titleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+        titleLabel.getStyleClass().add("toast-title");
 
         Label messageLabel = new Label(message);
         messageLabel.setWrapText(true);
-        messageLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #555555;");
+        messageLabel.getStyleClass().add("toast-message");
 
         textContent.getChildren().addAll(titleLabel, messageLabel);
 
         // Close Button
         Label closeBtn = new Label("✕");
-        closeBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: #999999; -fx-cursor: hand;");
-        closeBtn.setOnMouseEntered(
-                e -> closeBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333; -fx-cursor: hand;"));
-        closeBtn.setOnMouseExited(
-                e -> closeBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: #999999; -fx-cursor: hand;"));
+        closeBtn.getStyleClass().add("toast-close-btn");
 
         toast.getChildren().addAll(iconContainer, textContent, closeBtn);
 

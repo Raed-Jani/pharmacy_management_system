@@ -1,0 +1,45 @@
+/* Theme Toggle Button - Highly Visible Styling */
+#btnThemeToggle {
+    -fx-opacity: 1.0 !important;
+    -fx-min-width: 45px !important;
+    -fx-min-height: 45px !important;
+    -fx-max-width: 45px !important;
+    -fx-max-height: 45px !important;
+    -fx-pref-width: 45px !important;
+    -fx-pref-height: 45px !important;
+
+    /* Solid semi-transparent background for visibility */
+    -fx-background-color: rgba(255, 215, 0, 0.15) !important;
+    -fx-background-radius: 50% !important;
+    -fx-alignment: CENTER !important;
+
+    -fx-border-color: rgba(255, 215, 0, 0.4) !important;
+    -fx-border-width: 2px !important;
+    -fx-border-radius: 50% !important;
+    -fx-cursor: hand !important;
+}
+
+#btnThemeToggle:hover {
+    -fx-background-color: rgba(255, 215, 0, 0.3) !important;
+    -fx-scale-x: 1.1 !important;
+    -fx-scale-y: 1.1 !important;
+    -fx-border-color: #FFD700 !important;
+}
+
+/* Style for the SVG icon inside */
+.theme-icon {
+    -fx-fill: #FFD700 !important;
+    /* Gold/Yellow */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 1) !important;
+}
+
+/* Dark mode specific styling */
+.dark-mode #btnThemeToggle {
+    -fx-background-color: rgba(255, 165, 0, 0.1) !important;
+    -fx-border-color: rgba(255, 165, 0, 0.3) !important;
+}
+
+.dark-mode .theme-icon {
+    -fx-fill: #FFA500 !important;
+    /* Orange for dark mode */
+}
