@@ -17,7 +17,7 @@
 
 <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="scroll-pane" stylesheets="@../css/pharmacy-blue-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pharmacie.ui.controller.AccueilController">
     
-    <VBox spacing="35" style="-fx-padding: 0; -fx-background-color: transparent;">
+    <VBox spacing="35" maxWidth="Infinity" style="-fx-padding: 0; -fx-background-color: transparent;">
         
         <HBox alignment="CENTER_LEFT" spacing="20">
             <VBox spacing="8" HBox.hgrow="ALWAYS">

@@ -51,6 +51,16 @@
     -fx-background-color: #94A3B8;
 }
 
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.scroll-pane>.viewport {
+    -fx-background-color: transparent;
+}
+
 .label-heading {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
