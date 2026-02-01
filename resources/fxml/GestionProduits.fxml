@@ -33,7 +33,7 @@
             
             <HBox spacing="15" alignment="CENTER_RIGHT">
                 <children>
-                    <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 5 15; -fx-border-color: #E2E8F0; -fx-border-radius: 20;">
+                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-box-container">
                         <Label text="🔍" style="-fx-text-fill: #94A3B8;"/>
                         <TextField fx:id="txtRecherche" promptText="Rechercher un produit..." style="-fx-background-color: transparent; -fx-border-width: 0;" prefWidth="300"/>
                     </HBox>

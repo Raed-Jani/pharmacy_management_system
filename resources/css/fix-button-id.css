@@ -1,0 +1,28 @@
+/* FIX MISSING DARK MODE BUTTON BY ID */
+#btnThemeToggle {
+    -fx-opacity: 1.0 !important;
+    -fx-font-size: 20px !important;
+    -fx-min-width: 45px !important;
+    -fx-min-height: 45px !important;
+    -fx-max-width: 45px !important;
+    -fx-max-height: 45px !important;
+    -fx-pref-width: 45px !important;
+    -fx-pref-height: 45px !important;
+
+    -fx-background-color: transparent !important;
+    -fx-text-fill: white !important;
+    -fx-visibility: visible !important;
+    -fx-border-color: white !important;
+    /* Temporary Debug Border */
+    -fx-border-width: 1px !important;
+    -fx-border-radius: 50% !important;
+}
+
+#btnThemeToggle:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Ensure the container of the button also allows it to show */
+.header-barHBox {
+    -fx-alignment: CENTER_LEFT !important;
+}

@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -14,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import com.pharmacie.model.Utilisateur;
+import com.pharmacie.util.ThemeManager;
 import java.io.IOException;
 import java.net.URL;
 
@@ -31,6 +33,8 @@ public class DashboardController extends BaseController {
     private StackPane dashboardRoot; // Bound to the root StackPane
     @FXML
     private StackPane toastOverlay; // Bound via FXML (dedicated overlay)
+    @FXML
+    private Button btnThemeToggle; // Theme toggle button
 
     /**
      * Get the StackPane container for notifications.
@@ -58,6 +62,9 @@ public class DashboardController extends BaseController {
     public void initialize() {
         System.out.println("DEBUG DashboardController: initialize() called");
 
+        // Initialize theme manager
+        ThemeManager.initialize();
+
         // Use Platform.runLater to wait for full scene attachment
         Platform.runLater(() -> {
             if (toastOverlay == null && dashboardRoot != null && dashboardRoot.getScene() != null) {
@@ -71,6 +78,24 @@ public class DashboardController extends BaseController {
             if (toastOverlay != null) {
                 toastOverlay.setPickOnBounds(false);
                 toastOverlay.setMouseTransparent(false);
+            }
+
+            // DEBUG : VERIFY BUTTON INJECTION
+            if (btnThemeToggle == null) {
+                System.err.println("CRITICAL ERROR: btnThemeToggle IS NULL in Controller!");
+            } else {
+                System.out.println("DEBUG: btnThemeToggle is injected correctly.");
+                btnThemeToggle.setVisible(true);
+                btnThemeToggle.setStyle("-fx-background-color: purple; -fx-text-fill: lime; -fx-font-size: 20px;");
+                btnThemeToggle.toFront();
+            }
+
+            // Apply saved theme and update button icon
+            if (dashboardRoot != null) {
+                ThemeManager.applyTheme(dashboardRoot);
+                if (btnThemeToggle != null) {
+                    btnThemeToggle.setText(ThemeManager.getThemeIcon());
+                }
             }
         });
     }
@@ -92,6 +117,16 @@ public class DashboardController extends BaseController {
     @FXML
     public void handleRafraichir() {
         loadAccueil();
+    }
+
+    @FXML
+    public void handleToggleTheme() {
+        if (dashboardRoot != null) {
+            String newIcon = ThemeManager.toggleTheme(dashboardRoot);
+            if (btnThemeToggle != null) {
+                btnThemeToggle.setText(newIcon);
+            }
+        }
     }
 
     public void loadAccueil() {

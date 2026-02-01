@@ -106,16 +106,18 @@ public class GestionProduitsController extends BaseController {
             @Override
             protected void updateItem(Produit item, boolean empty) {
                 super.updateItem(item, empty);
+                // Clear previous state classes
+                getStyleClass().removeAll("row-out-of-stock", "row-alert", "row-expired");
+                setStyle(""); // Clear inline styles
+
                 if (item == null || empty) {
-                    setStyle("");
+                    // Do nothing
                 } else if (item.getQuantiteStock() <= 0) {
-                    setStyle("-fx-background-color: #ffcccc;");
+                    getStyleClass().add("row-out-of-stock");
                 } else if (item.estEnAlerte()) {
-                    setStyle("-fx-background-color: #fff0b3;");
+                    getStyleClass().add("row-alert");
                 } else if (item.estProcheExpiration()) {
-                    setStyle("-fx-background-color: #e6ccff;");
-                } else {
-                    setStyle("");
+                    getStyleClass().add("row-expired");
                 }
             }
         });

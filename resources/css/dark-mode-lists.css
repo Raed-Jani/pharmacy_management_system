@@ -1,0 +1,103 @@
+/* =========================================================================
+   SEARCH BOX CONTAINER
+   ========================================================================= */
+.search-box-container {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 20;
+}
+
+.dark-mode .search-box-container {
+    -fx-background-color: #1E293B !important;
+    /* Dark Blue */
+    -fx-border-color: #334155 !important;
+}
+
+.dark-mode .search-box-container .text-field {
+    -fx-text-fill: white !important;
+    -fx-prompt-text-fill: #94A3B8 !important;
+}
+
+/* =========================================================================
+   ALERTS ITEMS (DASHBOARD)
+   ========================================================================= */
+.alert-empty-message {
+    -fx-text-fill: #27ae60;
+    -fx-padding: 20;
+    -fx-alignment: CENTER;
+}
+
+.alert-item {
+    -fx-background-color: #fff1f2;
+    -fx-background-radius: 12;
+    -fx-border-color: #fecdd3;
+    -fx-border-width: 1;
+}
+
+.alert-item-title {
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+    -fx-text-fill: #991b1b;
+}
+
+.alert-item-subtitle {
+    -fx-text-fill: #b91c1c;
+    -fx-font-size: 12px;
+}
+
+/* Dark Mode Alerts */
+.dark-mode .alert-item {
+    -fx-background-color: rgba(239, 68, 68, 0.2) !important;
+    /* Dark Red Transparent */
+    -fx-border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark-mode .alert-item-title {
+    -fx-text-fill: #FCA5A5 !important;
+    /* Lighter Red */
+}
+
+.dark-mode .alert-item-subtitle {
+    -fx-text-fill: #FECACA !important;
+    /* Very Light Red */
+}
+
+/* =========================================================================
+   ACTIVITY LOG ITEMS (DASHBOARD)
+   ========================================================================= */
+.activity-item {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 10;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+}
+
+.activity-item-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.activity-item-value {
+    -fx-text-fill: #10b981;
+    /* Success Green */
+    -fx-font-weight: 700;
+}
+
+/* Dark Mode Activities */
+.dark-mode .activity-item {
+    -fx-background-color: #1E293B !important;
+    /* Dark Slate Blue */
+    -fx-border-color: #334155 !important;
+}
+
+.dark-mode .activity-item-title {
+    -fx-text-fill: #F1F5F9 !important;
+    /* White/Light Grey */
+}
+
+.dark-mode .activity-item-value {
+    -fx-text-fill: #34D399 !important;
+    /* Brighter Green */
+}

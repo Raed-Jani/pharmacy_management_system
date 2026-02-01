@@ -1,0 +1,121 @@
+/* =========================================================================
+   DARK MODE REFINEMENTS (Professional & Creative)
+   ========================================================================= */
+
+/* Use a generic selector for the root container in dark mode, not just .root */
+.dark-mode {
+    /* Main Background: Subtle deep blue gradient for a premium feel */
+    -fx-background-color: linear-gradient(to bottom right, #0F172A 0%, #020617 100%);
+    -fx-color-bg-body: #0F172A;
+}
+
+/* Ensure the root variable is correctly updated for children looking at it */
+.dark-mode .root {
+    -fx-background-color: transparent;
+    /* Let the gradient show through */
+}
+
+/* 1. Global Text Visibility - Force White/Light for standard text */
+.dark-mode .label,
+.dark-mode .text,
+.dark-mode .button,
+.dark-mode .check-box .box,
+.dark-mode .radio-button,
+.dark-mode .menu-button,
+.dark-mode .table-cell {
+    -fx-text-fill: #F1F5F9;
+    /* Very light slate, softer than pure white */
+}
+
+/* Muted text should be lighter in dark mode than default gray */
+.dark-mode .label-muted,
+.dark-mode .text-muted,
+.dark-mode .label-subheading,
+.dark-mode .login-saas-subtitle,
+.dark-mode .stat-label {
+    -fx-text-fill: #94A3B8;
+    /* Slate 400 - readable but distinct */
+}
+
+/* 2. Cards & Panels - Glassy/Premium Dark Blue */
+.dark-mode .card,
+.dark-mode .panel,
+.dark-mode .stat-card,
+.dark-mode .info-card,
+.dark-mode .login-card-saas,
+.dark-mode .stock-alert-panel,
+.dark-mode .order-setup-container {
+    -fx-background-color: #1E293B;
+    /* Slate 800 */
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 20, 0, 0, 10);
+}
+
+/* Specific fix for inner items that were white */
+.dark-mode .stock-alert-item,
+.dark-mode .list-cell,
+.dark-mode .table-row-cell {
+    -fx-background-color: #1E293B;
+    -fx-text-fill: white;
+}
+
+/* Hover effects for interactivity */
+.dark-mode .card:hover,
+.dark-mode .info-card:hover {
+    -fx-background-color: #334155;
+    /* Lighter on hover */
+    -fx-effect: dropshadow(three-pass-box, rgba(96, 165, 250, 0.15), 25, 0, 0, 10);
+    -fx-border-color: rgba(96, 165, 250, 0.3);
+}
+
+/* 3. Inputs - High contrast */
+.dark-mode .text-field,
+.dark-mode .password-field,
+.dark-mode .combo-box,
+.dark-mode .date-picker .text-field {
+    -fx-background-color: #0F172A;
+    /* Darker than card */
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #475569;
+    -fx-border-color: #334155;
+}
+
+.dark-mode .text-field:focused,
+.dark-mode .password-field:focused,
+.dark-mode .combo-box:focused {
+    -fx-border-color: #3B82F6;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.25), 8, 0, 0, 0);
+}
+
+/* 4. Logo Fix & Headers */
+.dark-mode .header-logo-pill,
+.dark-mode .saas-pill-logo {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+    -fx-border-width: 0;
+}
+
+.dark-mode .header-bar {
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    /* Semi-transparent header */
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.05) transparent;
+}
+
+/* Titles */
+.dark-mode .header-title,
+.dark-mode .label-title {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 10, 0.3, 0, 0);
+    /* Glow effect */
+}
+
+.dark-mode .label-value {
+    -fx-text-fill: #60A5FA;
+    /* Bright blue for numbers */
+}
+
+/* Scroll Panes */
+.dark-mode .scroll-pane,
+.dark-mode .scroll-pane>.viewport {
+    -fx-background-color: transparent;
+}

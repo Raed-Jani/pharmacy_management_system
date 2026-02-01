@@ -1,0 +1,90 @@
+/* =========================================================================
+   TABLE ROW HIGHLIGHTS (Compatible with Dark Mode)
+   ========================================================================= */
+
+/* Default (Light Mode) - Soft pastels */
+.row-out-of-stock {
+    -fx-background-color: #FECACA;
+}
+
+/* Light Red */
+.row-alert {
+    -fx-background-color: #FDE68A;
+}
+
+/* Light Yellow */
+.row-expired {
+    -fx-background-color: #E9D5FF;
+}
+
+/* Light Purple */
+
+/* Dark Mode - Darker, semi-transparent overlays */
+.dark-mode .row-out-of-stock {
+    -fx-background-color: rgba(239, 68, 68, 0.25) !important;
+    -fx-text-fill: #FECACA !important;
+}
+
+.dark-mode .row-alert {
+    -fx-background-color: rgba(245, 158, 11, 0.25) !important;
+    -fx-text-fill: #FDE68A !important;
+}
+
+.dark-mode .row-expired {
+    -fx-background-color: rgba(168, 85, 247, 0.25) !important;
+    -fx-text-fill: #E9D5FF !important;
+}
+
+/* Ensure text is readable on these backgrounds */
+.dark-mode .row-out-of-stock .table-cell,
+.dark-mode .row-alert .table-cell,
+.dark-mode .row-expired .table-cell {
+    -fx-text-fill: inherit;
+}
+
+/* =========================================================================
+   FIX ACTIVITY LOG (LIST VIEW)
+   ========================================================================= */
+.dark-mode .list-view,
+.dark-mode .list-cell {
+    -fx-background-color: transparent !important;
+    -fx-control-inner-background: transparent !important;
+    -fx-text-fill: white !important;
+}
+
+.dark-mode .list-cell:filled:selected,
+.dark-mode .list-cell:filled:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* =========================================================================
+   FIX STOCK ALERT PANELS (Image 1)
+   ========================================================================= */
+.dark-mode .stock-alert-panel,
+.dark-mode .stock-alert-item {
+    -fx-background-color: #1E293B !important;
+    /* Dark Slate Blue */
+    -fx-border-color: rgba(255, 255, 255, 0.1) !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2) !important;
+}
+
+.dark-mode .stock-alert-item .label {
+    -fx-text-fill: white !important;
+}
+
+.dark-mode .stock-alert-item .button {
+    -fx-background-color: #2563EB !important;
+    /* Brighter Blue Button */
+    -fx-text-fill: white !important;
+}
+
+/* =========================================================================
+   FIX THEME BUTTON ICON
+   ========================================================================= */
+.dark-mode #btnThemeToggle {
+    -fx-text-fill: #FACC15 !important;
+    /* Yellow Moon */
+    -fx-font-size: 18px !important;
+    -fx-border-width: 0 !important;
+    /* Remove debug border */
+}

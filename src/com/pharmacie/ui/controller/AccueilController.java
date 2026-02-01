@@ -197,7 +197,7 @@ public class AccueilController extends BaseController {
 
         if (alerts.isEmpty()) {
             Label msg = new Label("✅ Everything in order. No low stock items.");
-            msg.setStyle("-fx-text-fill: #27ae60; -fx-padding: 20; -fx-alignment: CENTER;");
+            msg.getStyleClass().add("alert-empty-message");
             vboxStockAlerts.getChildren().add(msg);
             return;
         }
@@ -206,17 +206,16 @@ public class AccueilController extends BaseController {
             HBox row = new HBox(15);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setPadding(new Insets(12, 18, 12, 18));
-            row.setStyle(
-                    "-fx-background-color: #fff1f2; -fx-background-radius: 12; -fx-border-color: #fecdd3; -fx-border-width: 1;");
+            row.getStyleClass().add("alert-item");
 
             VBox info = new VBox(4);
             HBox.setHgrow(info, Priority.ALWAYS);
 
             Label nom = new Label(alerte.get("nom").toString());
-            nom.setStyle("-fx-font-weight: 800; -fx-font-size: 14px; -fx-text-fill: #991b1b;");
+            nom.getStyleClass().add("alert-item-title");
 
             Label stock = new Label("Stock: " + alerte.get("stock") + " / Min: " + alerte.get("seuil"));
-            stock.setStyle("-fx-text-fill: #b91c1c; -fx-font-size: 12px;");
+            stock.getStyleClass().add("alert-item-subtitle");
 
             info.getChildren().addAll(nom, stock);
 
@@ -238,8 +237,7 @@ public class AccueilController extends BaseController {
             HBox item = new HBox(15);
             item.setAlignment(Pos.CENTER_LEFT);
             item.setPadding(new Insets(10, 15, 10, 15));
-            item.setStyle(
-                    "-fx-background-color: #f8fafc; -fx-background-radius: 10; -fx-border-color: #e2e8f0; -fx-border-width: 1;");
+            item.getStyleClass().add("activity-item");
 
             Label icon = new Label("💰");
             icon.setStyle("-fx-font-size: 18px;");
@@ -248,10 +246,10 @@ public class AccueilController extends BaseController {
             HBox.setHgrow(info, Priority.ALWAYS);
 
             Label title = new Label("Vente #" + act.get("id") + " - " + act.get("client"));
-            title.setStyle("-fx-font-weight: bold; -fx-text-fill: -fx-color-text-body;");
+            title.getStyleClass().add("activity-item-title");
 
             Label val = new Label(act.get("total") + " TND");
-            val.setStyle("-fx-text-fill: -fx-color-success; -fx-font-weight: 700;");
+            val.getStyleClass().add("activity-item-value");
 
             info.getChildren().addAll(title, val);
 

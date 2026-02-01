@@ -1,0 +1,95 @@
+/* =========================================================================
+   AGGRESSIVE DARK MODE OVERRIDES (Use !important to force application)
+   ========================================================================= */
+
+/* GLOBAL: Force Dark Background on Root and Panes */
+.dark-mode,
+.dark-mode .root,
+.dark-mode .scroll-pane,
+.dark-mode .split-pane,
+.dark-mode .tab-pane,
+.dark-mode .border-pane,
+.dark-mode .anchor-pane,
+.dark-mode .stack-pane,
+.dark-mode .grid-pane,
+.dark-mode .vbox,
+.dark-mode .hbox {
+    -fx-background-color: #0F172A !important;
+    /* Dark Slate Blue */
+    -fx-color-bg-body: #0F172A !important;
+}
+
+/* CARDS: Force Dark Blue Surface */
+.dark-mode .card,
+.dark-mode .panel,
+.dark-mode .stat-card,
+.dark-mode .info-card,
+.dark-mode .login-card-saas,
+.dark-mode .order-setup-container,
+.dark-mode .stock-alert-panel,
+.dark-mode .stock-alert-item {
+    -fx-background-color: #1E293B !important;
+    /* Lighter Slate Blue */
+    -fx-background: #1E293B !important;
+    -fx-border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* TEXT: Force White/Light Colors */
+.dark-mode .label,
+.dark-mode .text,
+.dark-mode .button,
+.dark-mode .check-box,
+.dark-mode .radio-button,
+.dark-mode .hyperlink {
+    -fx-text-fill: #F8FAFC !important;
+    /* Near White */
+    -fx-fill: #F8FAFC !important;
+}
+
+/* SPECIFIC TEXT OVERRIDES for Readability */
+.dark-mode .label-muted,
+.dark-mode .text-muted,
+.dark-mode .label-subheading,
+.dark-mode .login-saas-subtitle,
+.dark-mode .stat-label,
+.dark-mode .axis-label {
+    -fx-text-fill: #94A3B8 !important;
+    /* Light Slate Gray */
+    -fx-fill: #94A3B8 !important;
+}
+
+/* ALERTS: Force Dark Backgrounds */
+.dark-mode .alert-panel-critical,
+.dark-mode .alert-panel-warning,
+.dark-mode .alert-panel-success {
+    -fx-background-color: #1E293B !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+/* INPUTS: Dark Fields */
+.dark-mode .text-field,
+.dark-mode .password-field,
+.dark-mode .combo-box,
+.dark-mode .date-picker .text-field {
+    -fx-background-color: #020617 !important;
+    /* Almost Black */
+    -fx-text-fill: #FFFFFF !important;
+    -fx-border-color: #334155 !important;
+}
+
+/* LOGO: Clean */
+.dark-mode .header-logo-pill,
+.dark-mode .saas-pill-logo {
+    -fx-background-color: transparent !important;
+    -fx-effect: none !important;
+    -fx-border-color: transparent !important;
+}
+
+/* CHART TEXT */
+.dark-mode .chart-title {
+    -fx-text-fill: #FFFFFF !important;
+}
+
+.dark-mode .chart-legend-item {
+    -fx-text-fill: #E2E8F0 !important;
+}

@@ -1,0 +1,77 @@
+/* =========================================================================
+   FINAL DARK MODE CORRECTIONS
+   ========================================================================= */
+
+/* 1. Redefine GLOBAL VARIABLES for the dark mode scope. 
+   This ensures that any inline style using -fx-color-bg-body or -fx-color-text-muted 
+   automatically switches to these values. */
+.dark-mode {
+    -fx-color-bg-body: #0F172A;
+    -fx-color-bg-surface: #1E293B;
+    -fx-color-text-title: #F8FAFC;
+    -fx-color-text-body: #E2E8F0;
+    -fx-color-text-muted: #94A3B8;
+    /* Lighter gray for visibility */
+    -fx-color-border: #334155;
+
+    /* Ensure the container itself uses the dark background */
+    -fx-background-color: -fx-color-bg-body;
+}
+
+/* 2. Force ScrollPane viewport to be transparent so the body color shows through */
+.dark-mode .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.dark-mode .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+/* 3. High Specificity Overrides for Card Titles/Text */
+.dark-mode .label-card-title {
+    -fx-text-fill: -fx-color-text-muted !important;
+    /* Forces the light gray */
+}
+
+/* 4. Fix Stock Alert Panels (The reddish/pinkish boxes) */
+.dark-mode .alert-panel-critical,
+.dark-mode .alert-panel-warning,
+.dark-mode .alert-panel-success {
+    -fx-background-color: #1E293B;
+    /* Dark Blue Background */
+    -fx-border-width: 0 0 0 4;
+    /* Left accent border only */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+.dark-mode .alert-panel-critical {
+    -fx-border-color: #EF4444;
+}
+
+.dark-mode .alert-panel-warning {
+    -fx-border-color: #F59E0B;
+}
+
+.dark-mode .alert-panel-success {
+    -fx-border-color: #10B981;
+}
+
+/* Fix text inside alerts */
+.dark-mode .alert-panel-critical .label,
+.dark-mode .alert-panel-warning .label,
+.dark-mode .alert-panel-success .label {
+    -fx-text-fill: #F1F5F9;
+}
+
+/* 5. Fix Chart Legends & content */
+.dark-mode .chart-title {
+    -fx-text-fill: white;
+}
+
+.dark-mode .axis-label {
+    -fx-text-fill: #94A3B8;
+}
+
+.dark-mode .chart-legend-item {
+    -fx-text-fill: #E2E8F0;
+}

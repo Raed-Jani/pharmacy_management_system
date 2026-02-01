@@ -32,6 +32,423 @@
     -fx-background-color: -fx-color-bg-body;
 }
 
+/* ============================================
+   DARK MODE THEME
+   Professional healthcare dark mode palette
+   ============================================ */
+
+.root.dark-mode {
+    /* Primary backgrounds */
+    -fx-color-bg-body: #0F172A;
+    -fx-color-bg-surface: #1E293B;
+    -fx-color-bg-elevated: #334155;
+
+    /* Borders */
+    -fx-color-border: #475569;
+
+    /* Text colors - desaturated for comfort */
+    -fx-color-text-title: #E2E8F0;
+    -fx-color-text-body: #CBD5E1;
+    -fx-color-text-muted: #94A3B8;
+
+    /* Primary colors - lightened for dark backgrounds */
+    -fx-color-primary: #60A5FA;
+    -fx-color-primary-dark: #3B82F6;
+    -fx-color-accent: #60A5FA;
+
+    /* Secondary */
+    -fx-color-secondary: #1E293B;
+
+    /* Status colors - lightened and desaturated */
+    -fx-color-success: #34D399;
+    -fx-color-warning: #FBBF24;
+    -fx-color-danger: #F87171;
+    -fx-color-info: #22D3EE;
+
+    -fx-background-color: -fx-color-bg-body;
+}
+
+/* Dark mode scroll bars */
+.dark-mode .scroll-bar .thumb {
+    -fx-background-color: #475569;
+}
+
+.dark-mode .scroll-bar .thumb:hover {
+    -fx-background-color: #64748B;
+}
+
+/* Dark mode cards and panels */
+.dark-mode .card,
+.dark-mode .panel,
+.dark-mode .glass-card,
+.dark-mode .info-card {
+    -fx-background-color: #1E293B;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 4);
+    -fx-border-color: #475569;
+}
+
+.dark-mode .info-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(96, 165, 250, 0.2), 30, 0, 0, 15);
+    -fx-border-color: -fx-color-accent;
+}
+
+/* Dark mode header */
+.dark-mode .header-bar {
+    -fx-background-color: linear-gradient(to right, #1E293B, #334155);
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.05) transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 2);
+}
+
+/* Dark mode sidebar */
+.dark-mode .sidebar-navy {
+    -fx-background-color: #1E293B;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);
+}
+
+.dark-mode .sidebar-button:hover {
+    -fx-background-color: rgba(96, 165, 250, 0.1);
+}
+
+.dark-mode .sidebar-button:selected,
+.dark-mode .sidebar-button-active {
+    -fx-background-color: linear-gradient(to right, rgba(96, 165, 250, 0.2), transparent);
+    -fx-text-fill: #60A5FA;
+    -fx-border-color: -fx-color-accent;
+}
+
+/* Dark mode inputs */
+.dark-mode .text-field,
+.dark-mode .date-picker .text-field,
+.dark-mode .combo-box {
+    -fx-background-color: #334155;
+    -fx-border-color: #475569;
+    -fx-text-fill: -fx-color-text-body;
+    -fx-prompt-text-fill: #64748B;
+}
+
+.dark-mode .text-field:focused,
+.dark-mode .date-picker .text-field:focused,
+.dark-mode .combo-box:focused {
+    -fx-border-color: -fx-color-accent;
+    -fx-background-color: #334155;
+    -fx-effect: dropshadow(gaussian, rgba(96, 165, 250, 0.3), 6, 0, 0, 0);
+}
+
+/* Dark mode search container */
+.dark-mode .search-container {
+    -fx-background-color: #334155;
+    -fx-border-color: transparent;
+}
+
+.dark-mode .search-container:focused-within {
+    -fx-background-color: #334155;
+    -fx-border-color: -fx-color-accent;
+    -fx-effect: dropshadow(gaussian, rgba(96, 165, 250, 0.3), 8, 0, 0, 0);
+}
+
+.dark-mode .search-input {
+    -fx-text-fill: -fx-color-text-body;
+    -fx-prompt-text-fill: #64748B;
+}
+
+/* Dark mode buttons */
+.dark-mode .btn-secondary {
+    -fx-background-color: #334155;
+    -fx-border-color: #475569;
+    -fx-text-fill: -fx-color-text-body;
+}
+
+.dark-mode .btn-secondary:hover {
+    -fx-background-color: #475569;
+    -fx-border-color: -fx-color-accent;
+}
+
+.dark-mode .btn-danger {
+    -fx-background-color: #1E293B;
+    -fx-border-color: -fx-color-danger;
+    -fx-text-fill: -fx-color-danger;
+}
+
+.dark-mode .btn-danger:hover {
+    -fx-background-color: -fx-color-danger;
+    -fx-text-fill: #0F172A;
+}
+
+/* Dark mode table */
+.dark-mode .table-view {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #475569;
+}
+
+.dark-mode .table-view .column-header-background {
+    -fx-background-color: #334155;
+    -fx-border-color: #475569;
+}
+
+.dark-mode .table-view .column-header .label {
+    -fx-text-fill: #94A3B8;
+}
+
+.dark-mode .table-row-cell {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #334155;
+}
+
+.dark-mode .table-row-cell:filled:odd {
+    -fx-background-color: #1A2332;
+}
+
+.dark-mode .table-row-cell:hover {
+    -fx-background-color: #334155;
+}
+
+.dark-mode .table-row-cell:selected {
+    -fx-background-color: rgba(96, 165, 250, 0.15);
+    -fx-border-color: transparent transparent #475569 transparent;
+}
+
+.dark-mode .table-cell {
+    -fx-text-fill: #CBD5E1;
+}
+
+.dark-mode .table-row-cell:selected .table-cell {
+    -fx-text-fill: #60A5FA;
+}
+
+.dark-mode .table-view .placeholder .label {
+    -fx-text-fill: -fx-color-text-muted;
+}
+
+/* Dark mode stock alerts */
+.dark-mode .stock-alert-panel {
+    -fx-background-color: #1E293B;
+}
+
+.dark-mode .alert-panel-success {
+    -fx-border-color: #334155;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 15, 0, 0, 8);
+}
+
+.dark-mode .alert-panel-warning {
+    -fx-border-color: #D97706;
+    -fx-effect: dropshadow(three-pass-box, rgba(217, 119, 6, 0.2), 20, 0, 0, 10);
+}
+
+.dark-mode .alert-panel-critical {
+    -fx-border-color: #DC2626;
+    -fx-effect: dropshadow(three-pass-box, rgba(220, 38, 38, 0.3), 30, 0, 0, 15);
+}
+
+.dark-mode .stock-alert-item {
+    -fx-background-color: #334155;
+    -fx-border-color: #475569;
+}
+
+.dark-mode .stock-alert-item:hover {
+    -fx-background-color: #3F4E66;
+    -fx-border-color: -fx-color-accent;
+    -fx-effect: dropshadow(three-pass-box, rgba(96, 165, 250, 0.2), 8, 0, 0, 2);
+}
+
+.dark-mode .stock-alert-critical {
+    -fx-background-color: #2D1A1F;
+    -fx-border-color: #7C2D12;
+}
+
+.dark-mode .stock-alert-critical:hover {
+    -fx-border-color: #DC2626;
+}
+
+/* Dark mode login */
+.dark-mode .login-root {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #1E293B, #0F172A);
+}
+
+.dark-mode .login-card-saas {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #475569;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 40, 0, 0, 15);
+}
+
+.dark-mode .login-brand-name {
+    -fx-text-fill: #E2E8F0;
+}
+
+.dark-mode .login-saas-title {
+    -fx-text-fill: #E2E8F0;
+}
+
+.dark-mode .login-saas-subtitle {
+    -fx-text-fill: #94A3B8;
+}
+
+.dark-mode .login-input-heading {
+    -fx-text-fill: #CBD5E1;
+}
+
+.dark-mode .login-input-container {
+    -fx-background-color: #334155;
+    -fx-border-color: #475569;
+}
+
+.dark-mode .login-input-container:focused-within {
+    -fx-border-color: #60A5FA;
+    -fx-background-color: #334155;
+    -fx-effect: dropshadow(gaussian, rgba(96, 165, 250, 0.2), 15, 0, 0, 0);
+}
+
+.dark-mode .login-input-field {
+    -fx-text-fill: #E2E8F0;
+    -fx-prompt-text-fill: #64748B;
+}
+
+.dark-mode .login-checkbox {
+    -fx-text-fill: #94A3B8;
+}
+
+.dark-mode .login-footer-saas {
+    -fx-text-fill: #64748B;
+}
+
+.dark-mode .login-link-muted:hover {
+    -fx-text-fill: #94A3B8;
+}
+
+/* Dark mode stats */
+.dark-mode .stat-card {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #475569;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 15, 0, 0, 8);
+}
+
+.dark-mode .stat-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 20, 0, 0, 12);
+}
+
+/* Dark mode POS */
+.dark-mode .pos-total-card {
+    -fx-background-color: #334155;
+}
+
+/* Dark mode date picker */
+.dark-mode .date-picker-popup {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #475569;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 25, 0, 0, 10);
+}
+
+.dark-mode .date-picker-popup>.month-year-pane>.left-button,
+.dark-mode .date-picker-popup>.month-year-pane>.right-button {
+    -fx-background-color: #334155;
+    -fx-text-fill: #94A3B8;
+}
+
+.dark-mode .date-picker-popup>.month-year-pane>.left-button:hover,
+.dark-mode .date-picker-popup>.month-year-pane>.right-button:hover {
+    -fx-background-color: #475569;
+    -fx-text-fill: #60A5FA;
+}
+
+.dark-mode .date-picker-popup>.month-year-pane>.label {
+    -fx-text-fill: #E2E8F0;
+}
+
+.dark-mode .date-picker-popup>.calendar-grid>.day-cell {
+    -fx-text-fill: #CBD5E1;
+}
+
+.dark-mode .date-picker-popup>.calendar-grid>.day-cell:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: #60A5FA;
+}
+
+.dark-mode .date-picker-popup>.calendar-grid>.today {
+    -fx-border-color: #60A5FA;
+    -fx-text-fill: #60A5FA;
+}
+
+.dark-mode .date-picker-popup>.calendar-grid>.selected {
+    -fx-background-color: rgba(96, 165, 250, 0.2);
+    -fx-text-fill: #60A5FA;
+}
+
+.dark-mode .date-picker-popup>.calendar-grid>.selected:hover {
+    -fx-background-color: rgba(96, 165, 250, 0.3);
+}
+
+.dark-mode .date-picker-popup>.calendar-grid>.previous-month,
+.dark-mode .date-picker-popup>.calendar-grid>.next-month {
+    -fx-text-fill: #475569;
+}
+
+/* Dark mode checkbox */
+.dark-mode .check-box .box {
+    -fx-background-color: #334155;
+    -fx-border-color: #475569;
+}
+
+.dark-mode .check-box:hover .box {
+    -fx-border-color: -fx-color-accent;
+}
+
+.dark-mode .check-box:selected .box {
+    -fx-background-color: -fx-color-primary;
+    -fx-border-color: -fx-color-primary;
+}
+
+.dark-mode .check-box:focused .box {
+    -fx-border-color: -fx-color-accent;
+    -fx-effect: dropshadow(gaussian, rgba(96, 165, 250, 0.3), 4, 0, 0, 0);
+}
+
+/* Dark mode tabs */
+.dark-mode .tab-pane {
+    -fx-background-color: -fx-color-bg-body;
+}
+
+.dark-mode .tab-pane .tab-header-area {
+    -fx-background-color: -fx-color-bg-body;
+}
+
+.dark-mode .tab:hover {
+    -fx-background-color: rgba(96, 165, 250, 0.05);
+}
+
+/* Dark mode icon containers */
+.dark-mode .icon-blue {
+    -fx-background-color: rgba(96, 165, 250, 0.15);
+}
+
+.dark-mode .icon-green {
+    -fx-background-color: rgba(52, 211, 153, 0.15);
+}
+
+.dark-mode .icon-orange {
+    -fx-background-color: rgba(251, 191, 36, 0.15);
+}
+
+.dark-mode .icon-purple {
+    -fx-background-color: rgba(167, 139, 250, 0.15);
+}
+
+/* Theme toggle button styles */
+.theme-toggle-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    -fx-padding: 8px;
+    -fx-cursor: hand;
+    -fx-background-radius: 50%;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+}
+
+.theme-toggle-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
 .scroll-bar {
     -fx-background-color: transparent;
 }
@@ -1265,4 +1682,602 @@
 .check-box:focused .box {
     -fx-border-color: -fx-color-accent;
     -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.2), 4, 0, 0, 0);
+}/* =========================================================================
+   DARK MODE OVERRIDES (Added for readability and logo fix)
+   ========================================================================= */
+
+/* 1. Global Text Readability in Dark Mode */
+.dark-mode .label,
+.dark-mode .text,
+.dark-mode .button,
+.dark-mode .check-box,
+.dark-mode .radio-button,
+.dark-mode .hyperlink {
+    -fx-text-fill: white;
+}
+
+/* Specific overrides for muted text to be slightly gray but still readable */
+.dark-mode .label-subheading,
+.dark-mode .login-saas-subtitle,
+.dark-mode .login-input-heading,
+.dark-mode .login-footer-saas,
+.dark-mode .login-link-muted,
+.dark-mode .stat-label,
+.dark-mode .pos-total-label {
+    -fx-text-fill: #cbd5e1;
+    /* Light gray */
+}
+
+/* 2. Fix Card Backgrounds to be Dark Blue */
+.dark-mode .card,
+.dark-mode .panel,
+.dark-mode .stat-card,
+.dark-mode .info-card,
+.dark-mode .login-card-saas,
+.dark-mode .login-input-container,
+.dark-mode .stock-alert-panel,
+.dark-mode .date-picker-popup,
+.dark-mode .order-setup-container {
+    -fx-background-color: #1E293B;
+    /* Slate 800 - Dark Blue */
+    -fx-border-color: #334155;
+    /* Slate 700 */
+}
+
+/* Ensure alternated rows in tables have correct contrast */
+.dark-mode .table-row-cell:odd {
+    -fx-background-color: #1e293b;
+}
+
+.dark-mode .table-row-cell:even {
+    -fx-background-color: #0f172a;
+}
+
+.dark-mode .table-row-cell:filled:hover {
+    -fx-background-color: #334155;
+}
+
+/* 3. Logo Fix: Remove Square Background/Border in Dark Mode */
+.dark-mode .header-logo-pill,
+.dark-mode .saas-pill-logo {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* Enhance Primary Color Visibility */
+.dark-mode .label-title,
+.dark-mode .label-value,
+.dark-mode .header-title {
+    -fx-text-fill: #60A5FA;
+    /* Brighter Blue for Titles */
+}
+/* =========================================================================
+   DARK MODE REFINEMENTS (Professional & Creative)
+   ========================================================================= */
+
+/* Use a generic selector for the root container in dark mode, not just .root */
+.dark-mode {
+    /* Main Background: Subtle deep blue gradient for a premium feel */
+    -fx-background-color: linear-gradient(to bottom right, #0F172A 0%, #020617 100%);
+    -fx-color-bg-body: #0F172A;
+}
+
+/* Ensure the root variable is correctly updated for children looking at it */
+.dark-mode .root {
+    -fx-background-color: transparent;
+    /* Let the gradient show through */
+}
+
+/* 1. Global Text Visibility - Force White/Light for standard text */
+.dark-mode .label,
+.dark-mode .text,
+.dark-mode .button,
+.dark-mode .check-box .box,
+.dark-mode .radio-button,
+.dark-mode .menu-button,
+.dark-mode .table-cell {
+    -fx-text-fill: #F1F5F9;
+    /* Very light slate, softer than pure white */
+}
+
+/* Muted text should be lighter in dark mode than default gray */
+.dark-mode .label-muted,
+.dark-mode .text-muted,
+.dark-mode .label-subheading,
+.dark-mode .login-saas-subtitle,
+.dark-mode .stat-label {
+    -fx-text-fill: #94A3B8;
+    /* Slate 400 - readable but distinct */
+}
+
+/* 2. Cards & Panels - Glassy/Premium Dark Blue */
+.dark-mode .card,
+.dark-mode .panel,
+.dark-mode .stat-card,
+.dark-mode .info-card,
+.dark-mode .login-card-saas,
+.dark-mode .stock-alert-panel,
+.dark-mode .order-setup-container {
+    -fx-background-color: #1E293B;
+    /* Slate 800 */
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 20, 0, 0, 10);
+}
+
+/* Specific fix for inner items that were white */
+.dark-mode .stock-alert-item,
+.dark-mode .list-cell,
+.dark-mode .table-row-cell {
+    -fx-background-color: #1E293B;
+    -fx-text-fill: white;
+}
+
+/* Hover effects for interactivity */
+.dark-mode .card:hover,
+.dark-mode .info-card:hover {
+    -fx-background-color: #334155;
+    /* Lighter on hover */
+    -fx-effect: dropshadow(three-pass-box, rgba(96, 165, 250, 0.15), 25, 0, 0, 10);
+    -fx-border-color: rgba(96, 165, 250, 0.3);
+}
+
+/* 3. Inputs - High contrast */
+.dark-mode .text-field,
+.dark-mode .password-field,
+.dark-mode .combo-box,
+.dark-mode .date-picker .text-field {
+    -fx-background-color: #0F172A;
+    /* Darker than card */
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #475569;
+    -fx-border-color: #334155;
+}
+
+.dark-mode .text-field:focused,
+.dark-mode .password-field:focused,
+.dark-mode .combo-box:focused {
+    -fx-border-color: #3B82F6;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.25), 8, 0, 0, 0);
+}
+
+/* 4. Logo Fix & Headers */
+.dark-mode .header-logo-pill,
+.dark-mode .saas-pill-logo {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+    -fx-border-width: 0;
+}
+
+.dark-mode .header-bar {
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    /* Semi-transparent header */
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.05) transparent;
+}
+
+/* Titles */
+.dark-mode .header-title,
+.dark-mode .label-title {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 10, 0.3, 0, 0);
+    /* Glow effect */
+}
+
+.dark-mode .label-value {
+    -fx-text-fill: #60A5FA;
+    /* Bright blue for numbers */
+}
+
+/* Scroll Panes */
+.dark-mode .scroll-pane,
+.dark-mode .scroll-pane>.viewport {
+    -fx-background-color: transparent;
+}
+/* =========================================================================
+   FINAL DARK MODE CORRECTIONS
+   ========================================================================= */
+
+/* 1. Redefine GLOBAL VARIABLES for the dark mode scope. 
+   This ensures that any inline style using -fx-color-bg-body or -fx-color-text-muted 
+   automatically switches to these values. */
+.dark-mode {
+    -fx-color-bg-body: #0F172A;
+    -fx-color-bg-surface: #1E293B;
+    -fx-color-text-title: #F8FAFC;
+    -fx-color-text-body: #E2E8F0;
+    -fx-color-text-muted: #94A3B8;
+    /* Lighter gray for visibility */
+    -fx-color-border: #334155;
+
+    /* Ensure the container itself uses the dark background */
+    -fx-background-color: -fx-color-bg-body;
+}
+
+/* 2. Force ScrollPane viewport to be transparent so the body color shows through */
+.dark-mode .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.dark-mode .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+/* 3. High Specificity Overrides for Card Titles/Text */
+.dark-mode .label-card-title {
+    -fx-text-fill: -fx-color-text-muted !important;
+    /* Forces the light gray */
+}
+
+/* 4. Fix Stock Alert Panels (The reddish/pinkish boxes) */
+.dark-mode .alert-panel-critical,
+.dark-mode .alert-panel-warning,
+.dark-mode .alert-panel-success {
+    -fx-background-color: #1E293B;
+    /* Dark Blue Background */
+    -fx-border-width: 0 0 0 4;
+    /* Left accent border only */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+.dark-mode .alert-panel-critical {
+    -fx-border-color: #EF4444;
+}
+
+.dark-mode .alert-panel-warning {
+    -fx-border-color: #F59E0B;
+}
+
+.dark-mode .alert-panel-success {
+    -fx-border-color: #10B981;
+}
+
+/* Fix text inside alerts */
+.dark-mode .alert-panel-critical .label,
+.dark-mode .alert-panel-warning .label,
+.dark-mode .alert-panel-success .label {
+    -fx-text-fill: #F1F5F9;
+}
+
+/* 5. Fix Chart Legends & content */
+.dark-mode .chart-title {
+    -fx-text-fill: white;
+}
+
+.dark-mode .axis-label {
+    -fx-text-fill: #94A3B8;
+}
+
+.dark-mode .chart-legend-item {
+    -fx-text-fill: #E2E8F0;
+}
+/* =========================================================================
+   AGGRESSIVE DARK MODE OVERRIDES (Use !important to force application)
+   ========================================================================= */
+
+/* GLOBAL: Force Dark Background on Root and Panes */
+.dark-mode,
+.dark-mode .root,
+.dark-mode .scroll-pane,
+.dark-mode .split-pane,
+.dark-mode .tab-pane,
+.dark-mode .border-pane,
+.dark-mode .anchor-pane,
+.dark-mode .stack-pane,
+.dark-mode .grid-pane,
+.dark-mode .vbox,
+.dark-mode .hbox {
+    -fx-background-color: #0F172A !important;
+    /* Dark Slate Blue */
+    -fx-color-bg-body: #0F172A !important;
+}
+
+/* CARDS: Force Dark Blue Surface */
+.dark-mode .card,
+.dark-mode .panel,
+.dark-mode .stat-card,
+.dark-mode .info-card,
+.dark-mode .login-card-saas,
+.dark-mode .order-setup-container,
+.dark-mode .stock-alert-panel,
+.dark-mode .stock-alert-item {
+    -fx-background-color: #1E293B !important;
+    /* Lighter Slate Blue */
+    -fx-background: #1E293B !important;
+    -fx-border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* TEXT: Force White/Light Colors */
+.dark-mode .label,
+.dark-mode .text,
+.dark-mode .button,
+.dark-mode .check-box,
+.dark-mode .radio-button,
+.dark-mode .hyperlink {
+    -fx-text-fill: #F8FAFC !important;
+    /* Near White */
+    -fx-fill: #F8FAFC !important;
+}
+
+/* SPECIFIC TEXT OVERRIDES for Readability */
+.dark-mode .label-muted,
+.dark-mode .text-muted,
+.dark-mode .label-subheading,
+.dark-mode .login-saas-subtitle,
+.dark-mode .stat-label,
+.dark-mode .axis-label {
+    -fx-text-fill: #94A3B8 !important;
+    /* Light Slate Gray */
+    -fx-fill: #94A3B8 !important;
+}
+
+/* ALERTS: Force Dark Backgrounds */
+.dark-mode .alert-panel-critical,
+.dark-mode .alert-panel-warning,
+.dark-mode .alert-panel-success {
+    -fx-background-color: #1E293B !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+/* INPUTS: Dark Fields */
+.dark-mode .text-field,
+.dark-mode .password-field,
+.dark-mode .combo-box,
+.dark-mode .date-picker .text-field {
+    -fx-background-color: #020617 !important;
+    /* Almost Black */
+    -fx-text-fill: #FFFFFF !important;
+    -fx-border-color: #334155 !important;
+}
+
+/* LOGO: Clean */
+.dark-mode .header-logo-pill,
+.dark-mode .saas-pill-logo {
+    -fx-background-color: transparent !important;
+    -fx-effect: none !important;
+    -fx-border-color: transparent !important;
+}
+
+/* CHART TEXT */
+.dark-mode .chart-title {
+    -fx-text-fill: #FFFFFF !important;
+}
+
+.dark-mode .chart-legend-item {
+    -fx-text-fill: #E2E8F0 !important;
+}
+/* FIX MISSING DARK MODE BUTTON */
+.dark-mode .header-btn-icon {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: #FFFFFF !important;
+    -fx-opacity: 1.0 !important;
+    -fx-font-size: 18px !important;
+    -fx-min-width: 40px !important;
+    -fx-min-height: 40px !important;
+    -fx-visibility: visible !important;
+}
+
+.dark-mode .header-btn-icon:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1) !important;
+}
+/* FIX MISSING DARK MODE BUTTON BY ID */
+#btnThemeToggle {
+    -fx-opacity: 1.0 !important;
+    -fx-font-size: 20px !important;
+    -fx-min-width: 45px !important;
+    -fx-min-height: 45px !important;
+    -fx-max-width: 45px !important;
+    -fx-max-height: 45px !important;
+    -fx-pref-width: 45px !important;
+    -fx-pref-height: 45px !important;
+
+    -fx-background-color: transparent !important;
+    -fx-text-fill: white !important;
+    -fx-visibility: visible !important;
+    -fx-border-color: white !important;
+    /* Temporary Debug Border */
+    -fx-border-width: 1px !important;
+    -fx-border-radius: 50% !important;
+}
+
+#btnThemeToggle:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Ensure the container of the button also allows it to show */
+.header-barHBox {
+    -fx-alignment: CENTER_LEFT !important;
+}
+/* =========================================================================
+   TABLE ROW HIGHLIGHTS (Compatible with Dark Mode)
+   ========================================================================= */
+
+/* Default (Light Mode) - Soft pastels */
+.row-out-of-stock {
+    -fx-background-color: #FECACA;
+}
+
+/* Light Red */
+.row-alert {
+    -fx-background-color: #FDE68A;
+}
+
+/* Light Yellow */
+.row-expired {
+    -fx-background-color: #E9D5FF;
+}
+
+/* Light Purple */
+
+/* Dark Mode - Darker, semi-transparent overlays */
+.dark-mode .row-out-of-stock {
+    -fx-background-color: rgba(239, 68, 68, 0.25) !important;
+    -fx-text-fill: #FECACA !important;
+}
+
+.dark-mode .row-alert {
+    -fx-background-color: rgba(245, 158, 11, 0.25) !important;
+    -fx-text-fill: #FDE68A !important;
+}
+
+.dark-mode .row-expired {
+    -fx-background-color: rgba(168, 85, 247, 0.25) !important;
+    -fx-text-fill: #E9D5FF !important;
+}
+
+/* Ensure text is readable on these backgrounds */
+.dark-mode .row-out-of-stock .table-cell,
+.dark-mode .row-alert .table-cell,
+.dark-mode .row-expired .table-cell {
+    -fx-text-fill: inherit;
+}
+
+/* =========================================================================
+   FIX ACTIVITY LOG (LIST VIEW)
+   ========================================================================= */
+.dark-mode .list-view,
+.dark-mode .list-cell {
+    -fx-background-color: transparent !important;
+    -fx-control-inner-background: transparent !important;
+    -fx-text-fill: white !important;
+}
+
+.dark-mode .list-cell:filled:selected,
+.dark-mode .list-cell:filled:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* =========================================================================
+   FIX STOCK ALERT PANELS (Image 1)
+   ========================================================================= */
+.dark-mode .stock-alert-panel,
+.dark-mode .stock-alert-item {
+    -fx-background-color: #1E293B !important;
+    /* Dark Slate Blue */
+    -fx-border-color: rgba(255, 255, 255, 0.1) !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2) !important;
+}
+
+.dark-mode .stock-alert-item .label {
+    -fx-text-fill: white !important;
+}
+
+.dark-mode .stock-alert-item .button {
+    -fx-background-color: #2563EB !important;
+    /* Brighter Blue Button */
+    -fx-text-fill: white !important;
+}
+
+/* =========================================================================
+   FIX THEME BUTTON ICON
+   ========================================================================= */
+.dark-mode #btnThemeToggle {
+    -fx-text-fill: #FACC15 !important;
+    /* Yellow Moon */
+    -fx-font-size: 18px !important;
+    -fx-border-width: 0 !important;
+    /* Remove debug border */
+}
+/* =========================================================================
+   SEARCH BOX CONTAINER
+   ========================================================================= */
+.search-box-container {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 20;
+}
+
+.dark-mode .search-box-container {
+    -fx-background-color: #1E293B !important;
+    /* Dark Blue */
+    -fx-border-color: #334155 !important;
+}
+
+.dark-mode .search-box-container .text-field {
+    -fx-text-fill: white !important;
+    -fx-prompt-text-fill: #94A3B8 !important;
+}
+
+/* =========================================================================
+   ALERTS ITEMS (DASHBOARD)
+   ========================================================================= */
+.alert-empty-message {
+    -fx-text-fill: #27ae60;
+    -fx-padding: 20;
+    -fx-alignment: CENTER;
+}
+
+.alert-item {
+    -fx-background-color: #fff1f2;
+    -fx-background-radius: 12;
+    -fx-border-color: #fecdd3;
+    -fx-border-width: 1;
+}
+
+.alert-item-title {
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+    -fx-text-fill: #991b1b;
+}
+
+.alert-item-subtitle {
+    -fx-text-fill: #b91c1c;
+    -fx-font-size: 12px;
+}
+
+/* Dark Mode Alerts */
+.dark-mode .alert-item {
+    -fx-background-color: rgba(239, 68, 68, 0.2) !important;
+    /* Dark Red Transparent */
+    -fx-border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark-mode .alert-item-title {
+    -fx-text-fill: #FCA5A5 !important;
+    /* Lighter Red */
+}
+
+.dark-mode .alert-item-subtitle {
+    -fx-text-fill: #FECACA !important;
+    /* Very Light Red */
+}
+
+/* =========================================================================
+   ACTIVITY LOG ITEMS (DASHBOARD)
+   ========================================================================= */
+.activity-item {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 10;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+}
+
+.activity-item-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.activity-item-value {
+    -fx-text-fill: #10b981;
+    /* Success Green */
+    -fx-font-weight: 700;
+}
+
+/* Dark Mode Activities */
+.dark-mode .activity-item {
+    -fx-background-color: #1E293B !important;
+    /* Dark Slate Blue */
+    -fx-border-color: #334155 !important;
+}
+
+.dark-mode .activity-item-title {
+    -fx-text-fill: #F1F5F9 !important;
+    /* White/Light Grey */
+}
+
+.dark-mode .activity-item-value {
+    -fx-text-fill: #34D399 !important;
+    /* Brighter Green */
 }

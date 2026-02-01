@@ -14,10 +14,11 @@
 
 <StackPane fx:id="dashboardRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.pharmacie.ui.controller.DashboardController"
-           style="-fx-padding: 0; -fx-background-color: -fx-color-bg-body;">
+           styleClass="root"
+           style="-fx-padding: 0; -fx-background-color: -fx-color-bg-body;"
+           stylesheets="@../css/pharmacy-blue-theme.css">
     
-    <BorderPane stylesheets="@../css/pharmacy-blue-theme.css"
-                styleClass="root"
+    <BorderPane styleClass="root"
                 maxWidth="1.7976931348623157E308" maxHeight="1.7976931348623157E308"
                 StackPane.alignment="TOP_LEFT">
 
@@ -46,9 +47,13 @@
             
             <Region HBox.hgrow="ALWAYS"/>
             
-            <!-- User Profile & Actions -->
+                <!-- User Profile & Actions -->
             <HBox spacing="15" alignment="CENTER">
+                
                 <Button text="🔔" styleClass="header-btn-icon" />
+
+                <!-- Dark Mode Toggle Button (MOVED AFTER BELL) -->
+                <Button fx:id="btnThemeToggle" text="🌙" onAction="#handleToggleTheme" styleClass="header-btn-icon" />
                 
                 <VBox alignment="CENTER_RIGHT" spacing="2">
                     <Label fx:id="lblBienvenue" text="Bienvenue, Admin" styleClass="header-user-name"/>
