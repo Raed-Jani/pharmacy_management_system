@@ -66,11 +66,16 @@ Icon
 ### Build Artifacts & Project Specific ###
 build_temp/
 output_exe/
+jar_temp/
 database/backup/
 Rapport G9.pdf
+sources_list.txt
 *.exe
 *.msi
 *.msm
 *.msp
 temp/
 tmp/
+
+### AI / Tooling ###
+.gemini/

@@ -12,7 +12,16 @@
   <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 21"/>
   <img src="https://img.shields.io/badge/JavaFX-21-blue?style=for-the-badge&logo=java&logoColor=white" alt="JavaFX 21"/>
   <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL 8.0"/>
+  <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License"/>
+</p>
+
+<p align="center">
+  <a href="#-features">Features</a> •
+  <a href="#-getting-started">Getting Started</a> •
+  <a href="#%EF%B8%8F-architecture">Architecture</a> •
+  <a href="#%EF%B8%8F-database-schema">Database</a> •
+  <a href="#-contributing">Contributing</a>
 </p>
 
 ---
@@ -20,6 +29,8 @@
 ## 📖 About
 
 **BioVera Pro** is a full-featured desktop application designed to streamline pharmacy operations. Built with Java and JavaFX, it provides an intuitive interface for managing products, sales, suppliers, orders, clients, and employees — all backed by a MySQL database with role-based access control.
+
+> Whether you're running a small independent pharmacy or managing a larger operation, BioVera Pro gives you the tools to track inventory, process sales, manage supplier orders, and generate insightful reports — all from a single, polished desktop interface.
 
 ## ✨ Features
 
@@ -39,93 +50,48 @@
 | 🔔 **Notifications** | Toast notification system for real-time user feedback |
 | 🌙 **Dark Mode** | Toggle between light and dark themes |
 
-## 🏗️ Architecture
+<!--
+## 📸 Screenshots
 
-The project follows a clean **layered architecture**:
+> Add your screenshots here to showcase the application UI.
 
-```
-src/com/pharmacie/
-├── Launcher.java                  # Application entry point
-├── MainApp.java                   # JavaFX Application class
-├── model/                         # Data models (POJOs)
-│   ├── Client.java
-│   ├── CommandeFournisseur.java
-│   ├── Fournisseur.java
-│   ├── LigneCommandeFournisseur.java
-│   ├── LigneVente.java
-│   ├── LogActivite.java
-│   ├── Produit.java
-│   ├── Utilisateur.java
-│   └── Vente.java
-├── dao/                           # Data Access Objects (JDBC)
-│   ├── ClientDAO.java
-│   ├── CommandeFournisseurDAO.java
-│   ├── FournisseurDAO.java
-│   ├── LigneCommandeFournisseurDAO.java
-│   ├── LigneVenteDAO.java
-│   ├── LogActiviteDAO.java
-│   ├── ProduitDAO.java
-│   ├── UtilisateurDAO.java
-│   └── VenteDAO.java
-├── service/                       # Business logic layer
-│   ├── AuthenticationService.java
-│   ├── DashboardStatisticsService.java
-│   ├── DatabaseBackupService.java
-│   ├── ExportService.java
-│   ├── GestionClientService.java
-│   ├── GestionCommande.java
-│   ├── GestionStock.java
-│   └── GestionVente.java
-├── ui/                            # User interface layer
-│   ├── controller/                # FXML Controllers
-│   │   ├── AccueilController.java
-│   │   ├── BaseController.java
-│   │   ├── ConsultationLogsController.java
-│   │   ├── DashboardController.java
-│   │   ├── GestionClientsController.java
-│   │   ├── GestionCommandesController.java
-│   │   ├── GestionFournisseursController.java
-│   │   ├── GestionProduitsController.java
-│   │   ├── GestionUtilisateursController.java
-│   │   ├── GestionVentesController.java
-│   │   ├── LoginController.java
-│   │   └── RapportsController.java
-│   └── notification/
-│       └── ToastNotification.java
-├── util/
-│   └── ThemeManager.java          # Light/Dark theme toggling
-├── utils/
-│   └── DBConnection.java          # Database connection manager
-└── exception/                     # Custom exceptions
-    ├── ConnexionEchoueeException.java
-    ├── ProduitIntrouvableException.java
-    └── StockInsuffisantException.java
-```
+| Login Screen | Dashboard | Product Management |
+|---|---|---|
+| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) | ![Products](screenshots/products.png) |
+
+| Sales Interface | Reports | Dark Mode |
+|---|---|---|
+| ![Sales](screenshots/sales.png) | ![Reports](screenshots/reports.png) | ![Dark](screenshots/dark-mode.png) |
+-->
 
 ## 🛠️ Tech Stack
 
-- **Language:** Java 21
-- **UI Framework:** JavaFX 21 (FXML + CSS)
-- **Database:** MySQL 8.0
-- **JDBC Driver:** MySQL Connector/J 8.0.33
-- **PDF Generation:** OpenPDF 1.3.42
-- **Build & Packaging:** `javac` + `jpackage` (PowerShell build script)
+| Technology | Purpose |
+|---|---|
+| **Java 21** | Core language |
+| **JavaFX 21** | UI framework (FXML + CSS) |
+| **MySQL 8.0** | Relational database |
+| **MySQL Connector/J 8.0.33** | JDBC driver |
+| **OpenPDF 1.3.42** | PDF report generation |
+| **jpackage** | Native Windows executable packaging |
 
 ## 📋 Prerequisites
 
 Before running BioVera Pro, make sure you have the following installed:
 
-- [**JDK 21**](https://jdk.java.net/21/) or later
-- [**MySQL 8.0**](https://dev.mysql.com/downloads/mysql/) or later
-- [**JavaFX SDK 21**](https://gluonhq.com/products/javafx/) (included in `lib/lib/`)
+| Requirement | Version | Link |
+|---|---|---|
+| JDK | 21+ | [Download](https://jdk.java.net/21/) |
+| MySQL | 8.0+ | [Download](https://dev.mysql.com/downloads/mysql/) |
+| JavaFX SDK | 21 | Included in `lib/lib/` |
 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/BioVera-Pro.git
-cd BioVera-Pro
+git clone https://github.com/Raed0503/pharmacy.git
+cd pharmacy
 ```
 
 ### 2. Set up the database
@@ -138,35 +104,40 @@ mysql -u root -p < database/pharmacie_db.sql
 
 This will:
 - Create the `pharmacie_db` database with all required tables
-- Set up database indexes and views
+- Set up database indexes and optimized views
 - Create MySQL users with appropriate privileges
 - Insert sample data for testing
 
+> [!NOTE]
 > **Default database users created by the script:**
 >
-> | User | Password | Role |
+> | User | Password | Privileges |
 > |---|---|---|
 > | `admin_pharmacie` | `admin_password_123` | Full access |
 > | `employe_pharmacie` | `employe_password_123` | Limited access |
 
 ### 3. Configure the database connection
 
-Open `src/com/pharmacie/utils/DBConnection.java` and verify the connection settings match your MySQL setup (host, port, credentials).
+Open `src/com/pharmacie/utils/DBConnection.java` and set your MySQL root password:
+
+```java
+private static final String DB_PASSWORD = "YOUR_MYSQL_PASSWORD"; // ← Replace this
+```
 
 ### 4. Compile and run
 
-**Option A — Using IntelliJ IDEA (Recommended)**
+#### Option A — Using IntelliJ IDEA (Recommended)
 
 1. Open the project in IntelliJ IDEA
 2. Right-click the `resources/` folder → **Mark Directory as → Resources Root**
-3. Add the JARs from `lib/` and `lib/lib/` to your module dependencies
+3. Add all JARs from `lib/` and `lib/lib/` to your module dependencies
 4. Add VM options for JavaFX modules:
    ```
    --module-path lib/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base
    ```
 5. Run `Launcher.java`
 
-**Option B — Using the command line**
+#### Option B — Using the command line
 
 ```bash
 # Compile
@@ -185,13 +156,19 @@ java --module-path lib/lib \
 
 ### 5. Build a standalone executable (Windows)
 
-A PowerShell script is included to package the app as a native Windows executable using `jpackage`:
+A PowerShell script is included to package the app as a native Windows `.exe` using `jpackage`:
 
 ```powershell
 .\Build_BioVera_Exe.ps1
 ```
 
 The executable will be generated at `output_exe/BioVera Pro/BioVera Pro.exe`.
+
+You can also create a desktop shortcut:
+
+```powershell
+.\Create_Desktop_Shortcut.ps1
+```
 
 ## 🔑 Default Login Credentials
 
@@ -201,7 +178,77 @@ The executable will be generated at `output_exe/BioVera Pro/BioVera Pro.exe`.
 | `employe1` | `password123` | Employee |
 | `employe2` | `password123` | Employee |
 
-> ⚠️ **Important:** Change the default passwords before deploying to a production environment.
+> [!WARNING]
+> These are development credentials. **Change all default passwords** before deploying to a production environment.
+
+## 🏗️ Architecture
+
+The project follows a clean **layered architecture** (Model → DAO → Service → UI):
+
+```
+src/com/pharmacie/
+│
+├── Launcher.java                  # Application entry point
+├── MainApp.java                   # JavaFX Application class
+│
+├── model/                         # 📦 Data models (POJOs)
+│   ├── Client.java
+│   ├── CommandeFournisseur.java
+│   ├── Fournisseur.java
+│   ├── LigneCommandeFournisseur.java
+│   ├── LigneVente.java
+│   ├── LogActivite.java
+│   ├── Produit.java
+│   ├── Utilisateur.java
+│   └── Vente.java
+│
+├── dao/                           # 🗄️ Data Access Objects (JDBC)
+│   ├── ClientDAO.java
+│   ├── CommandeFournisseurDAO.java
+│   ├── FournisseurDAO.java
+│   ├── LigneCommandeFournisseurDAO.java
+│   ├── LigneVenteDAO.java
+│   ├── LogActiviteDAO.java
+│   ├── ProduitDAO.java
+│   ├── UtilisateurDAO.java
+│   └── VenteDAO.java
+│
+├── service/                       # ⚙️ Business logic layer
+│   ├── AuthenticationService.java
+│   ├── DashboardStatisticsService.java
+│   ├── DatabaseBackupService.java
+│   ├── ExportService.java
+│   ├── GestionClientService.java
+│   ├── GestionCommande.java
+│   ├── GestionStock.java
+│   └── GestionVente.java
+│
+├── ui/                            # 🖥️ User interface layer
+│   ├── controller/                #    FXML Controllers (12 screens)
+│   │   ├── AccueilController.java
+│   │   ├── BaseController.java
+│   │   ├── ConsultationLogsController.java
+│   │   ├── DashboardController.java
+│   │   ├── GestionClientsController.java
+│   │   ├── GestionCommandesController.java
+│   │   ├── GestionFournisseursController.java
+│   │   ├── GestionProduitsController.java
+│   │   ├── GestionUtilisateursController.java
+│   │   ├── GestionVentesController.java
+│   │   ├── LoginController.java
+│   │   └── RapportsController.java
+│   └── notification/
+│       └── ToastNotification.java
+│
+├── util/
+│   └── ThemeManager.java          # 🎨 Light/Dark theme toggling
+├── utils/
+│   └── DBConnection.java          # 🔗 Database connection manager
+└── exception/                     # ❌ Custom exceptions
+    ├── ConnexionEchoueeException.java
+    ├── ProduitIntrouvableException.java
+    └── StockInsuffisantException.java
+```
 
 ## 🗄️ Database Schema
 
@@ -254,35 +301,41 @@ The application uses **10 tables** organized around core pharmacy operations:
 └──────────────┘
 ```
 
-**Views** included for quick analytics:
-- `V_Produits_Alerte` — Products below their stock alert threshold
-- `V_CA_Journalier` — Daily revenue summary
-- `V_Top_Produits` — Best-selling products ranking
+**Database views** included for quick analytics:
+
+| View | Purpose |
+|---|---|
+| `V_Produits_Alerte` | Products below their stock alert threshold |
+| `V_CA_Journalier` | Daily revenue summary |
+| `V_Top_Produits` | Best-selling products ranking |
 
 ## 📁 Project Structure
 
 ```
 pharmacie/
-├── src/                    # Java source code
+├── src/                           # Java source code
 ├── resources/
-│   ├── fxml/               # FXML view files (11 screens)
-│   ├── css/                # Stylesheets (light & dark themes)
-│   └── images/             # Application icons and assets
+│   ├── fxml/                      # FXML view definitions (11 screens)
+│   ├── css/                       # Stylesheets (light & dark themes)
+│   └── images/                    # Application icons and assets
 ├── database/
-│   └── pharmacie_db.sql    # Full database setup script
-├── lib/                    # External libraries
+│   └── pharmacie_db.sql           # Complete database setup script
+├── lib/
 │   ├── mysql-connector-j-8.0.33.jar
 │   ├── openpdf-1.3.42.jar
-│   └── lib/                # JavaFX SDK JARs & native DLLs
-├── Build_BioVera_Exe.ps1   # Windows build script
-├── Create_Desktop_Shortcut.ps1
-├── app_icon.ico            # Windows executable icon
-└── .gitignore
+│   └── lib/                       # JavaFX SDK JARs & native DLLs
+├── Build_BioVera_Exe.ps1          # Build native Windows executable
+├── Create_Desktop_Shortcut.ps1    # Create desktop shortcut
+├── app_icon.ico                   # Windows executable icon
+├── .editorconfig                  # Code style configuration
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! To get started:
+Contributions are welcome! Here's how to get started:
 
 1. **Fork** this repository
 2. **Create** a feature branch: `git checkout -b feature/my-feature`
@@ -290,13 +343,16 @@ Contributions are welcome! To get started:
 4. **Push** to the branch: `git push origin feature/my-feature`
 5. **Open** a Pull Request
 
+> [!TIP]
+> Please keep your commits focused and write clear commit messages.
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
 
-## 👨‍💻 Authors
+## 👨‍💻 Author
 
-- **Raed** — *Development & Design*
+**Raed** — [GitHub](https://github.com/Raed0503)
 
 ---
 
