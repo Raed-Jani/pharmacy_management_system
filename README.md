@@ -328,10 +328,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Raed** — [GitHub](https://github.com/Raed-Jani)
+**Raed Jani** — [GitHub](https://github.com/Raed-Jani)
 
 ---
 
-<p align="center">
-  Made with ❤️ using Java & JavaFX
-</p>
