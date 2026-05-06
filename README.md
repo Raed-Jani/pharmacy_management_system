@@ -50,19 +50,7 @@
 | 🔔 **Notifications** | Toast notification system for real-time user feedback |
 | 🌙 **Dark Mode** | Toggle between light and dark themes |
 
-<!--
-## 📸 Screenshots
 
-> Add your screenshots here to showcase the application UI.
-
-| Login Screen | Dashboard | Product Management |
-|---|---|---|
-| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) | ![Products](screenshots/products.png) |
-
-| Sales Interface | Reports | Dark Mode |
-|---|---|---|
-| ![Sales](screenshots/sales.png) | ![Reports](screenshots/reports.png) | ![Dark](screenshots/dark-mode.png) |
--->
 
 ## 🛠️ Tech Stack
 
@@ -90,7 +78,7 @@ Before running BioVera Pro, make sure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Raed0503/pharmacy.git
+git clone https://github.com/Raed-Jani/pharmacy_management_system.git
 cd pharmacy
 ```
 
@@ -297,7 +285,7 @@ The application uses **10 tables** organized around core pharmacy operations:
 │ date_action  │
 │ type_action  │
 │ description  │
-│ id_utilisateur│
+│id_utilisateur│
 └──────────────┘
 ```
 
@@ -333,18 +321,6 @@ pharmacie/
 └── README.md
 ```
 
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
-
-1. **Fork** this repository
-2. **Create** a feature branch: `git checkout -b feature/my-feature`
-3. **Commit** your changes: `git commit -m "Add my feature"`
-4. **Push** to the branch: `git push origin feature/my-feature`
-5. **Open** a Pull Request
-
-> [!TIP]
-> Please keep your commits focused and write clear commit messages.
 
 ## 📄 License
 
@@ -352,7 +328,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Raed** — [GitHub](https://github.com/Raed0503)
+**Raed** — [GitHub](https://github.com/Raed-Jani)
 
 ---
 
